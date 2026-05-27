@@ -309,61 +309,45 @@
 </section>
 
 <!-- PRICING -->
-<section id="pricing" style="padding:100px 5vw;">
-  <div style="text-align:center;margin-bottom:48px;">
-    <div class="section-label" style="text-align:center;">Pricing</div>
-    <div class="section-title" style="text-align:center;max-width:100%;margin-bottom:0;">One subscription. Everything unlocked.</div>
+<section id="pricing" style="padding:100px 5vw;background:var(--ink);position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(124,58,237,0.2) 0%,transparent 70%);"></div>
+  <div style="position:relative;text-align:center;margin-bottom:48px;">
+    <div class="section-label" style="text-align:center;color:var(--purple-light);">Pricing</div>
+    <div class="section-title" style="text-align:center;max-width:100%;margin-bottom:0;color:var(--white);">One subscription. Everything unlocked.</div>
   </div>
+  <div style="position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;max-width:860px;margin:0 auto;">
 
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;max-width:860px;margin:0 auto;">
-
-    <!-- Starter -->
-    <div id="card-starter" style="border:1.5px solid var(--border);border-radius:20px;padding:28px 24px;background:var(--white);">
-      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-faint);margin-bottom:12px;font-family:Syne,sans-serif;">Starter</p>
-      <p style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:var(--ink);line-height:1;margin-bottom:4px;">€0</p>
-      <p style="font-size:13px;color:var(--ink-faint);margin-bottom:24px;font-weight:300;">free forever</p>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">
-        <li style="font-size:13px;color:var(--ink-muted);display:flex;align-items:center;gap:6px;font-weight:300;"><span style="color:var(--purple);font-size:10px;">✦</span>Access to all free games</li>
-        <li style="font-size:13px;color:var(--ink-muted);display:flex;align-items:center;gap:6px;font-weight:300;"><span style="color:var(--purple);font-size:10px;">✦</span>CentAI — 20 questions/month</li>
-        <li style="font-size:13px;color:var(--ink-muted);display:flex;align-items:center;gap:6px;font-weight:300;"><span style="color:var(--purple);font-size:10px;">✦</span>Financial IQ Quiz</li>
-        <li style="font-size:13px;color:var(--ink-muted);display:flex;align-items:center;gap:6px;font-weight:300;"><span style="color:var(--purple);font-size:10px;">✦</span>6 language support</li>
-      </ul>
-      <a href="#ai-tools" style="display:block;text-align:center;padding:11px;border-radius:10px;border:1.5px solid var(--purple);color:var(--purple);font-size:14px;font-weight:500;text-decoration:none;font-family:DM Sans,sans-serif;">Get started free</a>
+    <div class="game-card" style="cursor:default;">
+      <span style="font-size:32px;margin-bottom:12px;display:block;">🎯</span>
+      <h3 style="margin-bottom:6px;">Starter</h3>
+      <p style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:#fff;margin-bottom:2px;line-height:1;">€0</p>
+      <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:16px;">free forever</p>
+      <p style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:16px;">✦ Free games access<br>✦ CentAI 20 questions/month<br>✦ Financial IQ Quiz<br>✦ 6 languages</p>
+      <a href="#ai-tools" style="display:block;text-align:center;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;text-decoration:none;font-family:DM Sans,sans-serif;">Get started free</a>
     </div>
 
-    <!-- Pro -->
-    <div id="card-pro" style="border-radius:20px;padding:28px 24px;background:linear-gradient(135deg,var(--purple),var(--purple-dark));">
-      <div style="display:inline-block;background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;font-size:11px;font-weight:600;padding:4px 14px;border-radius:20px;margin-bottom:12px;">Most popular</div>
-      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.6);margin-bottom:12px;font-family:Syne,sans-serif;">Pro</p>
-      <p style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:#fff;line-height:1;margin-bottom:4px;">€24.99</p>
-      <p style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:24px;font-weight:300;">per month</p>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">
-        <li style="font-size:13px;color:rgba(255,255,255,0.85);display:flex;align-items:center;gap:6px;font-weight:300;"><span style="color:var(--purple-light);font-size:10px;">✦</span>Unlimited CentAI questions</li>
-        <li style="font-size:13px;color:rgba(255,255,255,0.85);display:flex;align-items:center;gap:6px;font-weight:300;"><span style="color:var(--purple-light);font-size:10px;">✦</span>All game levels unlocked</li>
-        <li style="font-size:13px;color:rgba(255,255,255,0.85);display:flex;align-items:center;gap:6px;font-weight:300;"><span style="color:var(--purple-light);font-size:10px;">✦</span>Early access to new AI tools</li>
-        <li style="font-size:13px;color:rgba(255,255,255,0.85);display:flex;align-items:center;gap:6px;font-weight:300;"><span style="color:var(--purple-light);font-size:10px;">✦</span>Priority support</li>
-        <li style="font-size:13px;color:rgba(255,255,255,0.85);display:flex;align-items:center;gap:6px;font-weight:300;"><span style="color:var(--purple-light);font-size:10px;">✦</span>No ads</li>
-      </ul>
-      <a href="https://centai.org" target="_blank" style="display:block;text-align:center;padding:11px;border-radius:10px;background:#fff;color:var(--purple);font-size:14px;font-weight:500;text-decoration:none;font-family:DM Sans,sans-serif;cursor:pointer;">Start Pro →</a>
+    <div class="game-card" style="cursor:default;background:rgba(124,58,237,0.2);border-color:var(--purple-light);">
+      <span style="font-size:32px;margin-bottom:12px;display:block;">🚀</span>
+      <div style="display:inline-block;background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;margin-bottom:8px;">Most popular</div>
+      <h3 style="margin-bottom:6px;">Pro</h3>
+      <p style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:#fff;margin-bottom:2px;line-height:1;">€24.99</p>
+      <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:16px;">per month</p>
+      <p style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:16px;">✦ Unlimited CentAI questions<br>✦ All game levels unlocked<br>✦ Early access to new tools<br>✦ Priority support · No ads</p>
+      <a href="https://centai.org" target="_blank" style="display:block;text-align:center;padding:10px;border-radius:10px;background:var(--purple);color:#fff;font-size:13px;font-weight:500;text-decoration:none;font-family:DM Sans,sans-serif;">Start Pro →</a>
     </div>
 
-    <!-- Elite -->
-    <div id="card-elite" style="border:1.5px solid var(--border);border-radius:20px;padding:28px 24px;background:var(--white);">
-      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-faint);margin-bottom:12px;font-family:Syne,sans-serif;">Elite</p>
-      <p style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:var(--ink);line-height:1;margin-bottom:4px;">€59.99</p>
-      <p style="font-size:13px;color:var(--ink-faint);margin-bottom:24px;font-weight:300;">per month</p>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">
-        <li style="font-size:13px;color:var(--ink-muted);display:flex;align-items:center;gap:6px;font-weight:300;"><span style="color:var(--purple);font-size:10px;">✦</span>Everything in Pro</li>
-        <li style="font-size:13px;color:var(--ink-muted);display:flex;align-items:center;gap:6px;font-weight:300;"><span style="color:var(--purple);font-size:10px;">✦</span>All AI tools when launched</li>
-        <li style="font-size:13px;color:var(--ink-muted);display:flex;align-items:center;gap:6px;font-weight:300;"><span style="color:var(--purple);font-size:10px;">✦</span>5 team seats</li>
-        <li style="font-size:13px;color:var(--ink-muted);display:flex;align-items:center;gap:6px;font-weight:300;"><span style="color:var(--purple);font-size:10px;">✦</span>White-label option</li>
-        <li style="font-size:13px;color:var(--ink-muted);display:flex;align-items:center;gap:6px;font-weight:300;"><span style="color:var(--purple);font-size:10px;">✦</span>API access</li>
-      </ul>
-      <a href="https://centai.org" target="_blank" style="display:block;text-align:center;padding:11px;border-radius:10px;border:1.5px solid var(--purple);color:var(--purple);font-size:14px;font-weight:500;text-decoration:none;font-family:DM Sans,sans-serif;cursor:pointer;">Start Elite →</a>
+    <div class="game-card" style="cursor:default;">
+      <span style="font-size:32px;margin-bottom:12px;display:block;">👑</span>
+      <h3 style="margin-bottom:6px;">Elite</h3>
+      <p style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:#fff;margin-bottom:2px;line-height:1;">€59.99</p>
+      <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:16px;">per month</p>
+      <p style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:16px;">✦ Everything in Pro<br>✦ All AI tools when launched<br>✦ 5 team seats<br>✦ White-label · API access</p>
+      <a href="https://centai.org" target="_blank" style="display:block;text-align:center;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;text-decoration:none;font-family:DM Sans,sans-serif;">Start Elite →</a>
     </div>
 
   </div>
 </section>
+
 
 <footer>
   © 2026 <span>PlayAI</span> — AI Tools & Smart Games for everyone.
