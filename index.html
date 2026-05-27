@@ -102,13 +102,13 @@
 
   /* PRICING */
   #pricing { padding: 100px 5vw; }
-  .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; max-width: 900px; margin: 48px auto 0; }
-  .pricing-card { border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 36px 28px; background: var(--white); position: relative; overflow: hidden; }
-  .pricing-card.featured { background: linear-gradient(135deg, var(--purple), var(--purple-dark)); border-color: transparent; transform: scale(1.03); }
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 860px; margin: 48px auto 0; }
+  .pricing-card { border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 28px 24px; background: var(--white); position: relative; overflow: hidden; }
+  .pricing-card.featured { background: linear-gradient(135deg, var(--purple), var(--purple-dark)); border-color: transparent; transform: scale(1.02); }
   .plan-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, var(--pink), var(--purple)); color: #fff; font-size: 11px; font-weight: 600; padding: 4px 14px; border-radius: 20px; white-space: nowrap; }
   .plan-name { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-faint); margin-bottom: 12px; font-family: 'Syne', sans-serif; }
   .featured .plan-name { color: rgba(255,255,255,0.6); }
-  .plan-price { font-family: 'Syne', sans-serif; font-size: clamp(36px, 5vw, 52px); font-weight: 800; color: var(--ink); line-height: 1; letter-spacing: -2px; word-break: break-word; }
+  .plan-price { font-family: 'Syne', sans-serif; font-size: 40px; font-weight: 800; color: var(--ink); line-height: 1; letter-spacing: -2px; }
   .featured .plan-price { color: #fff; }
   .plan-period { font-size: 14px; color: var(--ink-faint); margin-bottom: 28px; font-weight: 300; }
   .featured .plan-period { color: rgba(255,255,255,0.6); }
