@@ -314,12 +314,17 @@
     <div class="section-label" style="text-align:center;">Pricing</div>
     <div class="section-title" style="text-align:center;max-width:100%;margin-bottom:0;">One subscription. Everything unlocked.</div>
   </div>
+  <div style="display:flex;justify-content:center;gap:8px;margin-bottom:32px;">
+    <button onclick="showPlan('starter')" id="tab-starter" style="padding:8px 20px;border-radius:20px;border:1.5px solid var(--purple);background:var(--purple);color:#fff;font-size:13px;font-weight:500;cursor:pointer;font-family:DM Sans,sans-serif;">Starter</button>
+    <button onclick="showPlan('pro')" id="tab-pro" style="padding:8px 20px;border-radius:20px;border:1.5px solid var(--border-strong);background:transparent;color:var(--ink-muted);font-size:13px;font-weight:500;cursor:pointer;font-family:DM Sans,sans-serif;">Pro</button>
+    <button onclick="showPlan('elite')" id="tab-elite" style="padding:8px 20px;border-radius:20px;border:1.5px solid var(--border-strong);background:transparent;color:var(--ink-muted);font-size:13px;font-weight:500;cursor:pointer;font-family:DM Sans,sans-serif;">Elite</button>
+  </div>
   <div style="display:flex;flex-wrap:wrap;gap:20px;max-width:860px;margin:0 auto;justify-content:center;align-items:stretch;">
  
     <!-- Starter -->
-    <div style="flex:1;min-width:220px;max-width:260px;border:1.5px solid var(--border);border-radius:20px;padding:28px 24px;background:var(--white);">
+    <div id="card-starter" style="flex:1;min-width:220px;max-width:260px;border:1.5px solid var(--border);border-radius:20px;padding:28px 24px;background:var(--white);">
       <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-faint);margin-bottom:12px;font-family:Syne,sans-serif;">Starter</p>
-      <p style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:var(--ink);line-height:1;margin-bottom:4px;">€0</p>
+      <p style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:var(--ink);line-height:1;margin-bottom:4px;">€0</p>
       <p style="font-size:13px;color:var(--ink-faint);margin-bottom:24px;font-weight:300;">free forever</p>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">
         <li style="font-size:13px;color:var(--ink-muted);display:flex;align-items:center;gap:6px;font-weight:300;"><span style="color:var(--purple);font-size:10px;">✦</span>Access to all free games</li>
@@ -331,10 +336,10 @@
     </div>
  
     <!-- Pro -->
-    <div style="flex:1;min-width:220px;max-width:260px;border-radius:20px;padding:28px 24px;background:linear-gradient(135deg,var(--purple),var(--purple-dark));position:relative;">
+    <div id="card-pro" style="display:none;flex:1;min-width:220px;max-width:260px;border-radius:20px;padding:28px 24px;background:linear-gradient(135deg,var(--purple),var(--purple-dark));position:relative;">
       <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;font-size:11px;font-weight:600;padding:4px 14px;border-radius:20px;white-space:nowrap;">Most popular</div>
       <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.6);margin-bottom:12px;font-family:Syne,sans-serif;">Pro</p>
-      <p style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:#fff;line-height:1;margin-bottom:4px;">€24.99</p>
+      <p style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:#fff;line-height:1;margin-bottom:4px;">€24.99</p>
       <p style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:24px;font-weight:300;">per month</p>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">
         <li style="font-size:13px;color:rgba(255,255,255,0.85);display:flex;align-items:center;gap:6px;font-weight:300;"><span style="color:var(--purple-light);font-size:10px;">✦</span>Unlimited CentAI questions</li>
@@ -347,9 +352,9 @@
     </div>
  
     <!-- Elite -->
-    <div style="flex:1;min-width:220px;max-width:260px;border:1.5px solid var(--border);border-radius:20px;padding:28px 24px;background:var(--white);">
+    <div id="card-elite" style="display:none;flex:1;min-width:220px;max-width:260px;border:1.5px solid var(--border);border-radius:20px;padding:28px 24px;background:var(--white);">
       <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-faint);margin-bottom:12px;font-family:Syne,sans-serif;">Elite</p>
-      <p style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:var(--ink);line-height:1;margin-bottom:4px;">€59.99</p>
+      <p style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:var(--ink);line-height:1;margin-bottom:4px;">€59.99</p>
       <p style="font-size:13px;color:var(--ink-faint);margin-bottom:24px;font-weight:300;">per month</p>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">
         <li style="font-size:13px;color:var(--ink-muted);display:flex;align-items:center;gap:6px;font-weight:300;"><span style="color:var(--purple);font-size:10px;">✦</span>Everything in Pro</li>
@@ -373,5 +378,24 @@
   <a href="https://centai.org/terms.html">Terms</a>
 </footer>
  
+<script>
+function showPlan(plan) {
+  ['starter','pro','elite'].forEach(p => {
+    const tab = document.getElementById('tab-'+p);
+    const card = document.getElementById('card-'+p);
+    if(p === plan) {
+      tab.style.background = 'var(--purple)';
+      tab.style.color = '#fff';
+      tab.style.borderColor = 'var(--purple)';
+      if(card) card.style.display = 'block';
+    } else {
+      tab.style.background = 'transparent';
+      tab.style.color = 'var(--ink-muted)';
+      tab.style.borderColor = 'rgba(124,58,237,0.3)';
+      if(card) card.style.display = 'none';
+    }
+  });
+}
+</script>
 </body>
 </html>
