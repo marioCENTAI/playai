@@ -270,7 +270,9 @@ function tick(){
   if(!S.running) return;
   S.dir={...S.nextDir};
   const head={x:S.snake[0].x+S.dir.x, y:S.snake[0].y+S.dir.y};
-  if(head.x<0||head.x>=COLS||head.y<0||head.y>=ROWS){handleDeath();return;}
+  // Wrap around walls instead of dying
+  head.x = (head.x + COLS) % COLS;
+  head.y = (head.y + ROWS) % ROWS;
   if(S.snake.some(s=>s.x===head.x&&s.y===head.y)){handleDeath();return;}
   S.snake.unshift(head);
   const hitIdx=S.items.findIndex(i=>i.x===head.x&&i.y===head.y);
