@@ -4,223 +4,202 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Life Simulator — AI Financial Adventure | PlayAI</title>
-<meta name="description" content="Make financial decisions from age 18. Watch your wealth grow or crash. Get AI coaching on every choice. How rich will you be?">
+<meta name="description" content="Live a dramatic financial life from age 18. Real dilemmas, plot twists, AI coaching. How rich will you be?">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --purple:#7c3aed; --purple-light:#a78bfa; --purple-pale:#ede9fe; --purple-dark:#4c1d95;
-  --green:#059669; --green-pale:#d1fae5; --red:#dc2626; --red-pale:#fee2e2;
-  --blue:#2563eb; --blue-pale:#dbeafe; --amber:#d97706; --amber-pale:#fef3c7;
-  --ink:#0f172a; --ink-muted:#475569; --ink-faint:#94a3b8;
-  --cream:#f8fafc; --white:#ffffff;
-  --border:rgba(124,58,237,0.15); --border-strong:rgba(124,58,237,0.3);
-  --radius:12px; --radius-lg:20px;
+:root{
+  --purple:#7c3aed;--purple-light:#a78bfa;--purple-pale:#ede9fe;--purple-dark:#4c1d95;
+  --green:#059669;--green-pale:#d1fae5;--red:#dc2626;--red-pale:#fee2e2;
+  --blue:#2563eb;--blue-pale:#dbeafe;--amber:#d97706;--amber-pale:#fef3c7;
+  --ink:#0f172a;--ink-muted:#475569;--ink-faint:#94a3b8;
+  --cream:#f8fafc;--white:#ffffff;
+  --border:rgba(124,58,237,0.15);--border-strong:rgba(124,58,237,0.3);
+  --radius:12px;--radius-lg:20px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
 body{font-family:'DM Sans',sans-serif;background:var(--ink);color:var(--white);min-height:100vh;overflow-x:hidden;}
-
-nav{padding:0 5vw;height:56px;display:flex;align-items:center;justify-content:space-between;background:rgba(15,23,42,0.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:100;}
+nav{padding:0 5vw;height:56px;display:flex;align-items:center;justify-content:space-between;background:rgba(15,23,42,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:100;}
 .nav-logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--purple-light);text-decoration:none;}
 .nav-logo span{color:var(--white);}
 .nav-back{font-size:13px;color:rgba(255,255,255,0.4);text-decoration:none;}
 .nav-back:hover{color:var(--purple-light);}
-
 #gc{max-width:640px;margin:0 auto;padding:20px 5vw 80px;}
 
 /* START */
 #start-screen{text-align:center;padding:48px 0;}
 .game-logo{font-size:72px;margin-bottom:16px;animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
-#start-screen h1{font-family:'Syne',sans-serif;font-size:clamp(32px,6vw,48px);font-weight:800;color:var(--white);margin-bottom:8px;letter-spacing:-2px;}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
+#start-screen h1{font-family:'Syne',sans-serif;font-size:clamp(36px,7vw,56px);font-weight:800;color:var(--white);margin-bottom:8px;letter-spacing:-2px;}
 #start-screen h1 em{font-style:normal;color:var(--purple-light);}
-.tagline{font-size:16px;color:rgba(255,255,255,0.5);margin-bottom:6px;font-weight:300;line-height:1.6;}
-.ai-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;background:rgba(37,99,235,0.2);color:#93c5fd;padding:5px 14px;border-radius:20px;border:1px solid rgba(37,99,235,0.3);margin:12px 0 28px;}
-.features-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:28px;}
-.feat{font-size:12px;color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.06);padding:5px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);}
+.tagline{font-size:16px;color:rgba(255,255,255,0.5);margin-bottom:6px;font-weight:300;line-height:1.7;}
+.ai-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;background:rgba(37,99,235,0.15);color:#93c5fd;padding:5px 14px;border-radius:20px;border:1px solid rgba(37,99,235,0.25);margin:12px 0 24px;}
+.features-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:28px;}
+.feat{font-size:12px;color:rgba(255,255,255,0.45);background:rgba(255,255,255,0.05);padding:5px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.08);}
 #name-input{padding:13px 18px;border-radius:var(--radius);border:1.5px solid rgba(124,58,237,0.4);font-size:15px;width:100%;max-width:300px;margin-bottom:12px;background:rgba(255,255,255,0.06);color:var(--white);font-family:'DM Sans',sans-serif;display:block;margin-left:auto;margin-right:auto;outline:none;transition:border-color 0.2s;text-align:center;}
 #name-input:focus{border-color:var(--purple-light);}
-#name-input::placeholder{color:rgba(255,255,255,0.3);}
-.start-btn{background:linear-gradient(135deg,var(--purple),var(--purple-dark));color:#fff;border:none;padding:14px 40px;border-radius:var(--radius);font-size:16px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:transform 0.15s,box-shadow 0.15s;box-shadow:0 4px 20px rgba(124,58,237,0.4);}
-.start-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(124,58,237,0.5);}
-.free-note{font-size:12px;color:rgba(255,255,255,0.25);margin-top:10px;}
+#name-input::placeholder{color:rgba(255,255,255,0.25);}
+.start-btn{background:linear-gradient(135deg,var(--purple),var(--purple-dark));color:#fff;border:none;padding:14px 40px;border-radius:var(--radius);font-size:16px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 4px 20px rgba(124,58,237,0.4);transition:transform 0.15s;}
+.start-btn:hover{transform:translateY(-2px);}
+.free-note{font-size:12px;color:rgba(255,255,255,0.2);margin-top:10px;}
 
-/* GAME SCREEN */
+/* GAME */
 #game-screen{display:none;}
-
-/* LIFE STAGE HEADER */
-.stage-header{background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(76,29,149,0.2));border:1px solid rgba(124,58,237,0.3);border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;gap:16px;}
-.stage-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--purple-dark));display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.stage-header{background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(76,29,149,0.1));border:1px solid rgba(124,58,237,0.25);border-radius:var(--radius-lg);padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:14px;}
+.stage-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--purple-dark));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
 .stage-info{flex:1;}
-.stage-name{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--white);margin-bottom:2px;}
-.stage-desc{font-size:12px;color:rgba(255,255,255,0.4);}
-.stage-chapter{font-size:11px;color:var(--purple-light);font-weight:500;background:rgba(124,58,237,0.2);padding:3px 10px;border-radius:20px;}
-
-/* WEALTH CHART */
-.wealth-panel{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:16px;}
-.wealth-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-.wealth-amount{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--white);letter-spacing:-1px;}
-.wealth-change-badge{font-size:12px;font-weight:500;padding:3px 10px;border-radius:20px;}
-.wealth-change-badge.up{background:rgba(5,150,105,0.2);color:#6ee7b7;}
-.wealth-change-badge.down{background:rgba(220,38,38,0.2);color:#fca5a5;}
-.wealth-change-badge.neutral{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.4);}
-#wealth-chart{width:100%;height:60px;position:relative;overflow:hidden;}
-#chart-canvas{width:100%;height:100%;}
-
-/* STATS ROW */
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
-.stat-box{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius);padding:10px 12px;}
-.stat-label{font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:2px;text-transform:uppercase;letter-spacing:0.04em;}
+.stage-name{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--white);margin-bottom:2px;}
+.stage-desc{font-size:12px;color:rgba(255,255,255,0.35);}
+.stage-chapter{font-size:11px;color:var(--purple-light);font-weight:500;background:rgba(124,58,237,0.15);padding:3px 10px;border-radius:20px;}
+.wealth-panel{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:var(--radius-lg);padding:14px 18px;margin-bottom:14px;}
+.wealth-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.wealth-amount{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:var(--white);letter-spacing:-1px;}
+.wealth-badge{font-size:12px;font-weight:500;padding:3px 10px;border-radius:20px;}
+.wealth-badge.up{background:rgba(5,150,105,0.15);color:#6ee7b7;}
+.wealth-badge.down{background:rgba(220,38,38,0.15);color:#fca5a5;}
+.wealth-badge.neutral{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.3);}
+#chart-canvas{width:100%;height:56px;}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.stat-box{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:var(--radius);padding:10px 12px;}
+.stat-label{font-size:10px;color:rgba(255,255,255,0.25);margin-bottom:2px;text-transform:uppercase;letter-spacing:0.05em;}
 .stat-value{font-size:15px;font-weight:500;color:var(--white);font-family:'Syne',sans-serif;}
-
-/* PROGRESS */
-.progress-wrap{margin-bottom:16px;}
-.progress-meta{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:6px;}
-.progress-bar{height:3px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;}
+.progress-wrap{margin-bottom:14px;}
+.progress-meta{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,0.25);margin-bottom:5px;}
+.progress-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--purple-light));border-radius:2px;transition:width 0.5s ease;}
 
 /* TIMER */
-.timer-wrap{margin-bottom:12px;display:flex;align-items:center;gap:10px;}
-.timer-bar{flex:1;height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;}
+.timer-wrap{margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+.timer-bar{flex:1;height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;}
 .timer-fill{height:100%;border-radius:3px;transition:width 0.1s linear;}
 .timer-fill.green{background:#10b981;}
 .timer-fill.amber{background:#f59e0b;}
 .timer-fill.red{background:#ef4444;}
-.timer-label{font-size:12px;font-weight:500;min-width:24px;text-align:right;}
-.timer-label.urgent{color:#ef4444;}
+.timer-label{font-size:13px;font-weight:500;min-width:20px;text-align:right;}
+.timer-label.urgent{color:#ef4444;animation:blink 0.5s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.4;}}
 
-/* SCENARIO */
-.scenario-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-lg);padding:20px;margin-bottom:12px;}
-.scenario-event-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;margin-bottom:12px;}
-.scenario-event-badge.normal{background:rgba(124,58,237,0.2);color:var(--purple-light);}
-.scenario-event-badge.random{background:rgba(245,158,11,0.2);color:#fcd34d;}
-.scenario-event-badge.crisis{background:rgba(220,38,38,0.2);color:#fca5a5;}
-#scenario-text{font-size:15px;color:rgba(255,255,255,0.85);line-height:1.75;font-weight:300;}
+/* RANDOM EVENT */
+.event-card{background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(217,119,6,0.08));border:1px solid rgba(245,158,11,0.25);border-radius:var(--radius-lg);padding:14px 18px;margin-bottom:12px;display:none;animation:slideIn 0.4s ease;}
+@keyframes slideIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+.event-hdr{font-size:11px;font-weight:600;color:#fcd34d;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;}
+.event-body{font-size:14px;color:rgba(255,255,255,0.75);line-height:1.6;font-weight:300;}
+.event-impact{font-size:14px;font-weight:500;margin-top:6px;}
+
+/* SCENARIO — cinematic style */
+.scenario-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.09);border-radius:var(--radius-lg);padding:20px;margin-bottom:12px;}
+.scenario-meta{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.scenario-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
+.scenario-badge.drama{background:rgba(220,38,38,0.15);color:#fca5a5;}
+.scenario-badge.opportunity{background:rgba(5,150,105,0.15);color:#6ee7b7;}
+.scenario-badge.twist{background:rgba(245,158,11,0.15);color:#fcd34d;}
+.scenario-badge.milestone{background:rgba(124,58,237,0.15);color:var(--purple-light);}
+.scenario-setting{font-size:11px;color:rgba(255,255,255,0.25);font-style:italic;}
+.scenario-narrative{font-size:15px;color:rgba(255,255,255,0.9);line-height:1.8;font-weight:300;margin-bottom:4px;}
+.scenario-question{font-size:14px;color:var(--purple-light);font-weight:500;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06);}
 
 /* CHOICES */
 .choices-list{display:flex;flex-direction:column;gap:8px;margin-bottom:0;}
-.choice-btn{padding:13px 16px;border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);cursor:pointer;font-size:14px;color:rgba(255,255,255,0.75);background:rgba(255,255,255,0.04);text-align:left;line-height:1.5;font-family:'DM Sans',sans-serif;transition:all 0.15s;font-weight:300;display:flex;align-items:center;gap:10px;}
+.choice-btn{padding:13px 16px;border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);cursor:pointer;font-size:14px;color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.03);text-align:left;line-height:1.5;font-family:'DM Sans',sans-serif;transition:all 0.15s;font-weight:300;display:flex;align-items:flex-start;gap:10px;}
 .choice-btn:hover:not(:disabled){border-color:var(--purple-light);background:rgba(124,58,237,0.1);color:var(--white);transform:translateX(4px);}
-.choice-letter{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;color:rgba(255,255,255,0.5);}
+.choice-letter{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;color:rgba(255,255,255,0.4);margin-top:1px;}
 .choice-btn.selected-good{border-color:var(--green);background:rgba(5,150,105,0.1);color:#6ee7b7;}
-.choice-btn.selected-good .choice-letter{background:var(--green);color:var(--white);}
+.choice-btn.selected-good .choice-letter{background:var(--green);color:#fff;}
 .choice-btn.selected-bad{border-color:var(--red);background:rgba(220,38,38,0.1);color:#fca5a5;}
-.choice-btn.selected-bad .choice-letter{background:var(--red);color:var(--white);}
-.choice-btn.dimmed{opacity:0.25;}
-
-/* RANDOM EVENT */
-.random-event-card{background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(217,119,6,0.1));border:1px solid rgba(245,158,11,0.3);border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:12px;display:none;animation:slideIn 0.4s ease;}
-@keyframes slideIn{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
-.event-header{font-size:12px;font-weight:600;color:#fcd34d;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;}
-.event-text{font-size:14px;color:rgba(255,255,255,0.8);line-height:1.6;}
-.event-impact{font-size:14px;font-weight:500;margin-top:8px;}
+.choice-btn.selected-bad .choice-letter{background:var(--red);color:#fff;}
+.choice-btn.dimmed{opacity:0.2;}
 
 /* FEEDBACK */
 #feedback-card{display:none;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:12px;animation:slideIn 0.3s ease;}
-.feedback-result{padding:14px 18px;background:rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.06);}
-.feedback-text{font-size:14px;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:6px;font-weight:300;}
+.fb-result{padding:14px 18px;background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.05);}
+.fb-text{font-size:14px;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:6px;font-weight:300;}
 .wealth-delta{font-size:15px;font-weight:500;}
 .wealth-delta.pos{color:#6ee7b7;}
 .wealth-delta.neg{color:#fca5a5;}
-.wealth-delta.neu{color:rgba(255,255,255,0.3);}
-.ai-coach{padding:14px 18px;background:rgba(37,99,235,0.1);border-bottom:1px solid rgba(37,99,235,0.2);}
-.ai-coach-hdr{font-size:11px;font-weight:600;color:#93c5fd;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
-.ai-coach-hdr::before{content:'🤖';}
-#ai-feedback-text{font-size:14px;color:rgba(255,255,255,0.8);line-height:1.75;font-weight:300;}
-.ai-typing{color:rgba(255,255,255,0.3);font-style:italic;font-size:13px;}
-.continue-btn{display:block;width:100%;padding:13px;background:linear-gradient(135deg,var(--purple),var(--purple-dark));color:#fff;border:none;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity 0.2s;}
+.wealth-delta.neu{color:rgba(255,255,255,0.25);}
+.ai-panel{padding:14px 18px;background:rgba(37,99,235,0.08);border-bottom:1px solid rgba(37,99,235,0.15);}
+.ai-panel-hdr{font-size:11px;font-weight:600;color:#93c5fd;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.ai-panel-hdr::before{content:'🤖';}
+#ai-feedback-text{font-size:14px;color:rgba(255,255,255,0.8);line-height:1.8;font-weight:300;}
+.ai-typing{color:rgba(255,255,255,0.25);font-style:italic;font-size:13px;}
+.continue-btn{display:block;width:100%;padding:13px;background:linear-gradient(135deg,var(--purple),var(--purple-dark));color:#fff;border:none;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;}
 .continue-btn:hover{opacity:0.9;}
 
-/* LEADERBOARD */
-.leaderboard-panel{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;}
-.lb-header{font-size:11px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;}
-.lb-row{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px;}
-.lb-rank{width:20px;color:rgba(255,255,255,0.3);font-size:11px;}
-.lb-name{flex:1;color:rgba(255,255,255,0.6);}
-.lb-score{color:var(--purple-light);font-weight:500;}
-.lb-you{color:var(--white) !important;font-weight:500;}
-
-/* END SCREEN */
+/* END */
 #end-screen{display:none;}
-.end-hero{text-align:center;padding:32px 0 20px;}
-.end-trophy{font-size:64px;margin-bottom:12px;animation:bounce 1s ease;}
-@keyframes bounce{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
-.end-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--white);margin-bottom:4px;letter-spacing:-1px;}
+.end-hero{text-align:center;padding:28px 0 16px;}
+.end-trophy{font-size:64px;margin-bottom:10px;animation:bounce 0.8s ease;}
+@keyframes bounce{0%{transform:scale(0.5);}70%{transform:scale(1.15);}100%{transform:scale(1);}}
+.end-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--white);margin-bottom:4px;letter-spacing:-0.5px;}
 .end-wealth{font-family:'Syne',sans-serif;font-size:52px;font-weight:800;letter-spacing:-3px;margin:8px 0;}
 .end-wealth.rich{color:#6ee7b7;}
 .end-wealth.ok{color:var(--purple-light);}
 .end-wealth.poor{color:#fca5a5;}
-.end-rating{font-size:14px;color:rgba(255,255,255,0.4);margin-bottom:4px;}
+.end-rating{font-size:14px;color:rgba(255,255,255,0.35);margin-bottom:4px;}
 .end-percentile{font-size:13px;color:var(--purple-light);font-weight:500;}
-
-.decisions-timeline{margin:16px 0;}
-.timeline-title{font-size:11px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;}
-.timeline-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
-.timeline-age{font-size:11px;color:rgba(255,255,255,0.3);width:40px;flex-shrink:0;}
-.timeline-text{flex:1;font-size:13px;color:rgba(255,255,255,0.6);font-weight:300;}
-.timeline-result{font-size:12px;font-weight:500;}
-.timeline-result.good{color:#6ee7b7;}
-.timeline-result.bad{color:#fca5a5;}
-
-.final-ai-card{background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.2);border-radius:var(--radius-lg);padding:20px;margin:16px 0;}
-.final-ai-hdr{font-size:12px;font-weight:600;color:#93c5fd;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.lb-panel{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:var(--radius);padding:12px 16px;margin:14px 0;}
+.lb-hdr{font-size:11px;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;}
+.lb-row{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px;}
+.lb-rank{width:18px;color:rgba(255,255,255,0.25);font-size:11px;}
+.lb-name{flex:1;color:rgba(255,255,255,0.5);}
+.lb-score{color:var(--purple-light);font-weight:500;}
+.lb-you{color:var(--white)!important;font-weight:500;}
+.timeline{margin:14px 0;}
+.timeline-hdr{font-size:11px;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:10px;}
+.timeline-row{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.t-age{font-size:11px;color:rgba(255,255,255,0.25);width:40px;flex-shrink:0;padding-top:2px;}
+.t-text{flex:1;font-size:13px;color:rgba(255,255,255,0.5);font-weight:300;line-height:1.5;}
+.t-result{font-size:12px;font-weight:500;flex-shrink:0;}
+.t-result.good{color:#6ee7b7;}
+.t-result.bad{color:#fca5a5;}
+.final-ai{background:rgba(37,99,235,0.07);border:1px solid rgba(37,99,235,0.18);border-radius:var(--radius-lg);padding:18px;margin:14px 0;}
+.final-ai-hdr{font-size:12px;font-weight:600;color:#93c5fd;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
 .final-ai-hdr::before{content:'🤖';}
 #final-ai-text{font-size:14px;color:rgba(255,255,255,0.8);line-height:1.8;font-weight:300;}
-
 .share-row{display:flex;gap:8px;margin:12px 0;}
-.share-btn{flex:1;padding:10px;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.7);transition:all 0.15s;}
-.share-btn:hover{background:rgba(255,255,255,0.1);color:var(--white);}
-
-.paywall-card{background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(76,29,149,0.15));border:1.5px solid rgba(124,58,237,0.3);border-radius:var(--radius-lg);padding:24px;text-align:center;margin-top:16px;}
+.share-btn{flex:1;padding:10px;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.04);color:rgba(255,255,255,0.6);}
+.share-btn:hover{background:rgba(255,255,255,0.08);color:var(--white);}
+.paywall-card{background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(76,29,149,0.12));border:1.5px solid rgba(124,58,237,0.25);border-radius:var(--radius-lg);padding:22px;text-align:center;margin-top:14px;}
 .paywall-card h3{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--white);margin-bottom:8px;}
-.paywall-card p{font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:16px;line-height:1.6;font-weight:300;}
-.paywall-features{display:flex;flex-direction:column;gap:6px;margin-bottom:20px;text-align:left;}
-.paywall-feature{font-size:13px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:8px;}
+.paywall-card p{font-size:14px;color:rgba(255,255,255,0.45);margin-bottom:14px;line-height:1.6;font-weight:300;}
+.paywall-features{display:flex;flex-direction:column;gap:6px;margin-bottom:18px;text-align:left;}
+.paywall-feature{font-size:13px;color:rgba(255,255,255,0.45);display:flex;align-items:center;gap:8px;}
 .paywall-feature::before{content:'✦';color:var(--purple-light);font-size:10px;}
-.unlock-btn{background:linear-gradient(135deg,var(--purple),var(--purple-dark));color:#fff;border:none;padding:13px 32px;border-radius:var(--radius);font-size:16px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;display:block;width:100%;margin-bottom:10px;transition:transform 0.15s;box-shadow:0 4px 16px rgba(124,58,237,0.4);}
+.unlock-btn{background:linear-gradient(135deg,var(--purple),var(--purple-dark));color:#fff;border:none;padding:13px 32px;border-radius:var(--radius);font-size:16px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;display:block;width:100%;margin-bottom:10px;box-shadow:0 4px 16px rgba(124,58,237,0.35);transition:transform 0.15s;}
 .unlock-btn:hover{transform:translateY(-1px);}
-.replay-btn{background:transparent;color:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.1);padding:10px 24px;border-radius:var(--radius);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;}
-.replay-btn:hover{color:rgba(255,255,255,0.6);}
-
-/* ANIMATIONS */
-.money-pop{position:fixed;font-size:20px;font-weight:700;pointer-events:none;animation:moneyFloat 1.2s ease forwards;z-index:999;}
-@keyframes moneyFloat{0%{opacity:1;transform:translateY(0) scale(1);}100%{opacity:0;transform:translateY(-80px) scale(0.8);}}
-.screen-flash{position:fixed;inset:0;pointer-events:none;z-index:998;animation:flash 0.4s ease forwards;}
-@keyframes flash{0%{opacity:0.3;}100%{opacity:0;}}
-.screen-flash.green{background:rgba(5,150,105,0.2);}
-.screen-flash.red{background:rgba(220,38,38,0.2);}
-
-footer{text-align:center;padding:24px 5vw;font-size:12px;color:rgba(255,255,255,0.2);}
+.replay-btn{background:transparent;color:rgba(255,255,255,0.25);border:1px solid rgba(255,255,255,0.08);padding:10px 24px;border-radius:var(--radius);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.replay-btn:hover{color:rgba(255,255,255,0.5);}
+.money-pop{position:fixed;font-size:22px;font-weight:700;pointer-events:none;animation:moneyFloat 1.2s ease forwards;z-index:999;}
+@keyframes moneyFloat{0%{opacity:1;transform:translateY(0) scale(1);}100%{opacity:0;transform:translateY(-90px) scale(0.7);}}
+.screen-flash{position:fixed;inset:0;pointer-events:none;z-index:998;animation:flash 0.5s ease forwards;}
+@keyframes flash{0%{opacity:0.25;}100%{opacity:0;}}
+.screen-flash.green{background:rgba(5,150,105,0.25);}
+.screen-flash.red{background:rgba(220,38,38,0.25);}
+footer{text-align:center;padding:24px 5vw;font-size:12px;color:rgba(255,255,255,0.15);}
 footer a{color:var(--purple-light);text-decoration:none;}
-
-@media(max-width:480px){
-  .stats-row{grid-template-columns:repeat(3,1fr);}
-  .end-wealth{font-size:40px;}
-}
+@media(max-width:480px){.end-wealth{font-size:40px;}}
 </style>
 </head>
 <body>
-
 <nav>
   <a href="https://playai.live" class="nav-logo">Play<span>AI</span></a>
   <a href="https://playai.live" class="nav-back">← PlayAI</a>
 </nav>
-
 <div id="gc">
 
 <!-- START -->
 <div id="start-screen">
   <div class="game-logo">🌟</div>
   <h1>Life <em>Simulator</em></h1>
-  <p class="tagline">Make financial decisions from age 18.<br>Your AI coach analyses every choice in real time.</p>
-  <div class="ai-badge">🤖 Powered by Claude AI — personalised feedback on every decision</div>
+  <p class="tagline">You're 18. You have €500 and your whole life ahead.<br>Every decision you make will define your future.<br>How rich — or broke — will you be by 35?</p>
+  <div class="ai-badge">🤖 Powered by Claude AI — real coaching on every choice</div>
   <div class="features-row">
-    <span class="feat">⏱️ Time pressure decisions</span>
-    <span class="feat">📊 Live wealth chart</span>
-    <span class="feat">⚡ Random life events</span>
+    <span class="feat">⏱️ Time pressure</span>
+    <span class="feat">⚡ Plot twists</span>
+    <span class="feat">📊 Wealth tracker</span>
     <span class="feat">🏆 Leaderboard</span>
+    <span class="feat">🤖 AI coaching</span>
   </div>
-  <input id="name-input" type="text" placeholder="Enter your name..." maxlength="20"/>
+  <input id="name-input" type="text" placeholder="What's your name?" maxlength="20"/>
   <button class="start-btn" onclick="startGame()">Begin my life →</button>
   <p class="free-note">Free: Ages 18–35 · Full life to 65 for €2.99</p>
 </div>
@@ -235,57 +214,53 @@ footer a{color:var(--purple-light);text-decoration:none;}
     </div>
     <div class="stage-chapter" id="stage-chapter">1/6</div>
   </div>
-
   <div class="wealth-panel">
     <div class="wealth-header">
       <div>
-        <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:2px;text-transform:uppercase;letter-spacing:0.04em;">Your Wealth</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.25);margin-bottom:2px;text-transform:uppercase;letter-spacing:0.05em;">Your Wealth</div>
         <div class="wealth-amount" id="wealth-display">€0</div>
       </div>
-      <div id="wealth-badge" class="wealth-change-badge neutral">—</div>
+      <div id="wealth-badge" class="wealth-badge neutral">—</div>
     </div>
-    <div id="wealth-chart"><canvas id="chart-canvas" height="60"></canvas></div>
+    <canvas id="chart-canvas" height="56"></canvas>
   </div>
-
   <div class="stats-row">
     <div class="stat-box"><div class="stat-label">Age</div><div class="stat-value" id="stat-age">18</div></div>
-    <div class="stat-box"><div class="stat-label">Income/mo</div><div class="stat-value" id="stat-income">€0</div></div>
-    <div class="stat-box"><div class="stat-label">Smart moves</div><div class="stat-value" id="stat-smart">0 / 0</div></div>
+    <div class="stat-box"><div class="stat-label">Monthly Income</div><div class="stat-value" id="stat-income">€0</div></div>
+    <div class="stat-box"><div class="stat-label">Smart Moves</div><div class="stat-value" id="stat-smart">0/0</div></div>
   </div>
-
   <div class="progress-wrap">
     <div class="progress-meta"><span id="chapter-label">Chapter 1 of 6</span><span id="player-label">Your Life</span></div>
     <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
   </div>
-
-  <div id="random-event-card" class="random-event-card">
-    <div class="event-header">⚡ Life Event!</div>
-    <div class="event-text" id="event-text"></div>
+  <div id="event-card" class="event-card">
+    <div class="event-hdr" id="event-hdr">⚡ Life Event!</div>
+    <div class="event-body" id="event-body"></div>
     <div class="event-impact" id="event-impact"></div>
   </div>
-
   <div class="timer-wrap" id="timer-wrap">
     <div class="timer-bar"><div class="timer-fill green" id="timer-fill"></div></div>
-    <div class="timer-label" id="timer-label">15</div>
+    <div class="timer-label" id="timer-label">20</div>
   </div>
-
   <div class="scenario-card">
-    <div class="scenario-event-badge normal" id="scenario-badge">📍 Decision Time</div>
-    <div id="scenario-text">Loading...</div>
+    <div class="scenario-meta">
+      <div class="scenario-badge milestone" id="scenario-badge">📍 Decision</div>
+      <div class="scenario-setting" id="scenario-setting"></div>
+    </div>
+    <div class="scenario-narrative" id="scenario-narrative"></div>
+    <div class="scenario-question" id="scenario-question"></div>
   </div>
-
   <div class="choices-list" id="choices-list"></div>
-
   <div id="feedback-card">
-    <div class="feedback-result">
-      <div class="feedback-text" id="result-text"></div>
+    <div class="fb-result">
+      <div class="fb-text" id="fb-text"></div>
       <div class="wealth-delta" id="wealth-delta"></div>
     </div>
-    <div class="ai-coach">
-      <div class="ai-coach-hdr">AI Coach Analysis</div>
+    <div class="ai-panel">
+      <div class="ai-panel-hdr">AI Coach</div>
       <div id="ai-feedback-text"><span class="ai-typing">Analysing your decision...</span></div>
     </div>
-    <button class="continue-btn" onclick="nextScenario()">Continue my life →</button>
+    <button class="continue-btn" onclick="nextScenario()">Continue my story →</button>
   </div>
 </div>
 
@@ -298,35 +273,30 @@ footer a{color:var(--purple-light);text-decoration:none;}
     <div class="end-rating" id="end-rating"></div>
     <div class="end-percentile" id="end-percentile"></div>
   </div>
-
-  <div class="leaderboard-panel" id="leaderboard-panel">
-    <div class="lb-header">🏆 Top Players This Week</div>
-    <div id="leaderboard-rows"></div>
+  <div class="lb-panel">
+    <div class="lb-hdr">🏆 This Week's Top Players</div>
+    <div id="lb-rows"></div>
   </div>
-
-  <div class="decisions-timeline">
-    <div class="timeline-title">Your Life Decisions</div>
+  <div class="timeline">
+    <div class="timeline-hdr">Your Life Story</div>
     <div id="timeline-rows"></div>
   </div>
-
-  <div class="final-ai-card">
-    <div class="final-ai-hdr">Your Personalised Financial Analysis</div>
+  <div class="final-ai">
+    <div class="final-ai-hdr">Your Personal Financial Analysis</div>
     <div id="final-ai-text"><span class="ai-typing">Preparing your life analysis...</span></div>
   </div>
-
   <div class="share-row">
-    <button class="share-btn" onclick="shareResult()">📤 Share my result</button>
+    <button class="share-btn" onclick="shareResult()">📤 Share result</button>
     <button class="share-btn" onclick="copyResult()">📋 Copy score</button>
   </div>
-
   <div class="paywall-card">
-    <h3>🚀 Continue to Age 65</h3>
-    <p>Your free journey ends at 35. Unlock the full game — buy a house, build a business, survive a recession, and retire wealthy.</p>
+    <h3>🚀 Your story doesn't end at 35</h3>
+    <p>Unlock the full game and live from 35 to retirement. Buy a house, build a company, survive a financial crisis, and find out if you can retire a millionaire.</p>
     <div class="paywall-features">
-      <div class="paywall-feature">Ages 35–65 with 12 more decisions</div>
+      <div class="paywall-feature">12 more dramatic life decisions (ages 35–65)</div>
+      <div class="paywall-feature">Real estate crash · Startup failure · Divorce · Inheritance</div>
       <div class="paywall-feature">AI coaching on every single choice</div>
-      <div class="paywall-feature">Buy property · Build a business · Retire</div>
-      <div class="paywall-feature">Real stock market crash scenarios</div>
+      <div class="paywall-feature">Retirement wealth calculation</div>
       <div class="paywall-feature">Unlimited replays · Global leaderboard</div>
     </div>
     <button class="unlock-btn" onclick="unlockGame()">Unlock full life — €2.99 →</button>
@@ -334,138 +304,138 @@ footer a{color:var(--purple-light);text-decoration:none;}
     <button class="replay-btn" onclick="restartGame()">Play free version again</button>
   </div>
 </div>
-
 </div>
-
-<footer>
-  <a href="https://playai.live">PlayAI</a> · <a href="https://centai.org">CentAI Finance Advisor</a> · <a href="mailto:mroussis@icloud.com">Contact</a>
-</footer>
+<footer><a href="https://playai.live">PlayAI</a> · <a href="https://centai.org">CentAI Finance Advisor</a> · <a href="mailto:mroussis@icloud.com">Contact</a></footer>
 
 <script>
 // ============================================
-// CONFIG — easy to change
+// CONFIG
 // ============================================
-const CONFIG = {
-  FREE_CHAPTERS: 6,
-  TIMER_SECONDS: 20,
-  PAYWALL_PRICE: '€2.99',
-  PAYWALL_URL: 'https://playai.live/#pricing',
-  API_MODEL: 'claude-sonnet-4-20250514',
-  MAX_TOKENS: 1000,
-};
+const CONFIG={FREE_CHAPTERS:6,TIMER_SECONDS:20,PAYWALL_URL:'https://playai.live/#pricing',API_MODEL:'claude-sonnet-4-20250514',MAX_TOKENS:1000};
 
 // ============================================
 // LIFE STAGES
 // ============================================
-const STAGES = [
-  {avatar:'👶', name:'Starting Out', desc:'Age 18 — Your journey begins'},
-  {avatar:'🎓', name:'Finding Your Way', desc:'Age 22 — Building foundations'},
-  {avatar:'💼', name:'Early Career', desc:'Age 25 — First real money'},
-  {avatar:'🚀', name:'Growing Up', desc:'Age 28 — Bigger decisions'},
-  {avatar:'⚡', name:'Pivotal Years', desc:'Age 30 — Life-changing choices'},
-  {avatar:'🏠', name:'Settling Down', desc:'Age 33 — Building a future'},
+const STAGES=[
+  {avatar:'👶',name:'Just Starting Out',desc:'Age 18 — The world is yours'},
+  {avatar:'🧑',name:'Finding Your Feet',desc:'Age 22 — First real decisions'},
+  {avatar:'💼',name:'Early Hustle',desc:'Age 25 — Money starts to matter'},
+  {avatar:'😤',name:'The Pressure Years',desc:'Age 28 — Life gets complicated'},
+  {avatar:'⚡',name:'Make or Break',desc:'Age 30 — Pivotal moment'},
+  {avatar:'🏠',name:'Building a Future',desc:'Age 33 — What have you built?'},
 ];
 
 // ============================================
-// RANDOM LIFE EVENTS — fire between chapters
+// DRAMATIC SCENARIOS — cinematic storytelling
 // ============================================
-const RANDOM_EVENTS = [
-  {text:"Your car broke down unexpectedly. Repair costs €800.", impact:-800, emoji:'🚗', type:'crisis'},
-  {text:"You received an unexpected tax refund!", impact:600, emoji:'💸', type:'lucky'},
-  {text:"Your landlord raised rent by €200/month.", impact:-2400, emoji:'🏠', type:'crisis'},
-  {text:"A friend paid back an old debt of €500!", impact:500, emoji:'🤝', type:'lucky'},
-  {text:"Medical expenses not covered by insurance: €1,200.", impact:-1200, emoji:'🏥', type:'crisis'},
-  {text:"Your investment account gained 12% this year!", impact:0, isBonus:true, emoji:'📈', type:'lucky'},
-  {text:"You got a surprise €1,000 bonus at work!", impact:1000, emoji:'🎉', type:'lucky'},
-  {text:"Your phone and laptop both died. Replacement cost: €900.", impact:-900, emoji:'💻', type:'crisis'},
+const SCENARIOS=[
+  {
+    age:18,
+    badge:'🎓 Life Choice',badgeType:'milestone',
+    setting:'September. Your bedroom. 11pm.',
+    narrative:"You just got your final school results. Not bad. Your €500 savings sit in a bank account your mum opened when you were 10. Three paths are in front of you. Your friends are splitting up — some going to uni, some going straight to work, one already trying to build something online. This is the first real decision of your adult life.",
+    question:"What do you do?",
+    choices:[
+      {text:"Go travelling for a year — you need to find yourself first.",good:false,feedback:"You return broke, behind, and slightly embarrassed. Your peers have a year's head start on you.",wealthChange:-500,incomeChange:0},
+      {text:"Start a business degree. Take a student loan.",good:true,feedback:"Hard 3 years but your earning power doubles. The loan stings — but it's an investment.",wealthChange:-200,incomeChange:500},
+      {text:"Skip uni. Get a job, any job. Start earning and saving NOW.",good:true,feedback:"You're behind on paper but ahead in savings and real-world experience. It compounds.",wealthChange:200,incomeChange:1200},
+      {text:"Build an online business from your bedroom. Go all in.",good:true,feedback:"Risky but smart. You fail twice and succeed once. That success pays for everything.",wealthChange:100,incomeChange:800},
+    ]
+  },
+  {
+    age:22,
+    badge:'💀 Temptation',badgeType:'drama',
+    setting:'Friday night. Your flat. After your first real paycheck.',
+    narrative:"You've been working for 6 months. Earning €1,500 a month. You finally feel like an adult. Your bank sends you a letter — you've been pre-approved for a credit card with a €5,000 limit. Your friends are going on a weekend in Ibiza. Your rent is covered. You have €2,000 saved. The card is sitting there, shiny, waiting.",
+    question:"What do you do with the credit card?",
+    choices:[
+      {text:"Activate it. Book Ibiza. You've earned this.",good:false,feedback:"The hangover lasts longer than the holiday. €2,000 of credit card debt at 20% APR follows you for 3 years.",wealthChange:-1500,incomeChange:-200},
+      {text:"Activate it. Keep it for genuine emergencies. Pay it off monthly.",good:true,feedback:"Perfect discipline. You're building a credit score that will save you thousands on your mortgage later.",wealthChange:0,incomeChange:0},
+      {text:"Shred the letter. You don't trust yourself.",good:false,feedback:"Honest but costly. No credit history makes banks nervous. Getting a mortgage later is much harder.",wealthChange:0,incomeChange:-100},
+      {text:"Activate it. Use 10% of the limit. Pay it off every single month.",good:true,feedback:"Textbook smart. A growing credit score with zero interest paid. Future you sends thanks.",wealthChange:200,incomeChange:0},
+    ]
+  },
+  {
+    age:25,
+    badge:'💰 The Bonus',badgeType:'opportunity',
+    setting:'Monday morning. Your manager\'s office.',
+    narrative:"You did well. Really well. Your manager slides an envelope across the desk — a €3,000 performance bonus. Your first ever. Outside, your phone is buzzing with WhatsApp messages. Your group is planning a week in Tulum, Mexico. €1,800 for the whole trip. Your rent is fine. You have €4,000 already saved. This bonus feels like freedom.",
+    question:"What do you do with the €3,000?",
+    choices:[
+      {text:"Book Tulum. Life is short. You'll save next month.",good:false,feedback:"Great photos. But €3,000 invested at 25 at 7% annual return would be worth €32,000 by retirement. That's the real cost of the trip.",wealthChange:-3000,incomeChange:0},
+      {text:"Put it all in a savings account. Safe is safe.",good:false,feedback:"Inflation runs at 3%. Your savings account pays 1.5%. You're technically losing purchasing power every month.",wealthChange:3000,incomeChange:20},
+      {text:"Invest €2,500 in a global index fund. Keep €500 for fun.",good:true,feedback:"This is how wealth is built. Not one big move — a hundred small smart ones. This €2,500 will likely be worth €18,000+ in 20 years.",wealthChange:2500,incomeChange:150},
+      {text:"Put it toward a rental property deposit.",good:true,feedback:"Bold at 25. Property is one of the most proven wealth-building tools — especially if you can generate rental income.",wealthChange:3000,incomeChange:400},
+    ]
+  },
+  {
+    age:28,
+    badge:'😰 The Phone Call',badgeType:'drama',
+    setting:'Tuesday. 11:47pm. You\'re already in bed.',
+    narrative:"Your phone rings. It's Marco — your best friend since school. His voice sounds strange. He's been building a restaurant for two years. It opens in 3 weeks. But the last supplier just pulled out and he's €5,000 short. Without it, the whole thing collapses. He's not asking for a favour — he's begging. You have €8,000 saved. This is your emergency fund. Your rent buffer. Your security. And Marco is crying.",
+    question:"What do you do?",
+    choices:[
+      {text:"Transfer the €5,000 tonight. He's your best friend.",good:false,feedback:"The restaurant fails 4 months after opening. The €5,000 is gone. So is some of the friendship.",wealthChange:-5000,incomeChange:0},
+      {text:"Send €500 — enough to show you care but protect your future.",good:true,feedback:"You support him without destroying yourself. He's grateful. You kept your security intact.",wealthChange:-500,incomeChange:0},
+      {text:"Tell him no. Your savings are your safety net.",good:true,feedback:"Hard but right. A financial advisor would tell you never to touch your emergency fund. Marco understands eventually.",wealthChange:0,incomeChange:0},
+      {text:"Offer the money as a loan with a written agreement.",good:false,feedback:"Loans to friends rarely survive. The agreement sits unsigned. The friendship becomes awkward. The money disappears.",wealthChange:-5000,incomeChange:0},
+    ]
+  },
+  {
+    age:30,
+    badge:'🚀 The Offer',badgeType:'twist',
+    setting:'Thursday afternoon. A coffee shop near your office.',
+    narrative:"Sofia slides a contract across the table. She's founding a tech startup and wants you as employee number 3. The catch: your salary drops from €2,500 to €1,800 a month. But you'd get 2% equity. The company has a real shot — she's raised seed funding, there are 3 paying customers already. But you have a mortgage application in progress, a partner, and a comfortable life. Risk or security?",
+    question:"What do you do?",
+    choices:[
+      {text:"Stay at your job. Stability is everything right now.",good:false,feedback:"2 years later, Sofia's startup is acquired for €9 million. Your 2% would have been worth €180,000. You get a 3% pay rise instead.",wealthChange:0,incomeChange:0},
+      {text:"Take the leap. Join Sofia.",good:true,feedback:"18 months of stress. Then the acquisition offer. Your €180,000 in equity changes everything. You calculated the risk correctly.",wealthChange:180000,incomeChange:-700},
+      {text:"Negotiate. Ask your employer for a raise before deciding.",good:true,feedback:"Smart. You get €2,800/month, a promotion, and avoid the startup risk. Solid, steady, smart.",wealthChange:0,incomeChange:300},
+      {text:"Counter-offer Sofia — you'll join for 4% equity or nothing.",good:false,feedback:"She says no. Another candidate takes your spot for 2%. You watch from the outside as they all get rich.",wealthChange:0,incomeChange:0},
+    ]
+  },
+  {
+    age:33,
+    badge:'🏠 The House',badgeType:'milestone',
+    setting:'Sunday morning. Kitchen table. Laptop open. Coffee cold.',
+    narrative:"You've been renting for 15 years between you and your partner. You have €25,000 saved. The property market has been weird — up 8% last year, analysts are divided on what comes next. Your landlord just said he might be selling the flat. You either buy now, wait, or pivot your strategy entirely. This is the biggest financial decision of your life so far.",
+    question:"What do you decide?",
+    choices:[
+      {text:"Buy now. Stop throwing money away on rent.",good:true,feedback:"Property ownership is wealth accumulation. Your home rises 40% in the next decade. Every mortgage payment builds equity — rent payments build nothing.",wealthChange:25000,incomeChange:-800},
+      {text:"Wait 2 more years. Save a bigger deposit for a better property.",good:true,feedback:"Patience pays. You save an extra €18,000, qualify for a better rate, and buy exactly what you want.",wealthChange:20000,incomeChange:0},
+      {text:"Don't buy. Invest the €25,000 in global stocks and keep renting.",good:true,feedback:"Contrarian but valid. Your €25,000 in an index fund at 7% becomes €67,000 in 10 years. The flexibility of renting has real value.",wealthChange:25000,incomeChange:300},
+      {text:"Buy the biggest house you can afford. Max the mortgage.",good:false,feedback:"When rates rise 2% two years later, your monthly payments jump €600. You have no buffer. Everything feels tight all the time.",wealthChange:25000,incomeChange:-1500},
+    ]
+  },
 ];
 
 // ============================================
-// SCENARIOS
+// RANDOM EVENTS — dramatic life curveballs
 // ============================================
-const SCENARIOS = [
-  {
-    age:18, badge:'🎓 Education Decision',
-    text:"You just finished school with €500 saved. Your friends are travelling for a year. What do you do?",
-    choices:[
-      {text:"Go travelling — you only live once!", good:false, feedback:"Fun, but you return with €0 and 12 months behind peers.", wealthChange:-500, incomeChange:0},
-      {text:"Start university — business degree.", good:true, feedback:"Education doubles your long-term earning potential.", wealthChange:-200, incomeChange:500},
-      {text:"Get a job and start saving immediately.", good:true, feedback:"Practical! Work experience and savings from day one.", wealthChange:200, incomeChange:1200},
-      {text:"Launch a small online business from home.", good:true, feedback:"Entrepreneurial! You develop valuable skills early.", wealthChange:100, incomeChange:800},
-    ]
-  },
-  {
-    age:22, badge:'💳 Credit Decision',
-    text:"Earning €1,500/month with €2,000 saved. Bank offers a credit card with €5,000 limit. What do you do?",
-    choices:[
-      {text:"Get the card and enjoy life — you deserve it!", good:false, feedback:"20% APR credit card debt will cost you thousands.", wealthChange:-1500, incomeChange:-200},
-      {text:"Get it for emergencies only, pay off monthly.", good:true, feedback:"Perfect! Building credit history while avoiding interest.", wealthChange:0, incomeChange:0},
-      {text:"Decline — you don't trust yourself.", good:false, feedback:"No credit history makes mortgages harder later.", wealthChange:0, incomeChange:-100},
-      {text:"Get it, use 10%, pay off monthly.", good:true, feedback:"Excellent! Building great credit with discipline.", wealthChange:200, incomeChange:0},
-    ]
-  },
-  {
-    age:25, badge:'💰 Investment Decision',
-    text:"You receive a €3,000 work bonus. Friends suggest a luxury holiday. What do you do?",
-    choices:[
-      {text:"Book a luxury holiday — earned it!", good:false, feedback:"€3,000 invested at 25 becomes €32,000 by retirement.", wealthChange:-3000, incomeChange:0},
-      {text:"Put it in savings at 2% interest.", good:false, feedback:"Inflation at 3% means you're losing real value.", wealthChange:3000, incomeChange:20},
-      {text:"Invest €2,500 in index funds, keep €500.", good:true, feedback:"Smart! Index funds return 7-10% annually long term.", wealthChange:2500, incomeChange:150},
-      {text:"Use it as a deposit for a rental property.", good:true, feedback:"Ambitious! Property builds equity and passive income.", wealthChange:3000, incomeChange:400},
-    ]
-  },
-  {
-    age:28, badge:'🤝 Friendship & Money',
-    text:"You have €8,000 saved. A friend wants €5,000 for his restaurant startup, promising 50% return. What do you do?",
-    choices:[
-      {text:"Invest the full €5,000 — he's your best friend!", good:false, feedback:"90% of restaurants fail in year one. Gone.", wealthChange:-5000, incomeChange:0},
-      {text:"Invest a small €500 — show support.", good:true, feedback:"Smart! Never invest more than you can afford to lose.", wealthChange:-500, incomeChange:0},
-      {text:"Decline politely — your own goals first.", good:true, feedback:"Wise. €8,000 stays safe and keeps compounding.", wealthChange:0, incomeChange:0},
-      {text:"Lend it interest-free — not an investment.", good:false, feedback:"Money lent to friends rarely returns. Friendship strained.", wealthChange:-5000, incomeChange:0},
-    ]
-  },
-  {
-    age:30, badge:'💼 Career Crossroads',
-    text:"Stay in your stable job (€2,500/month) or join a startup (€1,800/month + stock options)?",
-    choices:[
-      {text:"Stay — security and salary matter most.", good:false, feedback:"Safe. But the startup was acquired for €50M. Your options: €200K.", wealthChange:0, incomeChange:0},
-      {text:"Join the startup — equity is worth the risk.", good:true, feedback:"Bold! Startup acquired. Your stock options worth €180,000.", wealthChange:180000, incomeChange:-700},
-      {text:"Negotiate a raise at current job first.", good:true, feedback:"Smart! You get €2,800/month and stay stable.", wealthChange:0, incomeChange:300},
-      {text:"Start your own business instead.", good:true, feedback:"Entrepreneurial! 2 years to profit but entirely yours.", wealthChange:-10000, incomeChange:2000},
-    ]
-  },
-  {
-    age:33, badge:'🏠 Property Decision',
-    text:"You have €25,000 saved. The market is uncertain. Your partner wants to buy a house. What do you decide?",
-    choices:[
-      {text:"Buy now — renting is wasted money!", good:true, feedback:"Property builds equity. Your home rises 40% in 10 years.", wealthChange:25000, incomeChange:-800},
-      {text:"Wait 2 years, save a bigger deposit.", good:true, feedback:"Patient! Save €20K more, get a better mortgage rate.", wealthChange:20000, incomeChange:0},
-      {text:"Keep renting, invest €25K in stocks.", good:true, feedback:"Valid! €25K grows to €67K in 10 years at 7%.", wealthChange:25000, incomeChange:300},
-      {text:"Max mortgage, use all savings.", good:false, feedback:"Over-leveraged. Rising rates make payments unmanageable.", wealthChange:25000, incomeChange:-1500},
-    ]
-  },
+const RANDOM_EVENTS=[
+  {hdr:'💔 Relationship breakdown',body:"You and your partner split after 2 years. Legal costs and moving expenses hit hard.",impact:-2200,type:'crisis'},
+  {hdr:'🎁 Inheritance',body:"Your grandmother passes away. She leaves you something unexpected.",impact:4000,type:'lucky'},
+  {hdr:'🏥 Medical emergency',body:"An injury means 6 weeks off work. Your sick pay doesn't fully cover it.",impact:-1800,type:'crisis'},
+  {hdr:'📈 Investment windfall',body:"One of your small investments just returned 40%. Not life-changing — but not bad.",impact:0,isBonus:true,type:'lucky'},
+  {hdr:'🔥 Redundancy',body:"Your company downsizes. You're given a package but lose 3 months of income.",impact:-3500,type:'crisis'},
+  {hdr:'🎉 Surprise bonus',body:"Your company has its best year ever. Everyone gets an extra bonus.",impact:1500,type:'lucky'},
+  {hdr:'🚗 Car crash',body:"Not your fault — but your insurance excess and a rental car cost more than expected.",impact:-900,type:'crisis'},
+  {hdr:'💻 Freelance windfall',body:"A side project you almost forgot about just paid out. Unexpected €800.",impact:800,type:'lucky'},
 ];
 
-// ============================================
-// FAKE LEADERBOARD DATA
-// ============================================
-const LEADERBOARD = [
-  {name:'Alexandra M.', wealth:247000},
-  {name:'Carlos R.', wealth:198000},
-  {name:'Priya K.', wealth:156000},
-  {name:'David L.', wealth:134000},
-  {name:'Fatima A.', wealth:89000},
+// LEADERBOARD (fake but realistic)
+const LEADERBOARD=[
+  {name:'Alexandra M.',wealth:247000},
+  {name:'Carlos R.',wealth:198000},
+  {name:'Priya K.',wealth:156000},
+  {name:'David L.',wealth:134000},
+  {name:'Fatima A.',wealth:89000},
 ];
 
 // ============================================
 // STATE
 // ============================================
-let state = {
-  playerName:'', wealth:0, income:0,
-  smartMoves:0, totalDecisions:0,
-  currentChapter:0, decisions:[], allDecisions:[],
-  wealthHistory:[0], timer:null, timeLeft:0,
-};
+let state={playerName:'',wealth:0,income:0,smartMoves:0,totalDecisions:0,currentChapter:0,decisions:[],allDecisions:[],wealthHistory:[0],timer:null,timeLeft:0};
 
 // ============================================
 // UTILS
@@ -476,55 +446,38 @@ function fmt(n){
   if(n>=1000) return '€'+(n/1000).toFixed(0)+'K';
   return '€'+Math.round(n).toLocaleString();
 }
-
-function flash(type){
-  const el=document.createElement('div');
-  el.className='screen-flash '+type;
-  document.body.appendChild(el);
-  setTimeout(()=>el.remove(),500);
-}
-
-function popMoney(amount, good){
+function flash(type){const el=document.createElement('div');el.className='screen-flash '+type;document.body.appendChild(el);setTimeout(()=>el.remove(),600);}
+function popMoney(amount,good){
   const el=document.createElement('div');
   el.className='money-pop';
   el.textContent=(good?'+':'')+fmt(Math.abs(amount));
   el.style.color=good?'#6ee7b7':'#fca5a5';
-  el.style.left=(window.innerWidth/2-40)+'px';
-  el.style.top='200px';
+  el.style.left=(window.innerWidth/2-30)+'px';
+  el.style.top='180px';
   document.body.appendChild(el);
   setTimeout(()=>el.remove(),1200);
 }
-
 function drawChart(){
   const canvas=document.getElementById('chart-canvas');
-  if(!canvas) return;
+  if(!canvas||!canvas.getContext) return;
   const ctx=canvas.getContext('2d');
-  const w=canvas.offsetWidth;
-  const h=60;
-  canvas.width=w;
-  canvas.height=h;
+  const w=canvas.offsetWidth||320;
+  const h=56;
+  canvas.width=w;canvas.height=h;
   ctx.clearRect(0,0,w,h);
   const data=state.wealthHistory;
   if(data.length<2) return;
   const max=Math.max(...data,1);
   const min=Math.min(...data,0);
   const range=max-min||1;
-  const pts=data.map((v,i)=>({
-    x:(i/(data.length-1))*w,
-    y:h-((v-min)/range)*(h-10)-5
-  }));
+  const pts=data.map((v,i)=>({x:(i/(data.length-1))*w,y:h-((v-min)/range)*(h-12)-4}));
   ctx.beginPath();
   ctx.moveTo(pts[0].x,pts[0].y);
   for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x,pts[i].y);
-  ctx.strokeStyle='rgba(167,139,250,0.8)';
-  ctx.lineWidth=2;
-  ctx.stroke();
-  ctx.lineTo(pts[pts.length-1].x,h);
-  ctx.lineTo(0,h);
-  ctx.fillStyle='rgba(124,58,237,0.1)';
-  ctx.fill();
+  ctx.strokeStyle='rgba(167,139,250,0.9)';ctx.lineWidth=2;ctx.stroke();
+  ctx.lineTo(pts[pts.length-1].x,h);ctx.lineTo(0,h);
+  ctx.fillStyle='rgba(124,58,237,0.08)';ctx.fill();
 }
-
 function updateStats(){
   const s=SCENARIOS[Math.min(state.currentChapter,SCENARIOS.length-1)];
   document.getElementById('wealth-display').textContent=fmt(state.wealth);
@@ -544,119 +497,95 @@ function startTimer(){
   state.timer=setInterval(()=>{
     state.timeLeft--;
     updateTimerUI();
-    if(state.timeLeft<=0){
-      clearInterval(state.timer);
-      autoSelect();
-    }
+    if(state.timeLeft<=0){clearInterval(state.timer);autoSelect();}
   },1000);
 }
-
-function stopTimer(){
-  clearInterval(state.timer);
-  document.getElementById('timer-wrap').style.opacity='0.3';
-}
-
+function stopTimer(){clearInterval(state.timer);document.getElementById('timer-wrap').style.opacity='0.3';}
 function updateTimerUI(){
   const pct=(state.timeLeft/CONFIG.TIMER_SECONDS)*100;
   const fill=document.getElementById('timer-fill');
-  const label=document.getElementById('timer-label');
+  const lbl=document.getElementById('timer-label');
   fill.style.width=pct+'%';
-  if(state.timeLeft>10){fill.className='timer-fill green';}
-  else if(state.timeLeft>5){fill.className='timer-fill amber';}
-  else{fill.className='timer-fill red';}
-  label.textContent=state.timeLeft;
-  label.className=state.timeLeft<=5?'timer-label urgent':'timer-label';
+  fill.className='timer-fill '+(state.timeLeft>10?'green':state.timeLeft>5?'amber':'red');
+  lbl.textContent=state.timeLeft;
+  lbl.className=state.timeLeft<=5?'timer-label urgent':'timer-label';
 }
-
 function autoSelect(){
   const btns=document.querySelectorAll('.choice-btn:not(:disabled)');
-  if(btns.length>0){
-    const idx=Math.floor(Math.random()*btns.length);
-    btns[idx].click();
-  }
+  if(btns.length>0) btns[Math.floor(Math.random()*btns.length)].click();
 }
 
 // ============================================
 // RANDOM EVENTS
 // ============================================
-function maybeShowRandomEvent(){
-  if(state.currentChapter===0 || Math.random()>0.5) return;
-  const event=RANDOM_EVENTS[Math.floor(Math.random()*RANDOM_EVENTS.length)];
-  const card=document.getElementById('random-event-card');
-  document.getElementById('event-text').textContent=event.emoji+' '+event.text;
-  const impactEl=document.getElementById('event-impact');
-  if(event.isBonus){
-    const bonus=Math.round(state.wealth*0.12);
-    state.wealth+=bonus;
-    state.wealthHistory.push(state.wealth);
-    impactEl.textContent='+'+fmt(bonus)+' added to your wealth!';
-    impactEl.style.color='#6ee7b7';
-    popMoney(bonus,true);
-    flash('green');
-  } else if(event.impact>0){
-    state.wealth+=event.impact;
-    state.wealthHistory.push(state.wealth);
-    impactEl.textContent='+'+fmt(event.impact)+' added to your wealth!';
-    impactEl.style.color='#6ee7b7';
-    popMoney(event.impact,true);
-    flash('green');
+function maybeShowEvent(){
+  if(state.currentChapter===0||Math.random()>0.45) return;
+  const ev=RANDOM_EVENTS[Math.floor(Math.random()*RANDOM_EVENTS.length)];
+  document.getElementById('event-hdr').textContent=ev.hdr;
+  document.getElementById('event-body').textContent=ev.body;
+  const impEl=document.getElementById('event-impact');
+  if(ev.isBonus){
+    const bonus=Math.round(state.wealth*0.12)||500;
+    state.wealth+=bonus;state.wealthHistory.push(state.wealth);
+    impEl.textContent='+'+fmt(bonus)+' added to your wealth';impEl.style.color='#6ee7b7';
+    popMoney(bonus,true);flash('green');
+  } else if(ev.impact>0){
+    state.wealth+=ev.impact;state.wealthHistory.push(state.wealth);
+    impEl.textContent='+'+fmt(ev.impact)+' added to your wealth';impEl.style.color='#6ee7b7';
+    popMoney(ev.impact,true);flash('green');
   } else {
-    state.wealth=Math.max(0,state.wealth+event.impact);
-    state.wealthHistory.push(state.wealth);
-    impactEl.textContent=fmt(event.impact)+' from your wealth';
-    impactEl.style.color='#fca5a5';
-    popMoney(event.impact,false);
-    flash('red');
+    state.wealth=Math.max(0,state.wealth+ev.impact);state.wealthHistory.push(state.wealth);
+    impEl.textContent=fmt(ev.impact)+' from your wealth';impEl.style.color='#fca5a5';
+    popMoney(ev.impact,false);flash('red');
   }
-  card.style.display='block';
+  document.getElementById('event-card').style.display='block';
   updateStats();
-  setTimeout(()=>{card.style.display='none';},4000);
+  setTimeout(()=>document.getElementById('event-card').style.display='none',5000);
 }
 
 // ============================================
 // AI
 // ============================================
-function buildCoachPrompt(scenario,choice,playerName,wealth){
-  return `You are a warm financial life coach in "Life Simulator" on PlayAI.live.
-Player: "${playerName}", Age: ${scenario.age}
-Scenario: "${scenario.text}"
-Their choice: "${choice.text}"
-This was a ${choice.good?'GOOD':'POOR'} financial decision.
+function buildCoachPrompt(s,c,name,wealth){
+  return `You are a financial life coach in "Life Simulator" — a dramatic financial simulation game on PlayAI.live.
+
+Player: "${name}", Age: ${s.age}
+The situation they faced: "${s.narrative}"
+Their choice: "${c.text}"
+Result: ${c.good?'SMART decision':'POOR decision'}
 Current wealth: ${fmt(wealth)}
 
-Give exactly 2-3 sentences:
-- Use their name once
-- If poor: what optimal choice would have been + real financial cost in numbers
-- If good: why this compounds positively + specific number projection
-- Warm, direct, no preaching`;
+Write 2-3 sentences of personalised coaching:
+- Address them by name once
+- If poor: what was the smarter move and the real-world financial cost in specific numbers
+- If smart: why this compounds over time with a specific projection (e.g. "this €X at age Y becomes €Z in 20 years")
+- Warm, direct, human — not robotic or preachy
+- Make it feel like advice from a brilliant friend who knows finance`;
 }
 
-function buildFinalPrompt(playerName,wealth,smartMoves,total,decisions){
-  const list=decisions.map(d=>`Age ${d.age}: "${d.choice}" (${d.good?'good':'poor'})`).join('\n');
-  return `Financial life coach end-of-game analysis for ${playerName}.
+function buildFinalPrompt(name,wealth,smart,total,decisions){
+  const list=decisions.map(d=>`Age ${d.age}: "${d.choice}" — ${d.good?'✓ smart':'✗ mistake'}`).join('\n');
+  return `You are a financial life coach delivering a personalised end-of-game analysis.
 
-Decisions:
+Player: ${name}
+Their decisions through life:
 ${list}
 
-Final wealth: ${fmt(wealth)}
-Smart decisions: ${smartMoves}/${total}
+Final wealth at age 35: ${fmt(wealth)}
+Smart decisions: ${smart}/${total}
 
-Write 4 sentences:
-1. Their biggest financial strength from their choices
-2. Their biggest missed opportunity with a specific number
-3. ONE specific action they should take this week in real life (e.g. "open DEGIRO and invest €200/month in VWRA")
-4. Encouraging close with their name
+Write a compelling 4-sentence personal analysis:
+1. Their single greatest financial strength — based on actual decisions they made
+2. The ONE decision that cost them the most — be specific with a number (e.g. "choosing X at age Y cost you approximately €Z in future wealth")
+3. One specific, actionable real-life step they should take THIS WEEK (be very concrete — e.g. "open a DEGIRO account and set up a €150/month auto-investment in VWRA")
+4. An inspiring close — use their name, make them want to keep improving
 
-Warm, specific, direct. No bullet points.`;
+Write like a brilliant mentor who genuinely cares. No bullet points. Direct and warm.`;
 }
 
 async function callAI(prompt){
   try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:CONFIG.API_MODEL,max_tokens:CONFIG.MAX_TOKENS,messages:[{role:'user',content:prompt}]})
-    });
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:CONFIG.API_MODEL,max_tokens:CONFIG.MAX_TOKENS,messages:[{role:'user',content:prompt}]})});
     const d=await r.json();
     return d.content?.[0]?.text||null;
   }catch(e){return null;}
@@ -667,7 +596,7 @@ async function callAI(prompt){
 // ============================================
 function startGame(){
   state.playerName=document.getElementById('name-input').value.trim()||'You';
-  state={...state,wealth:0,income:0,smartMoves:0,totalDecisions:0,currentChapter:0,decisions:[],allDecisions:[],wealthHistory:[0]};
+  state={...state,wealth:0,income:0,smartMoves:0,totalDecisions:0,currentChapter:0,decisions:[],allDecisions:[],wealthHistory:[0],timer:null,timeLeft:0};
   document.getElementById('start-screen').style.display='none';
   document.getElementById('game-screen').style.display='block';
   document.getElementById('player-label').textContent=state.playerName+"'s Life";
@@ -683,20 +612,23 @@ function renderScenario(){
   document.getElementById('stage-chapter').textContent=(state.currentChapter+1)+'/'+CONFIG.FREE_CHAPTERS;
   document.getElementById('chapter-label').textContent='Chapter '+(state.currentChapter+1)+' of '+CONFIG.FREE_CHAPTERS;
   document.getElementById('progress-fill').style.width=((state.currentChapter/CONFIG.FREE_CHAPTERS)*100)+'%';
-  document.getElementById('scenario-badge').textContent=s.badge;
-  document.getElementById('scenario-text').textContent=s.text;
+  const badge=document.getElementById('scenario-badge');
+  badge.textContent=s.badge;
+  badge.className='scenario-badge '+s.badgeType;
+  document.getElementById('scenario-setting').textContent=s.setting;
+  document.getElementById('scenario-narrative').textContent=s.narrative;
+  document.getElementById('scenario-question').textContent=s.question;
   document.getElementById('feedback-card').style.display='none';
   document.getElementById('timer-wrap').style.opacity='1';
   updateStats();
-  maybeShowRandomEvent();
-
+  maybeShowEvent();
   const list=document.getElementById('choices-list');
   list.innerHTML='';
-  const letters=['A','B','C','D'];
-  s.choices.forEach((c,i)=>{
+  ['A','B','C','D'].forEach((l,i)=>{
+    if(!s.choices[i]) return;
     const btn=document.createElement('button');
     btn.className='choice-btn';
-    btn.innerHTML=`<span class="choice-letter">${letters[i]}</span>${c.text}`;
+    btn.innerHTML=`<span class="choice-letter">${l}</span><span>${s.choices[i].text}</span>`;
     btn.onclick=()=>selectChoice(i);
     list.appendChild(btn);
   });
@@ -707,46 +639,32 @@ async function selectChoice(i){
   stopTimer();
   const s=SCENARIOS[state.currentChapter];
   const c=s.choices[i];
-  state.wealth+=c.wealthChange;
-  state.income+=c.incomeChange;
-  state.totalDecisions++;
-  if(c.good) state.smartMoves++;
+  state.wealth+=c.wealthChange;state.income+=c.incomeChange;
+  state.totalDecisions++;if(c.good) state.smartMoves++;
   if(state.wealth<0) state.wealth=0;
   state.wealthHistory.push(state.wealth);
   state.decisions.push({age:s.age,choice:c.text,good:c.good,change:c.wealthChange});
-  state.allDecisions.push({age:s.age,scenario:s.text,choice:c.text,good:c.good});
-
-  const btns=document.querySelectorAll('.choice-btn');
-  btns.forEach((b,idx)=>{
+  state.allDecisions.push({age:s.age,scenario:s.narrative.substring(0,80),choice:c.text,good:c.good});
+  document.querySelectorAll('.choice-btn').forEach((b,idx)=>{
     b.disabled=true;
     if(idx===i) b.classList.add(c.good?'selected-good':'selected-bad');
     else b.classList.add('dimmed');
   });
-
-  if(c.wealthChange!==0){
-    popMoney(c.wealthChange,c.wealthChange>0);
-    flash(c.wealthChange>0?'green':'red');
-  }
-
+  if(c.wealthChange!==0){popMoney(c.wealthChange,c.wealthChange>0);flash(c.wealthChange>0?'green':'red');}
   const badge=document.getElementById('wealth-badge');
-  if(c.wealthChange>0){badge.textContent='+'+fmt(c.wealthChange);badge.className='wealth-change-badge up';}
-  else if(c.wealthChange<0){badge.textContent=fmt(c.wealthChange);badge.className='wealth-change-badge down';}
-  else{badge.textContent='No change';badge.className='wealth-change-badge neutral';}
-
-  document.getElementById('result-text').textContent=c.feedback;
+  if(c.wealthChange>0){badge.textContent='+'+fmt(c.wealthChange);badge.className='wealth-badge up';}
+  else if(c.wealthChange<0){badge.textContent=fmt(c.wealthChange);badge.className='wealth-badge down';}
+  else{badge.textContent='No change';badge.className='wealth-badge neutral';}
+  document.getElementById('fb-text').textContent=c.feedback;
   const delta=document.getElementById('wealth-delta');
-  if(c.wealthChange>0){delta.textContent='+'+fmt(c.wealthChange)+' added to your wealth';delta.className='wealth-delta pos';}
+  if(c.wealthChange>0){delta.textContent='+'+fmt(c.wealthChange)+' to your wealth';delta.className='wealth-delta pos';}
   else if(c.wealthChange<0){delta.textContent=fmt(c.wealthChange)+' from your wealth';delta.className='wealth-delta neg';}
   else{delta.textContent='Wealth unchanged';delta.className='wealth-delta neu';}
-
   document.getElementById('ai-feedback-text').innerHTML='<span class="ai-typing">Analysing your decision...</span>';
   document.getElementById('feedback-card').style.display='block';
   updateStats();
-
-  const prompt=buildCoachPrompt(s,c,state.playerName,state.wealth);
-  const aiText=await callAI(prompt);
-  document.getElementById('ai-feedback-text').textContent=aiText||
-    `${state.playerName}, ${c.feedback} ${c.good?'This kind of thinking will compound massively over time — keep it up!':'The optimal choice here would have saved you significant money. Every financial lesson learned now is worth thousands in the future.'}`;
+  const aiText=await callAI(buildCoachPrompt(s,c,state.playerName,state.wealth));
+  document.getElementById('ai-feedback-text').textContent=aiText||`${state.playerName}, ${c.feedback} ${c.good?'This kind of thinking compounds massively over time.':'The financially optimal choice here would have been significantly better for your long-term wealth.'}`;
 }
 
 function nextScenario(){
@@ -759,62 +677,36 @@ async function showEnd(){
   clearInterval(state.timer);
   document.getElementById('game-screen').style.display='none';
   document.getElementById('end-screen').style.display='block';
-
-  const score=state.smartMoves/state.totalDecisions;
-  let trophy,title,rating,wealthClass;
-  if(score>=0.85){trophy='🏆';title='Financial Genius!';rating='🌟🌟🌟🌟🌟 Outstanding';wealthClass='rich';}
-  else if(score>=0.65){trophy='🥇';title='Smart Investor!';rating='🌟🌟🌟🌟 Great Life';wealthClass='rich';}
-  else if(score>=0.45){trophy='🥈';title='Decent Life';rating='🌟🌟🌟 Average Joe';wealthClass='ok';}
-  else{trophy='🥉';title='Room to Improve';rating='🌟🌟 Keep Learning';wealthClass='poor';}
-
+  const score=state.smartMoves/Math.max(state.totalDecisions,1);
+  let trophy,title,rating,wc;
+  if(score>=0.85){trophy='🏆';title='Financial Genius!';rating='🌟🌟🌟🌟🌟 Outstanding';wc='rich';}
+  else if(score>=0.65){trophy='🥇';title='Smart Investor!';rating='🌟🌟🌟🌟 Great Life';wc='rich';}
+  else if(score>=0.45){trophy='🥈';title='Getting There';rating='🌟🌟🌟 Average';wc='ok';}
+  else{trophy='🥉';title='Room to Grow';rating='🌟🌟 Keep Learning';wc='poor';}
   document.getElementById('end-trophy').textContent=trophy;
   document.getElementById('end-title').textContent=state.playerName+"'s Life — "+title;
   const ew=document.getElementById('end-wealth');
-  ew.textContent=fmt(state.wealth);
-  ew.className='end-wealth '+wealthClass;
+  ew.textContent=fmt(state.wealth);ew.className='end-wealth '+wc;
   document.getElementById('end-rating').textContent=rating+' · '+state.smartMoves+'/'+state.totalDecisions+' smart decisions';
-
-  const allScores=[...LEADERBOARD.map(l=>l.wealth),state.wealth].sort((a,b)=>b-a);
-  const rank=allScores.indexOf(state.wealth)+1;
-  const pct=Math.round((1-rank/allScores.length)*100);
-  document.getElementById('end-percentile').textContent='Top '+Math.max(1,100-pct)+'% of all players this week';
-
-  const lbRows=document.getElementById('leaderboard-rows');
-  const combined=[...LEADERBOARD,{name:state.playerName+' (you)',wealth:state.wealth,isYou:true}]
-    .sort((a,b)=>b.wealth-a.wealth).slice(0,6);
-  lbRows.innerHTML=combined.map((p,i)=>`
-    <div class="lb-row">
-      <span class="lb-rank">${i+1}</span>
-      <span class="lb-name ${p.isYou?'lb-you':''}">${p.name}</span>
-      <span class="lb-score">${fmt(p.wealth)}</span>
-    </div>`).join('');
-
-  document.getElementById('timeline-rows').innerHTML=state.decisions.map(d=>`
-    <div class="timeline-row">
-      <span class="timeline-age">Age ${d.age}</span>
-      <span class="timeline-text">${d.choice.substring(0,50)}${d.choice.length>50?'...':''}</span>
-      <span class="timeline-result ${d.good?'good':'bad'}">${d.good?'✓ Smart':'✗ Miss'} ${d.change!==0?(d.change>0?'+':'')+fmt(Math.abs(d.change)):''}</span>
-    </div>`).join('');
-
-  const prompt=buildFinalPrompt(state.playerName,state.wealth,state.smartMoves,state.totalDecisions,state.allDecisions);
-  const aiText=await callAI(prompt);
-  document.getElementById('final-ai-text').textContent=aiText||
-    `${state.playerName}, you showed ${score>=0.5?'real financial instincts — your willingness to invest rather than spend sets you apart from most people':'a pattern of prioritising short-term pleasure over long-term wealth building'}. Your biggest missed opportunity was in compound investing — €200/month from age 22 grows to over €500,000 by retirement at 7% annually. The single most important action you can take this week: open a DEGIRO or Trading 212 account and set up an automatic monthly investment in VWRA or VOO — even €50/month changes your financial future dramatically. You have what it takes, ${state.playerName} — now take one real step today.`;
+  const all=[...LEADERBOARD.map(l=>l.wealth),state.wealth].sort((a,b)=>b-a);
+  const rank=all.indexOf(state.wealth)+1;
+  document.getElementById('end-percentile').textContent='Ranked #'+rank+' this week';
+  const combined=[...LEADERBOARD,{name:state.playerName+' 👈 you',wealth:state.wealth,isYou:true}].sort((a,b)=>b.wealth-a.wealth).slice(0,6);
+  document.getElementById('lb-rows').innerHTML=combined.map((p,i)=>`<div class="lb-row"><span class="lb-rank">${i+1}</span><span class="lb-name ${p.isYou?'lb-you':''}">${p.name}</span><span class="lb-score">${fmt(p.wealth)}</span></div>`).join('');
+  document.getElementById('timeline-rows').innerHTML=state.decisions.map(d=>`<div class="timeline-row"><span class="t-age">Age ${d.age}</span><span class="t-text">${d.choice.substring(0,55)}${d.choice.length>55?'...':''}</span><span class="t-result ${d.good?'good':'bad'}">${d.good?'✓':'✗'} ${d.change!==0?(d.change>0?'+':'')+fmt(Math.abs(d.change)):''}</span></div>`).join('');
+  const aiText=await callAI(buildFinalPrompt(state.playerName,state.wealth,state.smartMoves,state.totalDecisions,state.allDecisions));
+  document.getElementById('final-ai-text').textContent=aiText||`${state.playerName}, you showed ${score>=0.5?'genuine financial instincts — your willingness to invest rather than spend sets you apart':'a tendency to prioritise short-term comfort over long-term wealth'}. Your biggest missed opportunity was in compound growth — €200 invested monthly from age 22 becomes over €500,000 by retirement at 7% annual return. The most important thing you can do this week: open a DEGIRO or Trading 212 account and set up a recurring monthly investment in a global index fund like VWRA — even €50/month changes your financial trajectory dramatically. You have what it takes, ${state.playerName} — the only question is whether you'll act on it.`;
 }
 
 function shareResult(){
-  const text=`I played Life Simulator on PlayAI.live and ended up with ${fmt(state.wealth)} by age 35! ${state.smartMoves}/${state.totalDecisions} smart decisions. Can you beat me? 🌟 playai.live/games/life-simulator.html`;
-  if(navigator.share){navigator.share({title:'Life Simulator',text:text,url:'https://playai.live/games/life-simulator.html'});}
-  else{navigator.clipboard.writeText(text).then(()=>alert('Result copied! Share it anywhere.'));}
+  const text=`I played Life Simulator on PlayAI.live and ended up with ${fmt(state.wealth)} by age 35! ${state.smartMoves}/${state.totalDecisions} smart decisions 🌟 Can you beat me? 👉 playai.live/games/life-simulator.html`;
+  if(navigator.share) navigator.share({title:'Life Simulator',text,url:'https://playai.live/games/life-simulator.html'});
+  else navigator.clipboard.writeText(text).then(()=>alert('Copied! Share it anywhere.'));
 }
-
 function copyResult(){
-  const text=`Life Simulator result: ${fmt(state.wealth)} by age 35 | ${state.smartMoves}/${state.totalDecisions} smart decisions | playai.live`;
-  navigator.clipboard.writeText(text).then(()=>alert('Copied to clipboard!'));
+  navigator.clipboard.writeText(`My Life Simulator result: ${fmt(state.wealth)} by age 35 | ${state.smartMoves}/${state.totalDecisions} smart decisions | playai.live`).then(()=>alert('Copied!'));
 }
-
 function unlockGame(){window.open(CONFIG.PAYWALL_URL,'_blank');}
-
 function restartGame(){
   clearInterval(state.timer);
   state={playerName:state.playerName,wealth:0,income:0,smartMoves:0,totalDecisions:0,currentChapter:0,decisions:[],allDecisions:[],wealthHistory:[0],timer:null,timeLeft:0};
@@ -822,13 +714,7 @@ function restartGame(){
   document.getElementById('game-screen').style.display='block';
   renderScenario();
 }
-
-window.startGame=startGame;
-window.nextScenario=nextScenario;
-window.unlockGame=unlockGame;
-window.restartGame=restartGame;
-window.shareResult=shareResult;
-window.copyResult=copyResult;
+window.startGame=startGame;window.nextScenario=nextScenario;window.unlockGame=unlockGame;window.restartGame=restartGame;window.shareResult=shareResult;window.copyResult=copyResult;
 </script>
 </body>
 </html>
