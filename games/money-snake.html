@@ -4,83 +4,71 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Money Snake — PlayAI</title>
-<meta name="description" content="Collect coins, avoid debt bombs, and get AI coaching on your money habits. Free to play on PlayAI!">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root{
-  --purple:#7c3aed;--purple-light:#a78bfa;--purple-dark:#4c1d95;
-  --green:#059669;--red:#dc2626;--amber:#d97706;
-  --ink:#0f172a;--white:#ffffff;
-  --radius:12px;--radius-lg:20px;
-}
+:root{--purple:#7c3aed;--purple-light:#a78bfa;--purple-dark:#4c1d95;--ink:#0f172a;--white:#ffffff;}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'DM Sans',sans-serif;background:var(--ink);color:var(--white);min-height:100vh;overflow-x:hidden;}
-nav{padding:0 5vw;height:52px;display:flex;align-items:center;justify-content:space-between;background:rgba(15,23,42,0.95);border-bottom:1px solid rgba(255,255,255,0.07);position:sticky;top:0;z-index:100;}
-.nav-logo{font-family:'Syne',sans-serif;font-size:19px;font-weight:800;color:var(--purple-light);text-decoration:none;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'DM Sans',sans-serif;background:#060a14;color:var(--white);display:flex;flex-direction:column;}
+nav{padding:0 16px;height:48px;display:flex;align-items:center;justify-content:space-between;background:rgba(15,23,42,0.98);border-bottom:1px solid rgba(255,255,255,0.07);flex-shrink:0;z-index:10;}
+.nav-logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--purple-light);text-decoration:none;}
 .nav-logo span{color:var(--white);}
-.nav-back{font-size:13px;color:rgba(255,255,255,0.35);text-decoration:none;}
-#gc{max-width:460px;margin:0 auto;padding:16px 5vw 60px;}
+.nav-back{font-size:12px;color:rgba(255,255,255,0.35);text-decoration:none;}
 
-/* HEADER */
-.game-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-.score-main{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--white);}
-.score-sub{font-size:12px;color:rgba(255,255,255,0.3);margin-top:1px;}
-.lives-row{font-size:18px;letter-spacing:2px;}
-.best-score{font-size:11px;color:rgba(255,255,255,0.3);text-align:right;}
+#game-wrapper{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:8px;overflow:hidden;}
 
-/* LEVEL BAR */
-.level-bar{margin-bottom:10px;}
-.level-meta{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:4px;}
-.level-track{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
-.level-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--purple-light));border-radius:2px;transition:width 0.3s;}
+/* TOP HUD */
+#hud{width:100%;max-width:500px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;padding:0 4px;}
+.hud-box{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:6px 12px;text-align:center;}
+.hud-val{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--white);line-height:1;}
+.hud-lbl{font-size:10px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.05em;margin-top:1px;}
+#lives-box{font-size:16px;letter-spacing:1px;}
 
 /* CANVAS */
-.canvas-wrap{position:relative;border-radius:var(--radius-lg);overflow:hidden;border:1px solid rgba(255,255,255,0.08);margin-bottom:12px;}
-#snake-canvas{display:block;background:#060a14;width:100%;max-width:420px;}
+#canvas-container{position:relative;width:100%;max-width:500px;}
+#snake-canvas{display:block;width:100%;border-radius:16px;border:2px solid rgba(124,58,237,0.3);}
 
-/* OVERLAY */
-.overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(6,10,20,0.92);padding:20px;text-align:center;}
-.overlay h2{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--white);margin-bottom:6px;letter-spacing:-0.5px;}
-.overlay p{font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:16px;line-height:1.6;font-weight:300;}
-.play-btn{background:linear-gradient(135deg,var(--purple),var(--purple-dark));color:#fff;border:none;padding:12px 32px;border-radius:var(--radius);font-size:15px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 4px 16px rgba(124,58,237,0.35);transition:transform 0.15s;}
-.play-btn:hover{transform:translateY(-1px);}
+/* LEVEL BAR */
+#level-bar-wrap{width:100%;max-width:500px;margin-top:6px;padding:0 4px;}
+.bar-meta{display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,0.25);margin-bottom:3px;}
+.bar-track{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--purple-light));border-radius:2px;transition:width 0.3s;}
 
-/* RICO COACH */
-.rico-panel{background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.2);border-radius:var(--radius-lg);padding:12px 16px;margin-bottom:12px;display:flex;align-items:flex-start;gap:10px;min-height:60px;}
-.rico-avatar{font-size:28px;flex-shrink:0;animation:wiggle 2s infinite;}
-@keyframes wiggle{0%,100%{transform:rotate(0);}25%{transform:rotate(-8deg);}75%{transform:rotate(8deg);}}
-.rico-bubble{flex:1;}
-.rico-name{font-size:10px;font-weight:600;color:#93c5fd;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;}
-.rico-text{font-size:13px;color:rgba(255,255,255,0.75);line-height:1.6;font-weight:300;}
-.rico-typing{color:rgba(255,255,255,0.25);font-style:italic;font-size:12px;}
-.rico-typing::after{content:'...';animation:dots 1s infinite;}
-@keyframes dots{0%,20%{content:'.';}40%,60%{content:'..';}80%,100%{content:'...'}}
+/* RICO */
+#rico-bar{width:100%;max-width:500px;margin-top:6px;background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.15);border-radius:12px;padding:8px 12px;display:flex;align-items:center;gap:8px;min-height:44px;}
+#rico-emoji{font-size:22px;animation:wiggle 2s infinite;flex-shrink:0;}
+@keyframes wiggle{0%,100%{transform:rotate(0);}30%{transform:rotate(-10deg);}70%{transform:rotate(10deg);}}
+#rico-text{font-size:12px;color:rgba(255,255,255,0.7);line-height:1.4;font-weight:300;}
 
 /* CONTROLS */
-.controls{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:12px;}
+#controls{width:100%;max-width:500px;margin-top:8px;display:flex;flex-direction:column;align-items:center;gap:4px;}
 .ctrl-row{display:flex;gap:4px;}
-.ctrl-btn{width:48px;height:48px;border-radius:var(--radius);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.7);transition:all 0.1s;-webkit-tap-highlight-color:transparent;}
-.ctrl-btn:active{background:rgba(124,58,237,0.2);border-color:var(--purple-light);transform:scale(0.93);}
+.ctrl-btn{width:52px;height:52px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.8);-webkit-tap-highlight-color:transparent;transition:all 0.1s;user-select:none;}
+.ctrl-btn:active{background:rgba(124,58,237,0.25);border-color:var(--purple-light);transform:scale(0.92);}
 
-/* LEGEND */
-.legend{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:12px;}
-.legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:rgba(255,255,255,0.35);background:rgba(255,255,255,0.04);padding:3px 8px;border-radius:20px;}
+/* OVERLAY */
+.overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(6,10,20,0.93);border-radius:14px;padding:20px;text-align:center;}
+.overlay-icon{font-size:56px;margin-bottom:12px;}
+.overlay-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--white);margin-bottom:6px;letter-spacing:-1px;}
+.overlay-sub{font-size:14px;color:rgba(255,255,255,0.45);margin-bottom:20px;line-height:1.6;font-weight:300;}
+.legend-pills{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:16px;}
+.pill{font-size:12px;color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.06);padding:4px 10px;border-radius:20px;}
+.play-btn{background:linear-gradient(135deg,var(--purple),var(--purple-dark));color:#fff;border:none;padding:13px 36px;border-radius:12px;font-size:16px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 4px 20px rgba(124,58,237,0.4);}
 
-/* AI ANALYSIS MODAL */
-.ai-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;align-items:center;justify-content:center;padding:20px;}
-.ai-modal-inner{background:#0f172a;border:1px solid rgba(124,58,237,0.3);border-radius:var(--radius-lg);padding:24px;max-width:400px;width:100%;}
-.ai-modal-hdr{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#93c5fd;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;}
-.ai-modal-hdr::before{content:'🤖';}
-#ai-analysis-text{font-size:14px;color:rgba(255,255,255,0.8);line-height:1.8;font-weight:300;margin-bottom:16px;}
-.modal-score{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:var(--purple-light);text-align:center;margin-bottom:4px;}
-.modal-rating{text-align:center;font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:16px;}
+/* AI MODAL */
+#ai-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:center;justify-content:center;padding:20px;}
+.modal-box{background:#0f172a;border:1px solid rgba(124,58,237,0.3);border-radius:20px;padding:24px;max-width:380px;width:100%;text-align:center;}
+.modal-score{font-family:'Syne',sans-serif;font-size:44px;font-weight:800;color:var(--purple-light);letter-spacing:-2px;}
+.modal-rating{font-size:14px;color:rgba(255,255,255,0.4);margin:4px 0 16px;}
+.modal-ai-hdr{font-size:11px;font-weight:600;color:#93c5fd;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:6px;}
+.modal-ai-hdr::before{content:'🐍';}
+#modal-ai-text{font-size:14px;color:rgba(255,255,255,0.75);line-height:1.7;margin-bottom:20px;text-align:left;font-weight:300;}
 .modal-btns{display:flex;gap:8px;}
-.modal-btn{flex:1;padding:10px;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;border:none;}
-.modal-btn.primary{background:var(--purple);color:#fff;}
-.modal-btn.secondary{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.1);}
-
-footer{text-align:center;padding:20px 5vw;font-size:12px;color:rgba(255,255,255,0.15);}
-footer a{color:var(--purple-light);text-decoration:none;}
+.modal-btn{flex:1;padding:11px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;border:none;}
+.modal-btn.p{background:var(--purple);color:#fff;}
+.modal-btn.s{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.1);}
+.ai-typing::after{content:'...';animation:dots 1s infinite;}
+@keyframes dots{0%,20%{content:'.';}40%,60%{content:'..';}80%,100%{content:'...'}}
 </style>
 </head>
 <body>
@@ -89,492 +77,424 @@ footer a{color:var(--purple-light);text-decoration:none;}
   <a href="https://playai.live" class="nav-back">← PlayAI</a>
 </nav>
 
-<div id="gc">
-  <div class="game-header">
-    <div>
-      <div class="score-main" id="score-display">💰 €0</div>
-      <div class="score-sub" id="level-display">Level 1 · Normal speed</div>
+<div id="game-wrapper">
+  <!-- HUD -->
+  <div id="hud">
+    <div class="hud-box">
+      <div class="hud-val" id="score-val">€0</div>
+      <div class="hud-lbl">Score</div>
     </div>
-    <div>
-      <div class="lives-row" id="lives-row">❤️❤️❤️</div>
-      <div class="best-score" id="best-display">Best: €0</div>
+    <div class="hud-box">
+      <div class="hud-val" id="level-val">1</div>
+      <div class="hud-lbl">Level</div>
+    </div>
+    <div class="hud-box" id="lives-box">❤️❤️❤️</div>
+    <div class="hud-box">
+      <div class="hud-val" id="best-val">€0</div>
+      <div class="hud-lbl">Best</div>
     </div>
   </div>
 
-  <div class="level-bar">
-    <div class="level-meta"><span id="level-label">Level 1</span><span id="level-progress">€0 / €100</span></div>
-    <div class="level-track"><div class="level-fill" id="level-fill" style="width:0%"></div></div>
-  </div>
-
-  <div class="canvas-wrap">
+  <!-- CANVAS -->
+  <div id="canvas-container">
     <canvas id="snake-canvas"></canvas>
     <div class="overlay" id="overlay">
-      <div style="font-size:52px;margin-bottom:12px;">🐍</div>
-      <h2>Money Snake</h2>
-      <p>Collect coins and avoid debt bombs!<br>Your AI coach <strong style="color:#a78bfa">Rico</strong> will guide you.</p>
-      <button class="play-btn" onclick="startGame()">Start Playing →</button>
-      <p style="font-size:11px;color:rgba(255,255,255,0.2);margin-top:10px;margin-bottom:0;">Use arrow keys or tap buttons below</p>
+      <div class="overlay-icon">🐍</div>
+      <div class="overlay-title">Money Snake</div>
+      <div class="overlay-sub">Collect coins · Avoid debt · Learn with Rico!</div>
+      <div class="legend-pills">
+        <span class="pill">🟡 Coin €10</span>
+        <span class="pill">🔵 Gem €50</span>
+        <span class="pill">🟢 Star €100</span>
+        <span class="pill">🔴 Debt bomb</span>
+        <span class="pill">🟠 Tax bill</span>
+        <span class="pill">⚪ Shield</span>
+      </div>
+      <button class="play-btn" onclick="startGame()">Play Now →</button>
     </div>
   </div>
 
-  <div class="rico-panel" id="rico-panel">
-    <div class="rico-avatar">🐍</div>
-    <div class="rico-bubble">
-      <div class="rico-name">Rico — Your Money Coach</div>
-      <div class="rico-text" id="rico-text">Hey! I'm Rico your money coach. Collect coins and I'll teach you real money secrets! 🤑</div>
-    </div>
+  <!-- LEVEL BAR -->
+  <div id="level-bar-wrap">
+    <div class="bar-meta"><span id="bar-lbl">Level 1</span><span id="bar-prog">€0 / €100</span></div>
+    <div class="bar-track"><div class="bar-fill" id="bar-fill" style="width:0%"></div></div>
   </div>
 
-  <div class="controls">
-    <div class="ctrl-row"><button class="ctrl-btn" onclick="setDir(0,-1)" aria-label="Up">▲</button></div>
+  <!-- RICO -->
+  <div id="rico-bar">
+    <div id="rico-emoji">🐍</div>
+    <div id="rico-text">Hi! I'm Rico your money coach! Collect coins and I'll teach you real money secrets! 🤑</div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div id="controls">
+    <div class="ctrl-row"><button class="ctrl-btn" onclick="setDir(0,-1)">▲</button></div>
     <div class="ctrl-row">
-      <button class="ctrl-btn" onclick="setDir(-1,0)" aria-label="Left">◄</button>
-      <button class="ctrl-btn" onclick="setDir(0,1)" aria-label="Down">▼</button>
-      <button class="ctrl-btn" onclick="setDir(1,0)" aria-label="Right">►</button>
+      <button class="ctrl-btn" onclick="setDir(-1,0)">◄</button>
+      <button class="ctrl-btn" onclick="setDir(0,1)">▼</button>
+      <button class="ctrl-btn" onclick="setDir(1,0)">►</button>
     </div>
-  </div>
-
-  <div class="legend">
-    <div class="legend-item">💰 €10 coin</div>
-    <div class="legend-item">💎 €50 gem</div>
-    <div class="legend-item">⭐ €100 star</div>
-    <div class="legend-item">💣 debt bomb</div>
-    <div class="legend-item">📋 tax bill</div>
-    <div class="legend-item">🛡️ shield</div>
   </div>
 </div>
 
-<!-- AI ANALYSIS MODAL -->
-<div class="ai-modal" id="ai-modal">
-  <div class="ai-modal-inner">
-    <div class="ai-modal-hdr">Rico's Analysis</div>
+<!-- AI MODAL -->
+<div id="ai-modal" style="display:none;">
+  <div class="modal-box">
+    <div style="font-size:48px;margin-bottom:8px;" id="modal-trophy">🏆</div>
     <div class="modal-score" id="modal-score">€0</div>
-    <div class="modal-rating" id="modal-rating"></div>
-    <div id="ai-analysis-text"><span class="rico-typing">Rico is thinking</span></div>
+    <div class="modal-rating" id="modal-rating">Game Over</div>
+    <div class="modal-ai-hdr">Rico's Coaching</div>
+    <div id="modal-ai-text"><span class="ai-typing">Rico is thinking</span></div>
     <div class="modal-btns">
-      <button class="modal-btn primary" onclick="closeModal();startGame()">Play Again</button>
-      <button class="modal-btn secondary" onclick="closeModal()">Back to PlayAI</button>
+      <button class="modal-btn p" onclick="closeModal();startGame()">Play Again</button>
+      <button class="modal-btn s" onclick="closeModal()">Menu</button>
     </div>
   </div>
 </div>
-
-<footer><a href="https://playai.live">PlayAI</a> · <a href="https://centai.org">CentAI Finance Advisor</a></footer>
 
 <script>
 // ============================================
-// CONFIG — easy to adjust
-// ============================================
-const CONFIG = {
-  CELL: 20,
-  COLS: 20,
-  ROWS: 20,
-  BASE_SPEED: 160,
-  SPEED_INCREASE: 12,
-  LEVEL_THRESHOLD: 100,
-  API_MODEL: 'claude-sonnet-4-20250514',
-  MAX_TOKENS: 1000,
-};
-
-// ============================================
-// RICO'S TIPS — shown during gameplay
-// ============================================
-const RICO_TIPS = [
-  "💡 Saving just €5/day = €1,825 per year! Small habits = big wealth!",
-  "💡 The best investors started with tiny amounts. You've got this!",
-  "💡 €100 invested at 7%/year becomes €200 in just 10 years — magic!",
-  "💡 Avoid debt like those bombs! Credit card debt costs you 20% per year!",
-  "💡 A piggy bank was the first investment account ever invented!",
-  "💡 Rich people buy things that MAKE money. Poor people buy things that COST money.",
-  "💡 Even €1 saved today = €7 when you grow up. That's compound interest!",
-  "💡 The secret to wealth: spend LESS than you earn. Every. Single. Month.",
-  "💡 Stocks have made more millionaires than any other investment. Start young!",
-  "💡 Taxes are like those 📋 bills — unavoidable, but you can minimise them legally!",
-  "💡 Warren Buffett started investing at age 11. It's never too early!",
-  "💡 Collect those gems 💎 — diversifying investments reduces risk!",
-];
-
-const RICO_REACTIONS = {
-  coin: ["Nice catch! 💰", "Ka-ching! 💰", "Money in the bank! 🎉", "Smart move! 💰"],
-  gem: ["Ooh a gem! 💎 Big earner!", "Diamond hands! 💎", "Rare find! 💎 Keep it up!"],
-  star: ["⭐ JACKPOT! Amazing!", "⭐ Star collector! You're amazing!", "⭐ That's a week of savings!"],
-  bomb: ["💣 DEBT! That hurts!", "💣 Avoid those debt traps!", "💣 Debt shrinks your wealth!"],
-  tax: ["📋 Taxes! Ouch!", "📋 Even snakes pay taxes!", "📋 Legal but painful!"],
-  shield: ["🛡️ Protected! Smart!", "🛡️ Insurance saves the day!"],
-  levelup: ["🎉 LEVEL UP! You're getting richer!", "🚀 Next level! Speed up!", "⚡ Level up! Real investors love a challenge!"],
-  death: ["💔 Don't give up! Every investor loses sometimes!", "Try again! The best traders lose too!", "One more go! Persistence = wealth!"],
-};
-
-// ============================================
-// GAME STATE
+// SETUP — canvas fills available space
 // ============================================
 const canvas = document.getElementById('snake-canvas');
 const ctx = canvas.getContext('2d');
-const CELL = CONFIG.CELL;
-const COLS = CONFIG.COLS;
-const ROWS = CONFIG.ROWS;
+const COLS = 20, ROWS = 20;
+let CELL = 20;
 
-canvas.width = COLS * CELL;
-canvas.height = ROWS * CELL;
-
-let state = {
-  snake: [], dir: {x:1,y:0}, nextDir: {x:1,y:0},
-  items: [], score: 0, highScore: 0, level: 1,
-  lives: 3, speed: CONFIG.BASE_SPEED,
-  gameLoop: null, running: false,
-  coinsHit: 0, bombsHit: 0, gemsHit: 0, starsHit: 0,
-  shielded: false, shieldTimer: null,
-};
+function resizeCanvas() {
+  const container = document.getElementById('canvas-container');
+  const size = Math.min(container.offsetWidth, window.innerHeight * 0.45);
+  canvas.width = COLS * Math.floor(size / COLS);
+  canvas.height = canvas.width;
+  CELL = canvas.width / COLS;
+}
+resizeCanvas();
+window.addEventListener('resize', () => { resizeCanvas(); draw(); });
 
 // ============================================
-// ITEMS
+// GAME ITEMS — drawn with shapes not emoji
 // ============================================
-const ITEM_TYPES = [
-  {type:'coin', emoji:'💰', value:10, isHazard:false, weight:50},
-  {type:'gem', emoji:'💎', value:50, isHazard:false, weight:20},
-  {type:'star', emoji:'⭐', value:100, isHazard:false, weight:8},
-  {type:'shield', emoji:'🛡️', value:0, isHazard:false, weight:5, isShield:true},
-  {type:'bomb', emoji:'💣', value:0, isHazard:true, weight:30},
-  {type:'tax', emoji:'📋', value:0, isHazard:true, weight:20},
+const ITEMS = [
+  {type:'coin',  color:'#fbbf24', outline:'#f59e0b', label:'€', value:10,  isHazard:false, weight:50, shape:'circle'},
+  {type:'gem',   color:'#818cf8', outline:'#6366f1', label:'◆', value:50,  isHazard:false, weight:20, shape:'diamond'},
+  {type:'star',  color:'#34d399', outline:'#10b981', label:'★', value:100, isHazard:false, weight:8,  shape:'star'},
+  {type:'shield',color:'#e0f2fe', outline:'#7dd3fc', label:'⬡', value:0,   isHazard:false, weight:5,  shape:'hex', isShield:true},
+  {type:'bomb',  color:'#ef4444', outline:'#b91c1c', label:'💣', value:0,  isHazard:true,  weight:30, shape:'circle'},
+  {type:'tax',   color:'#f97316', outline:'#c2410c', label:'$', value:0,   isHazard:true,  weight:20, shape:'rect'},
 ];
 
-function weightedRandom(items) {
-  const total = items.reduce((s,i) => s + i.weight, 0);
-  let r = Math.random() * total;
-  for (const item of items) { r -= item.weight; if (r <= 0) return item; }
-  return items[0];
+// ============================================
+// RICO MESSAGES
+// ============================================
+const RICO_TIPS = [
+  "💡 €5/day saved = €1,825/year! Small habits = big wealth!",
+  "💡 €100 at 7%/year doubles in just 10 years — magic!",
+  "💡 Rich people avoid debt like you avoid those red bombs!",
+  "💡 Even €1 saved today = €7 when you grow up!",
+  "💡 The secret: spend LESS than you earn. Every month!",
+  "💡 Warren Buffett started investing at age 11. Start now!",
+  "💡 Collecting gems 💎 = diversifying investments!",
+  "💡 Stars ⭐ = rare great investments. Grab them fast!",
+];
+
+const RICO_REACT = {
+  coin:   ["Nice! €10 in the bank! 💰","Ka-ching! Keep going!","Money money money! 🎵"],
+  gem:    ["Gem! 💎 That's €50! Big earner!","Rare find! Smart move!","Gems = diversification! 💎"],
+  star:   ["⭐ €100 STAR! Amazing!","Jackpot! You're a star investor!","⭐ That's a week of savings!"],
+  shield: ["🛡️ Shield! You're protected!","Smart — insurance saves lives!"],
+  bomb:   ["💣 DEBT! Shrinks your wealth!","Avoid debt traps! They hurt!","💣 Debt is wealth's enemy!"],
+  tax:    ["📋 Tax bill! Ouch!","Taxes hurt — save more!","Even snakes pay taxes! 😅"],
+  levelup:["🎉 LEVEL UP! Faster now!","⚡ Next level! Real investors love challenges!","🚀 You're getting richer!"],
+  die:    ["Don't give up! Try again! 💪","Every investor loses sometimes!","One more go! You've got this!"],
+};
+
+function ricoSay(text){ document.getElementById('rico-text').textContent = text; }
+function ricoReact(type){ const msgs=RICO_REACT[type]||RICO_REACT.coin; ricoSay(msgs[Math.floor(Math.random()*msgs.length)]); }
+function ricoTip(){ ricoSay(RICO_TIPS[Math.floor(Math.random()*RICO_TIPS.length)]); }
+
+// ============================================
+// STATE
+// ============================================
+let S = {
+  snake:[], dir:{x:1,y:0}, nextDir:{x:1,y:0},
+  items:[], score:0, highScore:0, level:1,
+  lives:3, speed:160, loop:null, running:false,
+  shielded:false, shieldTimer:null,
+  coins:0, bombs:0, gems:0, stars:0,
+};
+
+function weightedRandom(arr){
+  const t=arr.reduce((s,i)=>s+i.weight,0);
+  let r=Math.random()*t;
+  for(const i of arr){r-=i.weight;if(r<=0)return i;}
+  return arr[0];
 }
 
-function spawnItem(forceGood, forceHazard) {
-  const pool = forceGood ? ITEM_TYPES.filter(i=>!i.isHazard) :
-               forceHazard ? ITEM_TYPES.filter(i=>i.isHazard) :
-               ITEM_TYPES;
+function spawnItem(forceGood, forceHazard){
+  const pool = forceGood ? ITEMS.filter(i=>!i.isHazard) :
+               forceHazard ? ITEMS.filter(i=>i.isHazard) : ITEMS;
   const item = weightedRandom(pool);
-  let pos, tries = 0;
-  do {
-    pos = {x:Math.floor(Math.random()*COLS), y:Math.floor(Math.random()*ROWS)};
-    tries++;
-  } while (tries < 60 && (
-    state.snake.some(s=>s.x===pos.x&&s.y===pos.y) ||
-    state.items.some(i=>i.x===pos.x&&i.y===pos.y)
-  ));
-  state.items.push({...item, x:pos.x, y:pos.y, spawnTime:Date.now()});
+  let pos, tries=0;
+  do { pos={x:Math.floor(Math.random()*COLS),y:Math.floor(Math.random()*ROWS)}; tries++; }
+  while(tries<60 && (S.snake.some(s=>s.x===pos.x&&s.y===pos.y)||S.items.some(i=>i.x===pos.x&&i.y===pos.y)));
+  S.items.push({...item, x:pos.x, y:pos.y});
 }
 
-// ============================================
-// RICO COACH
-// ============================================
-function ricoSay(text) {
-  document.getElementById('rico-text').textContent = text;
+function initGame(){
+  S.snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10},{x:7,y:10}];
+  S.dir={x:1,y:0}; S.nextDir={x:1,y:0};
+  S.items=[]; S.score=0; S.level=1; S.lives=3; S.speed=160;
+  S.running=false; S.shielded=false; S.coins=0; S.bombs=0; S.gems=0; S.stars=0;
+  clearTimeout(S.shieldTimer);
+  for(let i=0;i<4;i++) spawnItem(true);
+  for(let i=0;i<2;i++) spawnItem(false,true);
+  updateHUD(); draw();
 }
 
-function ricoReact(type) {
-  const msgs = RICO_REACTIONS[type] || RICO_REACTIONS.coin;
-  ricoSay(msgs[Math.floor(Math.random()*msgs.length)]);
-}
-
-function ricoTip() {
-  ricoSay(RICO_TIPS[Math.floor(Math.random()*RICO_TIPS.length)]);
-}
-
-// ============================================
-// AI ANALYSIS
-// ============================================
-async function getAIAnalysis(score, level, coinsHit, bombsHit, gemsHit, starsHit) {
-  const prompt = `You are Rico, a fun friendly snake character who teaches kids and teens about money in a game called "Money Snake" on PlayAI.live.
-
-The player just finished a game with these stats:
-- Final score: €${score}
-- Level reached: ${level}
-- Coins collected: ${coinsHit}
-- Gems collected: ${gemsHit}
-- Stars collected: ${starsHit}  
-- Debt bombs hit: ${bombsHit}
-
-Write a fun, encouraging 3-sentence analysis AS RICO THE SNAKE:
-1. Celebrate something they did well (use emojis, be enthusiastic!)
-2. One fun money lesson based on their playing style (e.g. if they hit many bombs = talk about avoiding debt)
-3. A real-life challenge: "This week, try to save €X!" — make the amount match their score (e.g. if they scored €200, challenge them to save €2 this week)
-
-Keep it fun, age-appropriate (kids 8-15), use emojis, max 3 sentences. Sign off as Rico 🐍`;
-
-  try {
-    const r = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({model:CONFIG.API_MODEL, max_tokens:CONFIG.MAX_TOKENS, messages:[{role:'user',content:prompt}]})
-    });
-    const d = await r.json();
-    return d.content?.[0]?.text || null;
-  } catch(e) { return null; }
-}
-
-// ============================================
-// GAME FLOW
-// ============================================
-function initGame() {
-  state.snake = [{x:10,y:10},{x:9,y:10},{x:8,y:10}];
-  state.dir = {x:1,y:0}; state.nextDir = {x:1,y:0};
-  state.items = []; state.score = 0; state.level = 1;
-  state.lives = 3; state.speed = CONFIG.BASE_SPEED;
-  state.running = false; state.shielded = false;
-  state.coinsHit = 0; state.bombsHit = 0; state.gemsHit = 0; state.starsHit = 0;
-  clearTimeout(state.shieldTimer);
-  for (let i = 0; i < 3; i++) spawnItem(true);
-  for (let i = 0; i < 2; i++) spawnItem(false, true);
-  updateUI();
-  draw();
-}
-
-function startGame() {
-  document.getElementById('overlay').style.display = 'none';
+function startGame(){
+  document.getElementById('overlay').style.display='none';
   initGame();
-  state.running = true;
-  clearInterval(state.gameLoop);
-  state.gameLoop = setInterval(tick, state.speed);
-  ricoSay("GO GO GO! Collect those coins! 💰🐍");
+  S.running=true;
+  clearInterval(S.loop);
+  S.loop=setInterval(tick, S.speed);
+  ricoSay("GO! Collect coins and grow your wealth! 💰🐍");
 }
 
-function setDir(x, y) {
-  if (x !== 0 && state.dir.x !== 0) return;
-  if (y !== 0 && state.dir.y !== 0) return;
-  state.nextDir = {x, y};
+function setDir(x,y){
+  if(x!==0&&S.dir.x!==0) return;
+  if(y!==0&&S.dir.y!==0) return;
+  S.nextDir={x,y};
 }
 
-function tick() {
-  if (!state.running) return;
-  state.dir = {...state.nextDir};
-  const head = {x: state.snake[0].x + state.dir.x, y: state.snake[0].y + state.dir.y};
-
-  // Wall collision
-  if (head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS) {
-    handleDeath(); return;
-  }
-  // Self collision
-  if (state.snake.some(s => s.x===head.x && s.y===head.y)) {
-    handleDeath(); return;
-  }
-
-  state.snake.unshift(head);
-
-  // Check item collision
-  const hitIdx = state.items.findIndex(i => i.x===head.x && i.y===head.y);
-  let grew = false;
-
-  if (hitIdx > -1) {
-    const item = state.items[hitIdx];
-    state.items.splice(hitIdx, 1);
-
-    if (item.isShield) {
-      state.shielded = true;
-      clearTimeout(state.shieldTimer);
-      state.shieldTimer = setTimeout(() => { state.shielded = false; }, 8000);
-      ricoReact('shield');
-      spawnItem(true);
-    } else if (item.isHazard) {
-      if (state.shielded) {
-        state.shielded = false;
-        ricoSay("🛡️ Shield saved you! Lucky!");
-        spawnItem(false, true);
-      } else {
-        // Shrink snake
-        if (state.snake.length > 4) { state.snake.pop(); state.snake.pop(); state.snake.pop(); }
-        state.score = Math.max(0, state.score - 30);
-        state.bombsHit++;
-        ricoReact(item.type);
-        spawnItem(false, true);
+function tick(){
+  if(!S.running) return;
+  S.dir={...S.nextDir};
+  const head={x:S.snake[0].x+S.dir.x, y:S.snake[0].y+S.dir.y};
+  if(head.x<0||head.x>=COLS||head.y<0||head.y>=ROWS){handleDeath();return;}
+  if(S.snake.some(s=>s.x===head.x&&s.y===head.y)){handleDeath();return;}
+  S.snake.unshift(head);
+  const hitIdx=S.items.findIndex(i=>i.x===head.x&&i.y===head.y);
+  let grew=false;
+  if(hitIdx>-1){
+    const item=S.items[hitIdx];
+    S.items.splice(hitIdx,1);
+    if(item.isShield){
+      S.shielded=true; clearTimeout(S.shieldTimer);
+      S.shieldTimer=setTimeout(()=>S.shielded=false,8000);
+      ricoReact('shield'); spawnItem(true);
+    } else if(item.isHazard){
+      if(S.shielded){S.shielded=false;ricoSay("🛡️ Shield blocked it! Lucky!");spawnItem(false,true);}
+      else{
+        for(let i=0;i<3&&S.snake.length>3;i++) S.snake.pop();
+        S.score=Math.max(0,S.score-30); S.bombs++;
+        ricoReact(item.type); spawnItem(false,true);
       }
     } else {
-      state.score += item.value;
-      grew = true;
-      if (item.type === 'coin') state.coinsHit++;
-      else if (item.type === 'gem') state.gemsHit++;
-      else if (item.type === 'star') state.starsHit++;
-      ricoReact(item.type);
-      spawnItem();
-      if (state.items.filter(i=>i.isHazard).length < 2) spawnItem(false, true);
+      S.score+=item.value; grew=true;
+      if(item.type==='coin') S.coins++;
+      else if(item.type==='gem') S.gems++;
+      else if(item.type==='star') S.stars++;
+      ricoReact(item.type); spawnItem();
+      if(S.items.filter(i=>i.isHazard).length<2) spawnItem(false,true);
       checkLevel();
     }
   }
-
-  if (!grew) state.snake.pop();
-
-  // Remove old items (max 10 seconds)
-  state.items = state.items.filter(i => Date.now() - i.spawnTime < 12000);
-  while (state.items.filter(i=>!i.isHazard).length < 2) spawnItem(true);
-  while (state.items.filter(i=>i.isHazard).length < 1) spawnItem(false, true);
-
-  updateUI();
-  draw();
+  if(!grew) S.snake.pop();
+  while(S.items.filter(i=>!i.isHazard).length<3) spawnItem(true);
+  while(S.items.filter(i=>i.isHazard).length<1) spawnItem(false,true);
+  updateHUD(); draw();
 }
 
-function handleDeath() {
-  state.lives--;
+function handleDeath(){
+  S.lives--;
   updateLives();
-  ricoReact('death');
-  if (state.lives <= 0) {
-    gameOver();
-  } else {
-    state.snake = [{x:10,y:10},{x:9,y:10},{x:8,y:10}];
-    state.dir = {x:1,y:0}; state.nextDir = {x:1,y:0};
+  ricoReact('die');
+  if(S.lives<=0){gameOver();}
+  else{S.snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10},{x:7,y:10}];S.dir={x:1,y:0};S.nextDir={x:1,y:0};}
+}
+
+function checkLevel(){
+  const nl=Math.floor(S.score/100)+1;
+  if(nl>S.level){
+    S.level=nl; clearInterval(S.loop);
+    S.speed=Math.max(65,160-(S.level-1)*15);
+    S.loop=setInterval(tick,S.speed);
+    ricoReact('levelup'); setTimeout(ricoTip,2000);
+    if(S.level>2) spawnItem(false,true);
   }
 }
 
-function checkLevel() {
-  const newLevel = Math.floor(state.score / CONFIG.LEVEL_THRESHOLD) + 1;
-  if (newLevel > state.level) {
-    state.level = newLevel;
-    clearInterval(state.gameLoop);
-    state.speed = Math.max(60, CONFIG.BASE_SPEED - (state.level-1) * CONFIG.SPEED_INCREASE);
-    state.gameLoop = setInterval(tick, state.speed);
-    ricoReact('levelup');
-    setTimeout(ricoTip, 2000);
-    if (state.level > 2) spawnItem(false, true);
+async function gameOver(){
+  clearInterval(S.loop); S.running=false;
+  if(S.score>S.highScore) S.highScore=S.score;
+  document.getElementById('best-val').textContent='€'+S.highScore;
+  const modal=document.getElementById('ai-modal');
+  document.getElementById('modal-score').textContent='€'+S.score;
+  let trophy,rating;
+  if(S.score>=500){trophy='🏆';rating='🌟🌟🌟🌟🌟 Money Genius!';}
+  else if(S.score>=300){trophy='🥇';rating='🌟🌟🌟🌟 Smart Saver!';}
+  else if(S.score>=150){trophy='🥈';rating='🌟🌟🌟 Getting There!';}
+  else{trophy='🥉';rating='🌟🌟 Keep Practising!';}
+  document.getElementById('modal-trophy').textContent=trophy;
+  document.getElementById('modal-rating').textContent=rating;
+  document.getElementById('modal-ai-text').innerHTML='<span class="ai-typing">Rico is thinking</span>';
+  modal.style.display='flex';
+  try{
+    const prompt=`You are Rico, a fun friendly snake who teaches kids about money in "Money Snake" on PlayAI.live.
+Player stats: Score €${S.score} · Level ${S.level} · Coins: ${S.coins} · Gems: ${S.gems} · Stars: ${S.stars} · Debt bombs hit: ${S.bombs}
+Write 3 fun sentences AS RICO THE SNAKE:
+1. Celebrate what they did well (use emojis!)
+2. One fun money lesson based on their stats (many bombs = talk about debt, few coins = talk about saving)
+3. A real challenge: "This week, try to save €X!" (amount = score/100, min €1)
+Keep it fun, for kids age 7-14, max 3 sentences. Sign off "— Rico 🐍"`;
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const d=await r.json();
+    document.getElementById('modal-ai-text').textContent=d.content?.[0]?.text||fallbackText();
+  }catch(e){document.getElementById('modal-ai-text').textContent=fallbackText();}
+}
+
+function fallbackText(){
+  return `Wow, €${S.score} collected — you're a money star! 🌟 ${S.bombs>2?"Remember: debt bombs shrink your wallet just like they shrink the snake — always avoid debt in real life! 💣":"Amazing job dodging those debt traps — smart money moves! 🎉"} This week's challenge: save €${Math.max(1,Math.floor(S.score/100))} in a real piggy bank and watch your wealth grow! — Rico 🐍`;
+}
+
+function closeModal(){ document.getElementById('ai-modal').style.display='none'; }
+
+function updateHUD(){
+  document.getElementById('score-val').textContent='€'+S.score;
+  document.getElementById('level-val').textContent=S.level+(S.shielded?' 🛡️':'');
+  const prog=(S.score%100);
+  document.getElementById('bar-fill').style.width=prog+'%';
+  document.getElementById('bar-lbl').textContent='Level '+S.level;
+  document.getElementById('bar-prog').textContent='€'+prog+' / €100';
+}
+
+function updateLives(){
+  document.getElementById('lives-box').textContent='❤️'.repeat(Math.max(0,S.lives))+'🖤'.repeat(Math.max(0,3-S.lives));
+}
+
+// ============================================
+// DRAW — all shapes, no emoji on canvas
+// ============================================
+function drawItem(item){
+  const cx=item.x*CELL+CELL/2, cy=item.y*CELL+CELL/2, r=CELL*0.38;
+  ctx.shadowBlur=8; ctx.shadowColor=item.outline;
+  if(item.shape==='circle'){
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+    ctx.fillStyle=item.color; ctx.fill();
+    ctx.strokeStyle=item.outline; ctx.lineWidth=2; ctx.stroke();
+  } else if(item.shape==='diamond'){
+    ctx.beginPath(); ctx.moveTo(cx,cy-r); ctx.lineTo(cx+r,cy); ctx.lineTo(cx,cy+r); ctx.lineTo(cx-r,cy);
+    ctx.closePath(); ctx.fillStyle=item.color; ctx.fill();
+    ctx.strokeStyle=item.outline; ctx.lineWidth=2; ctx.stroke();
+  } else if(item.shape==='star'){
+    drawStar(cx,cy,r*0.45,r,5);
+    ctx.fillStyle=item.color; ctx.fill();
+    ctx.strokeStyle=item.outline; ctx.lineWidth=1.5; ctx.stroke();
+  } else if(item.shape==='rect'){
+    ctx.beginPath(); ctx.roundRect(cx-r,cy-r*0.75,r*2,r*1.5,4);
+    ctx.fillStyle=item.color; ctx.fill();
+    ctx.strokeStyle=item.outline; ctx.lineWidth=2; ctx.stroke();
+  } else if(item.shape==='hex'){
+    drawHex(cx,cy,r);
+    ctx.fillStyle=item.color; ctx.fill();
+    ctx.strokeStyle=item.outline; ctx.lineWidth=2; ctx.stroke();
   }
+  // Label
+  ctx.shadowBlur=0;
+  ctx.fillStyle= item.isHazard ? '#fff' : '#0f172a';
+  ctx.font=`bold ${Math.round(CELL*0.35)}px sans-serif`;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(item.label, cx, cy);
 }
 
-async function gameOver() {
-  clearInterval(state.gameLoop);
-  state.running = false;
-  if (state.score > state.highScore) state.highScore = state.score;
-  document.getElementById('best-display').textContent = 'Best: €' + state.highScore;
-
-  // Show modal
-  const modal = document.getElementById('ai-modal');
-  document.getElementById('modal-score').textContent = '€' + state.score;
-  let rating;
-  if (state.score >= 500) rating = '🏆 Money Genius!';
-  else if (state.score >= 300) rating = '🥇 Smart Saver!';
-  else if (state.score >= 150) rating = '🥈 Getting There!';
-  else rating = '🥉 Keep Practising!';
-  document.getElementById('modal-rating').textContent = rating;
-  document.getElementById('ai-analysis-text').innerHTML = '<span class="rico-typing">Rico is thinking</span>';
-  modal.style.display = 'flex';
-
-  const aiText = await getAIAnalysis(state.score, state.level, state.coinsHit, state.bombsHit, state.gemsHit, state.starsHit);
-  document.getElementById('ai-analysis-text').textContent = aiText ||
-    `WOW you collected €${state.score} — that's amazing! 🐍💰 ${state.bombsHit > 2 ? "Watch out for those debt bombs though — in real life, debt eats your money just like that! 💣" : "You did great avoiding debt traps — smart money move! 🎉"} This week's challenge: save €${Math.max(1, Math.floor(state.score/100))} in a real piggy bank and watch it grow! — Rico 🐍`;
-}
-
-function closeModal() {
-  document.getElementById('ai-modal').style.display = 'none';
-}
-
-// ============================================
-// UI
-// ============================================
-function updateUI() {
-  document.getElementById('score-display').textContent = '💰 €' + state.score;
-  document.getElementById('level-display').textContent = 'Level ' + state.level + (state.shielded ? ' 🛡️ SHIELDED' : '');
-  const progress = (state.score % CONFIG.LEVEL_THRESHOLD) / CONFIG.LEVEL_THRESHOLD * 100;
-  document.getElementById('level-fill').style.width = progress + '%';
-  document.getElementById('level-label').textContent = 'Level ' + state.level;
-  document.getElementById('level-progress').textContent = '€' + (state.score % CONFIG.LEVEL_THRESHOLD) + ' / €' + CONFIG.LEVEL_THRESHOLD;
-}
-
-function updateLives() {
-  document.getElementById('lives-row').textContent = '❤️'.repeat(Math.max(0,state.lives)) + '🖤'.repeat(Math.max(0,3-state.lives));
-}
-
-// ============================================
-// DRAW
-// ============================================
-function draw() {
-  const w = canvas.width, h = canvas.height;
-  ctx.clearRect(0, 0, w, h);
-
-  // Background
-  ctx.fillStyle = '#060a14';
-  ctx.fillRect(0, 0, w, h);
-
-  // Grid dots
-  ctx.fillStyle = 'rgba(255,255,255,0.025)';
-  for (let x = 0; x < COLS; x++) for (let y = 0; y < ROWS; y++) {
-    ctx.fillRect(x*CELL+9, y*CELL+9, 2, 2);
+function drawStar(cx,cy,r1,r2,pts){
+  ctx.beginPath();
+  for(let i=0;i<pts*2;i++){
+    const r=i%2===0?r2:r1;
+    const a=Math.PI/pts*i-Math.PI/2;
+    if(i===0) ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
+    else ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
   }
+  ctx.closePath();
+}
 
-  // Shield glow
-  if (state.shielded && state.snake.length > 0) {
-    const h = state.snake[0];
-    ctx.shadowColor = '#a78bfa';
-    ctx.shadowBlur = 20;
+function drawHex(cx,cy,r){
+  ctx.beginPath();
+  for(let i=0;i<6;i++){
+    const a=Math.PI/3*i-Math.PI/6;
+    if(i===0) ctx.moveTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
+    else ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
   }
+  ctx.closePath();
+}
 
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#060a14'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  // Grid
+  ctx.strokeStyle='rgba(255,255,255,0.03)'; ctx.lineWidth=0.5;
+  for(let x=0;x<=COLS;x++){ctx.beginPath();ctx.moveTo(x*CELL,0);ctx.lineTo(x*CELL,canvas.height);ctx.stroke();}
+  for(let y=0;y<=ROWS;y++){ctx.beginPath();ctx.moveTo(0,y*CELL);ctx.lineTo(canvas.width,y*CELL);ctx.stroke();}
   // Items
-  ctx.shadowBlur = 0;
-  ctx.font = '14px serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  state.items.forEach(item => {
-    const age = (Date.now() - item.spawnTime) / 12000;
-    const alpha = age > 0.7 ? 1 - (age - 0.7) / 0.3 : 1;
-    ctx.globalAlpha = alpha;
-    // Glow for special items
-    if (item.type === 'star') { ctx.shadowColor = '#fbbf24'; ctx.shadowBlur = 8; }
-    else if (item.type === 'gem') { ctx.shadowColor = '#818cf8'; ctx.shadowBlur = 6; }
-    else { ctx.shadowBlur = 0; }
-    ctx.fillText(item.emoji, item.x*CELL+CELL/2, item.y*CELL+CELL/2);
-  });
-  ctx.globalAlpha = 1;
-  ctx.shadowBlur = 0;
-
-  // Snake
-  state.snake.forEach((seg, i) => {
-    const isHead = i === 0;
-    const ratio = 1 - (i / state.snake.length) * 0.6;
-    if (state.shielded) {
-      ctx.fillStyle = isHead ? '#a78bfa' : `rgba(167,139,250,${0.3 + ratio * 0.5})`;
-    } else {
-      ctx.fillStyle = isHead ? '#7c3aed' : `rgba(124,58,237,${0.25 + ratio * 0.65})`;
-    }
-    const pad = isHead ? 1 : 2;
-    const size = CELL - pad * 2;
+  S.items.forEach(drawItem);
+  // Snake body
+  for(let i=S.snake.length-1;i>=1;i--){
+    const seg=S.snake[i];
+    const ratio=1-(i/S.snake.length)*0.5;
+    ctx.fillStyle=S.shielded?`rgba(167,139,250,${0.3+ratio*0.5})`:`rgba(124,58,237,${0.25+ratio*0.6})`;
+    ctx.shadowBlur=0;
+    const pad=2, sz=CELL-pad*2;
     ctx.beginPath();
-    if (ctx.roundRect) ctx.roundRect(seg.x*CELL+pad, seg.y*CELL+pad, size, size, isHead?6:3);
-    else ctx.rect(seg.x*CELL+pad, seg.y*CELL+pad, size, size);
+    if(ctx.roundRect) ctx.roundRect(seg.x*CELL+pad,seg.y*CELL+pad,sz,sz,3);
+    else ctx.rect(seg.x*CELL+pad,seg.y*CELL+pad,sz,sz);
     ctx.fill();
-
-    // Head details
-    if (isHead) {
-      ctx.fillStyle = '#fff';
-      const ex = state.dir.x > 0 ? 14 : state.dir.x < 0 ? 5 : 6;
-      const ey1 = state.dir.y !== 0 ? (state.dir.y > 0 ? 14 : 5) : 5;
-      const ey2 = state.dir.y !== 0 ? (state.dir.y > 0 ? 14 : 5) : CELL - 5;
-      ctx.beginPath(); ctx.arc(seg.x*CELL+ex, seg.y*CELL+ey1, 2.5, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(seg.x*CELL+ex, seg.y*CELL+ey2, 2.5, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#4c1d95';
-      ctx.beginPath(); ctx.arc(seg.x*CELL+ex, seg.y*CELL+ey1, 1.2, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(seg.x*CELL+ex, seg.y*CELL+ey2, 1.2, 0, Math.PI*2); ctx.fill();
-    }
-  });
+  }
+  // Snake head
+  if(S.snake.length>0){
+    const h=S.snake[0];
+    ctx.shadowColor=S.shielded?'#a78bfa':'#7c3aed'; ctx.shadowBlur=12;
+    ctx.fillStyle=S.shielded?'#a78bfa':'#7c3aed';
+    const pad=1, sz=CELL-pad*2;
+    ctx.beginPath();
+    if(ctx.roundRect) ctx.roundRect(h.x*CELL+pad,h.y*CELL+pad,sz,sz,6);
+    else ctx.rect(h.x*CELL+pad,h.y*CELL+pad,sz,sz);
+    ctx.fill();
+    ctx.shadowBlur=0;
+    // Eyes
+    const eyeColor='#ffffff', pupilColor='#1e1b4b';
+    const eyeR=CELL*0.12, eyeOff=CELL*0.25;
+    let ex1,ey1,ex2,ey2;
+    const hcx=h.x*CELL+CELL/2, hcy=h.y*CELL+CELL/2;
+    if(S.dir.x>0){ex1=hcx+eyeOff;ey1=hcy-eyeOff;ex2=hcx+eyeOff;ey2=hcy+eyeOff;}
+    else if(S.dir.x<0){ex1=hcx-eyeOff;ey1=hcy-eyeOff;ex2=hcx-eyeOff;ey2=hcy+eyeOff;}
+    else if(S.dir.y<0){ex1=hcx-eyeOff;ey1=hcy-eyeOff;ex2=hcx+eyeOff;ey2=hcy-eyeOff;}
+    else{ex1=hcx-eyeOff;ey1=hcy+eyeOff;ex2=hcx+eyeOff;ey2=hcy+eyeOff;}
+    [[ex1,ey1],[ex2,ey2]].forEach(([ex,ey])=>{
+      ctx.fillStyle=eyeColor; ctx.beginPath(); ctx.arc(ex,ey,eyeR,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle=pupilColor; ctx.beginPath(); ctx.arc(ex,ey,eyeR*0.55,0,Math.PI*2); ctx.fill();
+    });
+  }
 }
 
 // ============================================
-// KEYBOARD & TOUCH
+// INPUT
 // ============================================
-document.addEventListener('keydown', e => {
-  const map = {ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
-  if (map[e.key]) { setDir(...map[e.key]); e.preventDefault(); }
+document.addEventListener('keydown',e=>{
+  const m={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
+  if(m[e.key]){setDir(...m[e.key]);e.preventDefault();}
 });
+let ts=null;
+canvas.addEventListener('touchstart',e=>{ts=e.touches[0];e.preventDefault();},{passive:false});
+canvas.addEventListener('touchend',e=>{
+  if(!ts)return;
+  const dx=e.changedTouches[0].clientX-ts.clientX, dy=e.changedTouches[0].clientY-ts.clientY;
+  if(Math.abs(dx)>Math.abs(dy)) setDir(dx>0?1:-1,0);
+  else setDir(0,dy>0?1:-1);
+  ts=null; e.preventDefault();
+},{passive:false});
 
-let touchStart = null;
-canvas.addEventListener('touchstart', e => { touchStart = e.touches[0]; e.preventDefault(); }, {passive:false});
-canvas.addEventListener('touchend', e => {
-  if (!touchStart) return;
-  const dx = e.changedTouches[0].clientX - touchStart.clientX;
-  const dy = e.changedTouches[0].clientY - touchStart.clientY;
-  if (Math.abs(dx) > Math.abs(dy)) setDir(dx>0?1:-1, 0);
-  else setDir(0, dy>0?1:-1);
-  touchStart = null;
-  e.preventDefault();
-}, {passive:false});
-
-// Init
-initGame();
-draw();
-
-window.startGame = startGame;
-window.setDir = setDir;
-window.closeModal = closeModal;
+initGame(); draw();
+window.startGame=startGame; window.setDir=setDir; window.closeModal=closeModal;
 </script>
 </body>
 </html>
