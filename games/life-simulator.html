@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life Simulator — AI-Powered Financial Adventure | PlayAI</title>
+<meta name="description" content="Make financial decisions from age 18 to retirement. Get personalised AI coaching on every choice. How wealthy will you be?">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============================================
+     LIFE SIMULATOR — PLAYAI.LIVE
+     Version: 1.0
+     Easy to modify:
+     - SCENARIOS: find "const SCENARIOS" to add/edit life decisions
+     - PRICING: find "PAYWALL_PRICE" to change unlock price
+     - AGES: find "FREE_CHAPTERS" to change how many are free
+     - THEME: change CSS variables in :root
+     - AI PROMPT: find "buildCoachPrompt" and "buildFinalPrompt"
+  ============================================ */
+ 
+  /* CONFIG — change these to adjust the game */
+  :root {
+    --purple: #7c3aed;
+    --purple-light: #a78bfa;
+    --purple-pale: #ede9fe;
+    --purple-dark: #4c1d95;
+    --green: #059669;
+    --green-pale: #d1fae5;
+    --red: #dc2626;
+    --red-pale: #fee2e2;
+    --blue: #2563eb;
+    --blue-pale: #dbeafe;
+    --ink: #0f172a;
+    --ink-muted: #475569;
+    --ink-faint: #94a3b8;
+    --cream: #f8fafc;
+    --white: #ffffff;
+    --border: rgba(124,58,237,0.15);
+    --border-strong: rgba(124,58,237,0.3);
+    --radius: 12px;
+    --radius-lg: 20px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+ 
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; }
+ 
+  /* NAV */
+  nav { padding: 0 5vw; height: 60px; display: flex; align-items: center; justify-content: space-between; background: rgba(248,250,252,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+  .nav-logo { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--purple); text-decoration: none; letter-spacing: -0.5px; }
+  .nav-logo span { color: var(--ink); }
+  .nav-back { font-size: 13px; color: var(--ink-muted); text-decoration: none; display: flex; align-items: center; gap: 4px; }
+  .nav-back:hover { color: var(--purple); }
+ 
+  /* MAIN CONTAINER */
+  #game-container { max-width: 640px; margin: 0 auto; padding: 24px 5vw 80px; }
+ 
+  /* START SCREEN */
+  #start-screen { text-align: center; padding: 40px 0; }
+  .game-icon { font-size: 64px; margin-bottom: 16px; }
+  #start-screen h1 { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: var(--ink); margin-bottom: 8px; letter-spacing: -1px; }
+  #start-screen .tagline { font-size: 16px; color: var(--ink-muted); margin-bottom: 8px; font-weight: 300; line-height: 1.6; }
+  .ai-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; background: var(--blue-pale); color: var(--blue); padding: 5px 14px; border-radius: 20px; margin: 12px 0 24px; }
+  #name-input { padding: 12px 16px; border-radius: var(--radius); border: 1.5px solid var(--border-strong); font-size: 15px; width: 100%; max-width: 300px; margin-bottom: 12px; background: var(--white); color: var(--ink); font-family: 'DM Sans', sans-serif; display: block; margin-left: auto; margin-right: auto; outline: none; transition: border-color 0.2s; }
+  #name-input:focus { border-color: var(--purple); }
+  .start-btn { background: linear-gradient(135deg, var(--purple), var(--purple-dark)); color: #fff; border: none; padding: 13px 36px; border-radius: var(--radius); font-size: 16px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 4px 14px rgba(124,58,237,0.3); }
+  .start-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(124,58,237,0.4); }
+  .free-note { font-size: 12px; color: var(--ink-faint); margin-top: 10px; }
+ 
+  /* STATS BAR */
+  #stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+  .stat-box { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; box-shadow: var(--shadow); }
+  .stat-label { font-size: 11px; color: var(--ink-faint); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .stat-value { font-size: 15px; font-weight: 500; color: var(--ink); font-family: 'Syne', sans-serif; }
+ 
+  /* PROGRESS */
+  #progress-wrap { margin-bottom: 16px; }
+  .progress-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-faint); margin-bottom: 6px; }
+  #progress-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  #progress-fill { height: 100%; background: linear-gradient(90deg, var(--purple), var(--purple-light)); border-radius: 2px; transition: width 0.5s ease; }
+ 
+  /* SCENARIO CARD */
+  #scenario-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 16px; box-shadow: var(--shadow); }
+  .age-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; background: var(--purple-pale); color: var(--purple); padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .scenario-emoji { font-size: 18px; }
+  #scenario-text { font-size: 15px; color: var(--ink); line-height: 1.75; margin-bottom: 20px; font-weight: 300; }
+  #choices-list { display: flex; flex-direction: column; gap: 8px; }
+  .choice-btn { padding: 13px 16px; border: 1.5px solid var(--border-strong); border-radius: var(--radius); cursor: pointer; font-size: 14px; color: var(--ink); background: var(--white); text-align: left; line-height: 1.5; font-family: 'DM Sans', sans-serif; transition: all 0.15s; font-weight: 300; }
+  .choice-btn:hover:not(:disabled) { border-color: var(--purple); background: var(--purple-pale); color: var(--purple); transform: translateX(3px); }
+  .choice-btn.selected-good { border-color: var(--green); background: var(--green-pale); color: var(--green); font-weight: 500; }
+  .choice-btn.selected-bad { border-color: var(--red); background: var(--red-pale); color: var(--red); font-weight: 500; }
+  .choice-btn.dimmed { opacity: 0.3; }
+ 
+  /* FEEDBACK CARD */
+  #feedback-card { display: none; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 16px; box-shadow: var(--shadow); }
+  .feedback-result { padding: 16px 20px; border-bottom: 1px solid var(--border); }
+  .feedback-result-text { font-size: 14px; color: var(--ink-muted); line-height: 1.7; margin-bottom: 8px; font-weight: 300; }
+  .wealth-delta { font-size: 15px; font-weight: 500; }
+  .wealth-delta.positive { color: var(--green); }
+  .wealth-delta.negative { color: var(--red); }
+  .wealth-delta.neutral { color: var(--ink-faint); }
+ 
+  /* AI COACH */
+  .ai-coach-panel { padding: 16px 20px; background: var(--blue-pale); }
+  .ai-coach-header { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; color: var(--blue); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+  .ai-coach-header::before { content: '🤖'; font-size: 14px; }
+  #ai-feedback-text { font-size: 14px; color: var(--ink); line-height: 1.75; font-weight: 300; }
+  .ai-typing { font-size: 13px; color: var(--ink-faint); font-style: italic; }
+  .ai-typing::after { content: '...'; animation: dots 1.2s infinite; }
+  @keyframes dots { 0%,20%{content:'.'} 40%,60%{content:'..'} 80%,100%{content:'...'} }
+ 
+  .continue-btn { display: block; width: 100%; padding: 13px; border-radius: var(--radius); font-size: 14px; font-weight: 500; cursor: pointer; background: linear-gradient(135deg, var(--purple), var(--purple-dark)); color: #fff; border: none; font-family: 'DM Sans', sans-serif; margin-top: 12px; transition: transform 0.15s; }
+  .continue-btn:hover { transform: translateY(-1px); }
+ 
+  /* END SCREEN */
+  #end-screen { display: none; }
+  .end-hero { text-align: center; padding: 24px 0 16px; }
+  .end-trophy { font-size: 56px; margin-bottom: 12px; }
+  .end-name { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 4px; letter-spacing: -0.5px; }
+  .end-wealth { font-family: 'Syne', sans-serif; font-size: 44px; font-weight: 800; color: var(--green); letter-spacing: -2px; margin: 8px 0; }
+  .end-rating { font-size: 14px; color: var(--ink-muted); margin-bottom: 20px; }
+  .decisions-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+  .dec-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; }
+  .dec-age { font-size: 11px; color: var(--ink-faint); margin-bottom: 3px; }
+  .dec-status { font-size: 13px; font-weight: 500; }
+  .dec-status.good { color: var(--green); }
+  .dec-status.bad { color: var(--red); }
+  .dec-amount { font-size: 12px; color: var(--ink-faint); margin-top: 2px; }
+ 
+  /* AI FINAL ANALYSIS */
+  .final-ai-card { background: var(--blue-pale); border: 1px solid rgba(37,99,235,0.2); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px; }
+  .final-ai-header { font-size: 13px; font-weight: 600; color: var(--blue); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .final-ai-header::before { content: '🤖'; }
+  #final-ai-text { font-size: 14px; color: var(--ink); line-height: 1.8; font-weight: 300; }
+ 
+  /* PAYWALL */
+  .paywall-card { background: var(--white); border: 1.5px solid var(--border-strong); border-radius: var(--radius-lg); padding: 24px; text-align: center; margin-bottom: 16px; }
+  .paywall-card h3 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+  .paywall-card p { font-size: 14px; color: var(--ink-muted); margin-bottom: 20px; line-height: 1.6; font-weight: 300; }
+  .paywall-features { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; text-align: left; }
+  .paywall-feature { font-size: 13px; color: var(--ink-muted); display: flex; align-items: center; gap: 8px; }
+  .paywall-feature::before { content: '✦'; color: var(--purple); font-size: 10px; }
+  .unlock-btn { background: linear-gradient(135deg, var(--purple), var(--purple-dark)); color: #fff; border: none; padding: 13px 32px; border-radius: var(--radius); font-size: 16px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; display: block; width: 100%; margin-bottom: 10px; transition: transform 0.15s; }
+  .unlock-btn:hover { transform: translateY(-1px); }
+  .replay-btn { background: transparent; color: var(--ink-faint); border: 1px solid var(--border-strong); padding: 10px 24px; border-radius: var(--radius); font-size: 13px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .replay-btn:hover { color: var(--purple); border-color: var(--purple); }
+ 
+  /* FOOTER */
+  footer { text-align: center; padding: 24px 5vw; font-size: 12px; color: var(--ink-faint); }
+  footer a { color: var(--purple); text-decoration: none; }
+ 
+  @media (max-width: 480px) {
+    #stats-bar { grid-template-columns: repeat(2, 1fr); }
+    .decisions-grid { grid-template-columns: repeat(2, 1fr); }
+    .end-wealth { font-size: 36px; }
+  }
+</style>
+</head>
+<body>
+ 
+<nav>
+  <a href="https://playai.live" class="nav-logo">Play<span>AI</span></a>
+  <a href="https://playai.live" class="nav-back">← Back to PlayAI</a>
+</nav>
+ 
+<div id="game-container">
+ 
+  <!-- ===== START SCREEN ===== -->
+  <div id="start-screen">
+    <div class="game-icon">🌟</div>
+    <h1>Life Simulator</h1>
+    <p class="tagline">Make financial decisions from age 18 to 35.<br>Your AI coach analyses every choice in real time.</p>
+    <div class="ai-badge">🤖 Powered by Claude AI — personalised feedback on every decision</div>
+    <input id="name-input" type="text" placeholder="Enter your name..." maxlength="20" />
+    <button class="start-btn" onclick="startGame()">Start my life →</button>
+    <p class="free-note">Free: Ages 18–35 · Unlock full life to 65 for €2.99</p>
+  </div>
+ 
+  <!-- ===== GAME SCREEN ===== -->
+  <div id="game-screen" style="display:none;">
+ 
+    <div id="progress-wrap">
+      <div class="progress-meta">
+        <span id="chapter-label">Chapter 1 of 6</span>
+        <span id="player-label">Your Life</span>
+      </div>
+      <div id="progress-bar"><div id="progress-fill" style="width:0%"></div></div>
+    </div>
+ 
+    <div id="stats-bar">
+      <div class="stat-box"><div class="stat-label">Age</div><div class="stat-value" id="stat-age">18</div></div>
+      <div class="stat-box"><div class="stat-label">Wealth</div><div class="stat-value" id="stat-wealth">€0</div></div>
+      <div class="stat-box"><div class="stat-label">Income</div><div class="stat-value" id="stat-income">€0/mo</div></div>
+      <div class="stat-box"><div class="stat-label">Smart moves</div><div class="stat-value" id="stat-smart">0</div></div>
+    </div>
+ 
+    <div id="scenario-card">
+      <div class="age-pill"><span class="scenario-emoji">📍</span><span id="age-label">Age 18</span></div>
+      <div id="scenario-text">Loading...</div>
+      <div id="choices-list"></div>
+    </div>
+ 
+    <div id="feedback-card">
+      <div class="feedback-result">
+        <div class="feedback-result-text" id="result-text"></div>
+        <div class="wealth-delta" id="wealth-delta"></div>
+      </div>
+      <div class="ai-coach-panel">
+        <div class="ai-coach-header">AI Coach Analysis</div>
+        <div id="ai-feedback-text"><span class="ai-typing">Analysing your decision</span></div>
+      </div>
+      <div style="padding:12px 20px 16px;">
+        <button class="continue-btn" onclick="nextScenario()">Continue my life →</button>
+      </div>
+    </div>
+ 
+  </div>
+ 
+  <!-- ===== END SCREEN ===== -->
+  <div id="end-screen">
+    <div class="end-hero">
+      <div class="end-trophy" id="end-trophy">🏆</div>
+      <div class="end-name" id="end-name">Your Life Story</div>
+      <div class="end-wealth" id="end-wealth">€0</div>
+      <div class="end-rating" id="end-rating"></div>
+    </div>
+ 
+    <div class="decisions-grid" id="decisions-grid"></div>
+ 
+    <div class="final-ai-card">
+      <div class="final-ai-header">Your Personalised Life Analysis</div>
+      <div id="final-ai-text"><span class="ai-typing">Preparing your analysis</span></div>
+    </div>
+ 
+    <div class="paywall-card">
+      <h3>🚀 Continue to Age 65</h3>
+      <p>Your free journey ends at 35. Unlock the full game and live your complete financial life — buy a house, build a business, invest in stocks, and retire wealthy.</p>
+      <div class="paywall-features">
+        <div class="paywall-feature">Ages 35–65 with 12 more life decisions</div>
+        <div class="paywall-feature">AI coaching on every single choice</div>
+        <div class="paywall-feature">Buy property, build a business, retire</div>
+        <div class="paywall-feature">Full personalised retirement analysis</div>
+        <div class="paywall-feature">Unlimited replays with different choices</div>
+      </div>
+      <button class="unlock-btn" onclick="unlockGame()">Unlock full life — €2.99 →</button>
+      <button class="replay-btn" onclick="restartGame()">Play free version again</button>
+    </div>
+  </div>
+ 
+</div>
+ 
+<footer>
+  <a href="https://playai.live">PlayAI</a> · <a href="https://centai.org">CentAI Finance Advisor</a> · <a href="mailto:mroussis@icloud.com">Contact</a>
+</footer>
+ 
+<script>
+// ============================================
+// GAME CONFIGURATION
+// ============================================
+ 
+const CONFIG = {
+  FREE_CHAPTERS: 6,           // how many chapters are free
+  PAYWALL_PRICE: '€2.99',     // price shown on paywall
+  PAYWALL_URL: 'https://playai.live/#pricing', // where to send for payment
+  API_MODEL: 'claude-sonnet-4-20250514',
+  MAX_TOKENS: 1000,
+};
+ 
+// ============================================
+// SCENARIOS — add/edit life decisions here
+// Each scenario: { age, emoji, text, choices[] }
+// Each choice: { text, good, feedback, wealthChange, incomeChange }
+// ============================================
+ 
+const SCENARIOS = [
+  {
+    age: 18,
+    emoji: '🎓',
+    text: "You just finished school with €500 saved from part-time work. Your friends are going travelling for a year. What do you do?",
+    choices: [
+      { text: "Go travelling — you only live once! Spend your €500.", good: false, feedback: "Fun memories, but you return with €0 and no skills ahead of peers.", wealthChange: -500, incomeChange: 0 },
+      { text: "Start university — take a student loan for a business degree.", good: true, feedback: "Smart! Education doubles your long-term earning potential.", wealthChange: -200, incomeChange: 500 },
+      { text: "Get a job immediately and start saving.", good: true, feedback: "Practical! You build work experience and savings from day one.", wealthChange: 200, incomeChange: 1200 },
+      { text: "Start a small online business from home.", good: true, feedback: "Entrepreneurial thinking! You develop valuable skills early.", wealthChange: 100, incomeChange: 800 }
+    ]
+  },
+  {
+    age: 22,
+    emoji: '💳',
+    text: "You're earning €1,500/month with €2,000 saved. Your bank offers a credit card with a €5,000 limit. What do you do?",
+    choices: [
+      { text: "Get the card and use it freely — you deserve nice things!", good: false, feedback: "Credit card debt at 20% APR will cost you thousands over time.", wealthChange: -1500, incomeChange: -200 },
+      { text: "Get the card but use it only for emergencies, pay it off monthly.", good: true, feedback: "Perfect! Building credit history while avoiding interest charges.", wealthChange: 0, incomeChange: 0 },
+      { text: "Decline — you don't trust yourself with credit.", good: false, feedback: "No credit history makes getting mortgages and loans harder later.", wealthChange: 0, incomeChange: -100 },
+      { text: "Get it, use 10% of the limit, pay it off every month.", good: true, feedback: "Excellent discipline! You're building a great credit score.", wealthChange: 200, incomeChange: 0 }
+    ]
+  },
+  {
+    age: 25,
+    emoji: '💰',
+    text: "You receive a €3,000 work bonus. Your friends suggest celebrating with a luxury holiday. What do you do?",
+    choices: [
+      { text: "Book a luxury holiday — you worked hard for this!", good: false, feedback: "Nice memories, but €3,000 invested at 25 becomes €32,000 by retirement.", wealthChange: -3000, incomeChange: 0 },
+      { text: "Put it all in a savings account at 2% interest.", good: false, feedback: "Safe but inflation at 3% means you're losing real purchasing power.", wealthChange: 3000, incomeChange: 20 },
+      { text: "Invest €2,500 in an index fund, keep €500 for fun.", good: true, feedback: "Smart balance! Index funds return 7-10% annually over the long term.", wealthChange: 2500, incomeChange: 150 },
+      { text: "Use it as a deposit towards a rental property.", good: true, feedback: "Ambitious! Property builds equity and generates passive rental income.", wealthChange: 3000, incomeChange: 400 }
+    ]
+  },
+  {
+    age: 28,
+    emoji: '🤝',
+    text: "You have €8,000 saved. A close friend asks you to invest €5,000 in his restaurant startup, promising a 50% return. What do you do?",
+    choices: [
+      { text: "Invest the full €5,000 — he's your best friend!", good: false, feedback: "90% of restaurants fail in year one. You lost €5,000 and nearly the friendship.", wealthChange: -5000, incomeChange: 0 },
+      { text: "Invest a small amount — €500 maximum.", good: true, feedback: "Smart! Never invest more than you can afford to lose in a friend's business.", wealthChange: -500, incomeChange: 0 },
+      { text: "Decline politely — you have your own financial goals.", good: true, feedback: "Wise. Your €8,000 stays safe and keeps compounding.", wealthChange: 0, incomeChange: 0 },
+      { text: "Lend the money interest-free — not as an investment.", good: false, feedback: "Mixing money and friendship is risky. Money lent to friends rarely returns.", wealthChange: -5000, incomeChange: 0 }
+    ]
+  },
+  {
+    age: 30,
+    emoji: '💼',
+    text: "You can stay in your stable job (€2,500/month) or join an exciting startup (€1,800/month + stock options). What do you choose?",
+    choices: [
+      { text: "Stay — job security and a good salary matter most.", good: false, feedback: "Safe choice. But the startup was acquired for €50M. Your options would have been worth €200K.", wealthChange: 0, incomeChange: 0 },
+      { text: "Join the startup — the equity upside is worth the risk.", good: true, feedback: "Bold! The startup succeeds and gets acquired. Your stock options are worth €180,000.", wealthChange: 180000, incomeChange: -700 },
+      { text: "Negotiate a raise at your current employer first.", good: true, feedback: "Smart! You negotiate €2,800/month and stay in a stable, growing role.", wealthChange: 0, incomeChange: 300 },
+      { text: "Start your own business instead of either option.", good: true, feedback: "Entrepreneurial! It takes 2 years to be profitable but you build something entirely yours.", wealthChange: -10000, incomeChange: 2000 }
+    ]
+  },
+  {
+    age: 33,
+    emoji: '🏠',
+    text: "You have €25,000 saved. The property market is uncertain. Your partner wants to buy a house. What do you decide?",
+    choices: [
+      { text: "Buy now — renting is throwing money away!", good: true, feedback: "Property ownership builds equity over time. Your home value rises 40% in 10 years.", wealthChange: 25000, incomeChange: -800 },
+      { text: "Wait 2 years and save a bigger deposit first.", good: true, feedback: "Patient and strategic! You save €20K more and secure a better mortgage rate.", wealthChange: 20000, incomeChange: 0 },
+      { text: "Keep renting — invest the €25K in the stock market instead.", good: true, feedback: "Valid! €25K in index funds grows to €67K over 10 years at 7% annual return.", wealthChange: 25000, incomeChange: 300 },
+      { text: "Take the maximum mortgage using all your savings.", good: false, feedback: "Over-leveraged. When interest rates rise, repayments become unmanageable with no buffer.", wealthChange: 25000, incomeChange: -1500 }
+    ]
+  }
+];
+ 
+// ============================================
+// GAME STATE
+// ============================================
+ 
+let state = {
+  playerName: '',
+  wealth: 0,
+  income: 0,
+  smartMoves: 0,
+  currentChapter: 0,
+  decisions: [],
+  allDecisions: [],
+};
+ 
+// ============================================
+// UTILITY FUNCTIONS
+// ============================================
+ 
+function formatMoney(n) {
+  n = Math.max(0, n);
+  if (n >= 1000000) return '€' + (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return '€' + (n / 1000).toFixed(0) + 'K';
+  return '€' + Math.round(n).toLocaleString();
+}
+ 
+function updateStats() {
+  document.getElementById('stat-age').textContent = SCENARIOS[Math.min(state.currentChapter, SCENARIOS.length - 1)].age;
+  document.getElementById('stat-wealth').textContent = formatMoney(state.wealth);
+  document.getElementById('stat-income').textContent = formatMoney(state.income) + '/mo';
+  document.getElementById('stat-smart').textContent = state.smartMoves;
+}
+ 
+// ============================================
+// AI PROMPTS — edit these to change AI coaching
+// ============================================
+ 
+function buildCoachPrompt(scenario, choice, playerName, wealth) {
+  return `You are a warm, expert financial life coach in a game called Life Simulator on PlayAI.live.
+ 
+Player: "${playerName}", Age: ${scenario.age}
+Scenario: "${scenario.text}"
+Their choice: "${choice.text}"
+This was a ${choice.good ? 'GOOD' : 'POOR'} financial decision.
+Their current wealth after this decision: ${formatMoney(wealth)}
+ 
+Give exactly 2-3 sentences of personalised coaching:
+- If poor decision: explain what the optimal choice would have been and the real financial cost in numbers
+- If good decision: explain why this will compound positively and give a specific number (e.g. "this €2,500 invested could be worth €18,000 in 20 years at 7%")
+- Always use their name once
+- Be warm, specific, encouraging — not preachy
+- Keep it concise`;
+}
+ 
+function buildFinalPrompt(playerName, wealth, smartMoves, total, decisions) {
+  const decList = decisions.map(d => `Age ${d.age}: "${d.choice}" (${d.good ? 'good' : 'poor'})`).join('\n');
+  return `You are a financial life coach delivering a personalised end-of-game analysis for ${playerName}.
+ 
+Their decisions:
+${decList}
+ 
+Final wealth: ${formatMoney(wealth)}
+Smart decisions: ${smartMoves} out of ${total}
+ 
+Write a personalised 4-sentence analysis:
+1. Name their single biggest financial strength shown in the game
+2. Name their biggest financial weakness or missed opportunity  
+3. One specific, actionable real-life tip they should apply TODAY (be very specific — e.g. "open an index fund account this week and invest €200/month")
+4. Encouraging close using their name
+ 
+Be warm, specific, direct. Use their actual decisions as evidence. Do not use bullet points.`;
+}
+ 
+// ============================================
+// AI API CALL
+// ============================================
+ 
+async function callAI(prompt) {
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: CONFIG.API_MODEL,
+        max_tokens: CONFIG.MAX_TOKENS,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await response.json();
+    return data.content?.[0]?.text || null;
+  } catch (e) {
+    return null;
+  }
+}
+ 
+// ============================================
+// GAME FLOW
+// ============================================
+ 
+function startGame() {
+  state.playerName = document.getElementById('name-input').value.trim() || 'You';
+  state = { ...state, wealth: 0, income: 0, smartMoves: 0, currentChapter: 0, decisions: [], allDecisions: [] };
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('game-screen').style.display = 'block';
+  document.getElementById('player-label').textContent = state.playerName + "'s Life";
+  renderScenario();
+}
+ 
+function renderScenario() {
+  const s = SCENARIOS[state.currentChapter];
+  document.getElementById('age-label').textContent = 'Age ' + s.age;
+  document.querySelector('.scenario-emoji').textContent = s.emoji;
+  document.getElementById('scenario-text').textContent = s.text;
+  document.getElementById('chapter-label').textContent = 'Chapter ' + (state.currentChapter + 1) + ' of ' + CONFIG.FREE_CHAPTERS;
+  document.getElementById('progress-fill').style.width = ((state.currentChapter / CONFIG.FREE_CHAPTERS) * 100) + '%';
+  document.getElementById('feedback-card').style.display = 'none';
+  updateStats();
+ 
+  const list = document.getElementById('choices-list');
+  list.innerHTML = '';
+  s.choices.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c.text;
+    btn.onclick = () => selectChoice(i);
+    list.appendChild(btn);
+  });
+}
+ 
+async function selectChoice(i) {
+  const s = SCENARIOS[state.currentChapter];
+  const c = s.choices[i];
+ 
+  // Update state
+  state.wealth += c.wealthChange;
+  state.income += c.incomeChange;
+  if (c.good) state.smartMoves++;
+  if (state.wealth < 0) state.wealth = 0;
+  state.decisions.push({ age: s.age, choice: c.text, good: c.good, change: c.wealthChange });
+  state.allDecisions.push({ age: s.age, scenario: s.text, choice: c.text, good: c.good });
+ 
+  // Highlight choice
+  const btns = document.querySelectorAll('.choice-btn');
+  btns.forEach((b, idx) => {
+    b.disabled = true;
+    if (idx === i) b.classList.add(c.good ? 'selected-good' : 'selected-bad');
+    else b.classList.add('dimmed');
+  });
+ 
+  // Show feedback
+  document.getElementById('result-text').textContent = c.feedback;
+  const delta = document.getElementById('wealth-delta');
+  if (c.wealthChange > 0) { delta.textContent = '+' + formatMoney(c.wealthChange) + ' to your wealth'; delta.className = 'wealth-delta positive'; }
+  else if (c.wealthChange < 0) { delta.textContent = formatMoney(c.wealthChange) + ' from your wealth'; delta.className = 'wealth-delta negative'; }
+  else { delta.textContent = 'Wealth unchanged'; delta.className = 'wealth-delta neutral'; }
+ 
+  // Show AI panel with loading
+  document.getElementById('ai-feedback-text').innerHTML = '<span class="ai-typing">Analysing your decision</span>';
+  document.getElementById('feedback-card').style.display = 'block';
+  updateStats();
+ 
+  // Get AI coaching
+  const prompt = buildCoachPrompt(s, c, state.playerName, state.wealth);
+  const aiText = await callAI(prompt);
+  document.getElementById('ai-feedback-text').textContent = aiText || 
+    `${state.playerName}, ${c.feedback} Remember — every financial decision you make today compounds over the next 20-30 years. ${c.good ? 'Keep making moves like this!' : 'The key is to learn from this and adjust your strategy going forward.'}`;
+}
+ 
+function nextScenario() {
+  state.currentChapter++;
+  if (state.currentChapter >= CONFIG.FREE_CHAPTERS) {
+    showEndScreen();
+  } else {
+    renderScenario();
+  }
+}
+ 
+async function showEndScreen() {
+  document.getElementById('game-screen').style.display = 'none';
+  document.getElementById('end-screen').style.display = 'block';
+ 
+  // Ratings
+  const score = state.smartMoves / CONFIG.FREE_CHAPTERS;
+  let trophy, title, rating;
+  if (score >= 0.85) { trophy = '🏆'; title = 'Outstanding Life!'; rating = '🌟🌟🌟🌟🌟 Financial Genius'; }
+  else if (score >= 0.65) { trophy = '🥇'; title = 'Great Life!'; rating = '🌟🌟🌟🌟 Smart Investor'; }
+  else if (score >= 0.45) { trophy = '🥈'; title = 'Decent Life'; rating = '🌟🌟🌟 Average Joe'; }
+  else { trophy = '🥉'; title = 'Room to Improve'; rating = '🌟🌟 Keep Learning'; }
+ 
+  document.getElementById('end-trophy').textContent = trophy;
+  document.getElementById('end-name').textContent = state.playerName + "'s Life — " + title;
+  document.getElementById('end-wealth').textContent = formatMoney(state.wealth);
+  document.getElementById('end-rating').textContent = rating + ' · ' + state.smartMoves + '/' + CONFIG.FREE_CHAPTERS + ' smart decisions';
+ 
+  // Decision cards
+  const grid = document.getElementById('decisions-grid');
+  grid.innerHTML = state.decisions.map(d => `
+    <div class="dec-card">
+      <div class="dec-age">Age ${d.age}</div>
+      <div class="dec-status ${d.good ? 'good' : 'bad'}">${d.good ? '✓ Smart move' : '✗ Missed opportunity'}</div>
+      <div class="dec-amount">${d.change > 0 ? '+' : ''}${d.change !== 0 ? formatMoney(Math.abs(d.change)) : '—'}</div>
+    </div>`).join('');
+ 
+  // Final AI analysis
+  const prompt = buildFinalPrompt(state.playerName, state.wealth, state.smartMoves, CONFIG.FREE_CHAPTERS, state.allDecisions);
+  const aiText = await callAI(prompt);
+  document.getElementById('final-ai-text').textContent = aiText ||
+    `${state.playerName}, you made ${state.smartMoves} smart financial decisions out of ${CONFIG.FREE_CHAPTERS}. ${score >= 0.5 ? 'Your instinct for investing shows real financial intelligence — keep building on this.' : 'The biggest opportunity you missed was investing early. Even €200/month from age 22 becomes €500,000+ by retirement at 7% annual return.'} The single most important action you can take today: open an index fund account (DEGIRO or Trading 212) and set up a monthly automatic investment — even €100/month makes a massive difference over 20 years. The journey to financial freedom starts with one decision. Make it today.`;
+}
+ 
+function unlockGame() {
+  window.open(CONFIG.PAYWALL_URL, '_blank');
+}
+ 
+function restartGame() {
+  state = { playerName: state.playerName, wealth: 0, income: 0, smartMoves: 0, currentChapter: 0, decisions: [], allDecisions: [] };
+  document.getElementById('end-screen').style.display = 'none';
+  document.getElementById('game-screen').style.display = 'block';
+  renderScenario();
+}
+ 
+// Expose to window
+window.startGame = startGame;
+window.nextScenario = nextScenario;
+window.unlockGame = unlockGame;
+window.restartGame = restartGame;
+</script>
+ 
+</body>
+</html>
