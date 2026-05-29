@@ -739,9 +739,11 @@ function fallbackAI(completed) {
 // INPUT
 // ============================================
 
-document.addEventListener('keydown',e=>{if(e.code==='Space'||e.code==='ArrowUp'){handleJump();e.preventDefault();}});
-document.addEventListener('touchstart',e=>{handleJump();e.preventDefault();},{passive:false});
-canvas.addEventListener('mousedown',()=>handleJump());
+document.addEventListener('keydown',e=>{if(e.code==='Space'||e.code==='ArrowUp'||e.key===' '){jumpPress();e.preventDefault();}});
+document.addEventListener('touchstart',e=>{jumpPress();e.preventDefault();},{passive:false});
+  document.addEventListener('touchend',e=>{jumpRelease();e.preventDefault();},{passive:false});
+canvas.addEventListener('mousedown',()=>jumpPress());
+  document.addEventListener('mouseup',()=>jumpRelease());
 
 // ============================================
 // INIT
