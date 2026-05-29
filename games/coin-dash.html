@@ -51,6 +51,8 @@ nav{padding:0 16px;height:44px;display:flex;align-items:center;justify-content:s
 /* tap hint */
 #tap-hint{position:absolute;bottom:12px;font-size:12px;color:rgba(255,255,255,0.25);pointer-events:none;animation:fadeHint 3s forwards;}
 @keyframes fadeHint{0%{opacity:1;}70%{opacity:1;}100%{opacity:0;}}
+@keyframes bounce{0%{transform:translateY(0);}100%{transform:translateY(-10px);}}
+@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
 </style>
 </head>
 <body>
@@ -97,6 +99,12 @@ nav{padding:0 16px;height:44px;display:flex;align-items:center;justify-content:s
 </div>
 
 <script>
+// ============================================
+// PAYWALL CONFIG — change FREE_LEVELS to adjust
+// ============================================
+const FREE_LEVELS = 2; // levels 1-2 are free, rest need payment
+const PAYWALL_URL = 'https://playai.live/#pricing';
+
 // ============================================
 // CANVAS SETUP
 // ============================================
@@ -168,44 +176,87 @@ const LEVELS = [
 // OBSTACLE PATTERNS
 // ============================================
 function getPatterns(diff) {
-  const H1 = () => ({type:'spike', h: GROUND * 0.18});
-  const H2 = () => ({type:'spike', h: GROUND * 0.28});
-  const H3 = () => ({type:'spike', h: GROUND * 0.38});
-  const WALL = () => ({type:'wall', gap:H*0.48, gapY: GROUND*0.28});
-  const CEIL_SPIKE = () => ({type:'ceiling_spike', h: GROUND * 0.15});
-  const DOUBLE = () => ({type:'double', h1: GROUND*0.18, h2: GROUND*0.18, sep:80});
+  // Spike heights
+  const S1 = () => ({type:'spike', h: GROUND*0.16});
+  const S2 = () => ({type:'spike', h: GROUND*0.26});
+  const S3 = () => ({type:'spike', h: GROUND*0.36});
+  const S4 = () => ({type:'spike', h: GROUND*0.42});
+  // Walls
+  const W1 = () => ({type:'wall', gap:H*0.52, gapY:GROUND*0.22});
+  const W2 = () => ({type:'wall', gap:H*0.42, gapY:GROUND*0.26});
+  const W3 = () => ({type:'wall', gap:H*0.34, gapY:GROUND*0.28});
+  // Ceiling spikes
+  const C1 = () => ({type:'ceiling_spike', h:GROUND*0.14});
+  const C2 = () => ({type:'ceiling_spike', h:GROUND*0.22});
+  // Platform (safe spot mid air)
+  const PLAT = (yo) => ({type:'platform', h:10, yo: yo||GROUND*0.45, w:60});
+
+  // Offset helper
+  const o = (ob,off) => ({...ob, offset:off});
 
   const easy = [
-    [H1()],
-    [H1(),{...H1(),offset:200}],
-    [H2()],
-    [WALL()],
-    [H1(),{...H2(),offset:300}],
+    [S1()],
+    [S2()],
+    [o(S1(),0),o(S1(),220)],
+    [W1()],
+    [o(S1(),0),o(S2(),280)],
+    [S1(),o(S1(),180),o(S1(),360)],
+    [W1(),o(S1(),320)],
+    [S2(),o(S2(),260)],
   ];
+
   const medium = [
-    [H2()],
-    [H1(),{...H1(),offset:160},{...H1(),offset:320}],
-    [WALL()],
-    [H3()],
-    [DOUBLE()],
-    [H1(),{...WALL(),offset:250}],
+    [S2(),o(S2(),200)],
+    [S3()],
+    [o(S1(),0),o(S1(),140),o(S1(),280)],
+    [W2()],
+    [o(S2(),0),o(W1(),280)],
+    [C1(),o(S2(),160)],
+    [o(S1(),0),o(S2(),120),o(S3(),260)],
+    [W2(),o(S2(),320)],
+    [o(S2(),0),o(S2(),120),o(S2(),240)],
+    [C1(),o(C1(),200)],
   ];
+
+  const medhard = [
+    [S3(),o(S3(),180)],
+    [W2(),o(S2(),320)],
+    [o(S1(),0),o(S1(),100),o(S1(),200),o(S1(),300)],
+    [C1(),o(S3(),150)],
+    [o(S2(),0),o(W2(),220)],
+    [o(S3(),0),o(S3(),140),o(S3(),280)],
+    [C2(),o(S2(),180)],
+    [W2(),o(C1(),280)],
+    [o(S2(),0),o(S2(),100),o(S2(),200),o(S2(),300)],
+  ];
+
   const hard = [
-    [H3()],
-    [DOUBLE()],
-    [H1(),{...H1(),offset:120},{...H1(),offset:240}],
-    [WALL(),{...H2(),offset:300}],
-    [CEIL_SPIKE(),{...H2(),offset:150}],
-    [H2(),{...H2(),offset:100},{...H2(),offset:200}],
+    [S4(),o(S4(),160)],
+    [W3()],
+    [o(S2(),0),o(S2(),90),o(S2(),180),o(S2(),270)],
+    [C2(),o(S4(),140)],
+    [o(S3(),0),o(W3(),200)],
+    [o(C1(),0),o(C1(),150),o(S4(),300)],
+    [W3(),o(C2(),260)],
+    [o(S3(),0),o(S3(),100),o(S3(),200),o(S3(),300)],
+    [C2(),o(C2(),160),o(S4(),320)],
+    [o(S2(),0),o(S4(),120),o(S2(),240),o(S4(),360)],
   ];
+
   const extreme = [
-    [DOUBLE(),{...H3(),offset:120}],
-    [H1(),{...H1(),offset:80},{...H1(),offset:160},{...H1(),offset:240}],
-    [WALL(),{...CEIL_SPIKE(),offset:200}],
-    [H3(),{...H3(),offset:100},{...H3(),offset:200}],
-    [CEIL_SPIKE(),{...DOUBLE(),offset:180}],
+    [o(S4(),0),o(S4(),100),o(S4(),200),o(S4(),300)],
+    [W3(),o(C2(),220)],
+    [o(C2(),0),o(S4(),140),o(C2(),280)],
+    [o(S3(),0),o(S3(),80),o(S3(),160),o(S3(),240),o(S3(),320)],
+    [W3(),o(W3(),280)],
+    [o(C2(),0),o(C2(),120),o(S4(),240),o(S4(),360)],
+    [o(S4(),0),o(W3(),180),o(S4(),380)],
+    [o(C2(),0),o(S4(),100),o(C2(),200),o(S4(),300)],
+    [W3(),o(C2(),160),o(S4(),320)],
   ];
-  return {easy,medium,'medium-hard':hard,hard,extreme}[diff]||easy;
+
+  const map = {easy,medium,'medium-hard':medhard,hard,extreme};
+  return map[diff]||easy;
 }
 
 // ============================================
@@ -467,11 +518,83 @@ function die() {
 
 function levelComplete() {
   G.dead=true; G.running=false;
+  clearInterval(G.loop);
   const lv=LEVELS[G.currentLevel];
   if(G.score>G.bestScores[G.currentLevel]) G.bestScores[G.currentLevel]=G.score;
   if(G.currentLevel+1<LEVELS.length) LEVELS[G.currentLevel+1].unlocked=true;
   buildLevelSelect();
-  showDead(true);
+  // Show celebration overlay on canvas
+  showLevelCompleteScreen();
+}
+
+function showLevelCompleteScreen() {
+  const lv = LEVELS[G.currentLevel];
+  const nextLv = LEVELS[G.currentLevel+1];
+  const overlay = document.getElementById('dead-screen');
+  overlay.style.display = 'flex';
+  // Custom completion HTML
+  overlay.innerHTML = `
+    <div style="font-size:56px;margin-bottom:8px;animation:bounce 0.6s infinite alternate;">🏆</div>
+    <div style="font-family:Syne,sans-serif;font-size:28px;font-weight:800;letter-spacing:-1px;margin-bottom:4px;background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">LEVEL COMPLETE!</div>
+    <div style="font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:16px;">${lv.emoji} ${lv.name} — CLEARED!</div>
+    <div style="display:flex;gap:12px;margin-bottom:16px;">
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 16px;text-align:center;">
+        <div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:#a78bfa;">${G.score.toLocaleString()}</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);text-transform:uppercase;">Score</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 16px;text-align:center;">
+        <div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:#fbbf24;">${G.coinCount}</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);text-transform:uppercase;">Coins</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 16px;text-align:center;">
+        <div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:#6ee7b7;">100%</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);text-transform:uppercase;">Done</div>
+      </div>
+    </div>
+    ${nextLv ? `
+    <div style="background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(76,29,149,0.2));border:1px solid rgba(124,58,237,0.3);border-radius:12px;padding:12px 16px;margin-bottom:16px;text-align:center;">
+      <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:4px;">NEXT LEVEL UNLOCKED</div>
+      <div style="font-size:18px;font-weight:600;color:#fff;">${nextLv.emoji} ${nextLv.name}</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.4);">${nextLv.desc}</div>
+    </div>
+    <button onclick="playNextLevel()" ontouchend="playNextLevel();event.preventDefault();" style="background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;border:none;padding:13px 32px;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;width:100%;margin-bottom:8px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;box-shadow:0 4px 20px rgba(124,58,237,0.5);">
+      ▶ Play ${nextLv.emoji} ${nextLv.name}
+    </button>` : `
+    <div style="font-size:14px;color:#fbbf24;margin-bottom:16px;">🎉 You completed ALL levels! You're a Money Master!</div>`}
+    <button onclick="restartGame()" ontouchend="restartGame();event.preventDefault();" style="background:transparent;color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.15);padding:10px 24px;border-radius:10px;font-size:13px;cursor:pointer;font-family:DM Sans,sans-serif;touch-action:manipulation;margin-bottom:8px;">↺ Replay ${lv.emoji} ${lv.name}</button>
+    <br>
+    <button onclick="showStart()" ontouchend="showStart();event.preventDefault();" style="background:transparent;color:rgba(255,255,255,0.25);border:none;padding:6px 16px;border-radius:8px;font-size:12px;cursor:pointer;font-family:DM Sans,sans-serif;touch-action:manipulation;">Level Select</button>
+    <div id="ai-completion-text" style="background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.2);border-radius:10px;padding:10px 14px;margin-top:12px;max-width:320px;font-size:13px;color:rgba(255,255,255,0.7);line-height:1.5;text-align:left;">
+      <span style="font-size:10px;font-weight:600;color:#93c5fd;display:block;margin-bottom:4px;">🤖 AI COACH</span>
+      <span>Analysing your run...</span>
+    </div>
+  `;
+  // Get AI feedback
+  getCompletionAI(lv);
+}
+
+function playNextLevel() {
+  if(G.currentLevel+1 < LEVELS.length) {
+    G.currentLevel++;
+    document.getElementById('dead-screen').style.display='none';
+    initGame(G.currentLevel);
+    G.running=true;
+    lastTime=performance.now();
+    requestAnimationFrame(gameLoop);
+  }
+}
+
+async function getCompletionAI(lv) {
+  try {
+    const prompt = `You are an AI coach in "Coin Dash" game on PlayAI.live. Player just completed level "${lv.name}" (${lv.desc}). Score: ${G.score}, Coins: ${G.coinCount}. Write ONE exciting sentence congratulating them and connecting their achievement to a real money lesson. Max 1 sentence, use emojis!`;
+    const r = await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const d = await r.json();
+    const el = document.getElementById('ai-completion-text');
+    if(el) el.innerHTML = '<span style="font-size:10px;font-weight:600;color:#93c5fd;display:block;margin-bottom:4px;">🤖 AI COACH</span>' + (d.content?.[0]?.text || '🎉 Amazing! Keep collecting those coins — in real life, consistent saving like this builds real wealth!');
+  } catch(e) {
+    const el = document.getElementById('ai-completion-text');
+    if(el) el.innerHTML = '<span style="font-size:10px;font-weight:600;color:#93c5fd;display:block;margin-bottom:4px;">🤖 AI COACH</span>🎉 Level complete! Just like investing, consistency and persistence always pay off!';
+  }
 }
 
 // ============================================
@@ -798,16 +921,47 @@ function buildLevelSelect() {
   const wrap=document.getElementById('level-select');
   wrap.innerHTML='';
   LEVELS.forEach((lv,i)=>{
+    const isPremium = i >= FREE_LEVELS;
     const btn=document.createElement('button');
-    btn.className='lvl-btn'+(i===0?' active':'')+(lv.unlocked?'':' locked');
-    btn.textContent=lv.emoji+' '+lv.name;
-    if(lv.unlocked) btn.onclick=()=>{
-      document.querySelectorAll('.lvl-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedLevel=i;
-    };
+    btn.className='lvl-btn'+(i===0?' active':'')+(lv.unlocked&&!isPremium?'':isPremium?' locked':'');
+    btn.innerHTML = (isPremium?'🔒 ':'')+lv.emoji+' '+lv.name+(isPremium?'<span style="font-size:9px;color:#fbbf24;display:block;">PRO</span>':'');
+    btn.style.position='relative';
+    if(lv.unlocked && !isPremium) {
+      btn.onclick=()=>{
+        document.querySelectorAll('.lvl-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedLevel=i;
+      };
+    } else if(isPremium) {
+      btn.onclick=()=>showPaywall(lv.name);
+    }
     wrap.appendChild(btn);
   });
+}
+
+function showPaywall(levelName) {
+  const overlay = document.getElementById('dead-screen');
+  overlay.style.display = 'flex';
+  overlay.innerHTML = `
+    <div style="font-size:48px;margin-bottom:10px;">🔒</div>
+    <div style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;color:#fff;margin-bottom:6px;">Premium Level</div>
+    <div style="font-size:14px;color:rgba(255,255,255,0.4);margin-bottom:20px;">${levelName} requires PlayAI Pro</div>
+    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px 18px;margin-bottom:20px;text-align:left;max-width:300px;">
+      <div style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.8;">
+        ✦ All 6 Coin Dash levels<br>
+        ✦ Life Simulator full game<br>
+        ✦ Money Snake unlimited<br>
+        ✦ All future games<br>
+        ✦ CentAI unlimited questions
+      </div>
+    </div>
+    <button onclick="window.open('${PAYWALL_URL}','_blank')" ontouchend="window.open('${PAYWALL_URL}','_blank');event.preventDefault();" style="background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;border:none;padding:13px 32px;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;width:100%;margin-bottom:8px;touch-action:manipulation;box-shadow:0 4px 20px rgba(124,58,237,0.4);">
+      Unlock All Levels — €24.99/mo
+    </button>
+    <button onclick="document.getElementById('dead-screen').style.display='none';" ontouchend="document.getElementById('dead-screen').style.display='none';event.preventDefault();" style="background:transparent;color:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.1);padding:10px 24px;border-radius:10px;font-size:13px;cursor:pointer;font-family:DM Sans,sans-serif;touch-action:manipulation;">
+      Maybe later
+    </button>
+  `;
 }
 
 let selectedLevel=0;
@@ -818,6 +972,10 @@ function showStart() {
 }
 
 function startGame() {
+  if(selectedLevel >= FREE_LEVELS) {
+    showPaywall(LEVELS[selectedLevel].name);
+    return;
+  }
   document.getElementById('start-screen').style.display='none';
   document.getElementById('dead-screen').style.display='none';
   initGame(selectedLevel);
@@ -892,6 +1050,8 @@ resize();
 })();
 
 window.startGame=startGame;
+window.playNextLevel=playNextLevel;
+window.showPaywall=showPaywall;
 window.restartGame=restartGame;
 window.showStart=showStart;
 </script>
