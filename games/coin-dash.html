@@ -69,13 +69,13 @@ nav{padding:0 16px;height:44px;display:flex;align-items:center;justify-content:s
   <div id="canvas-wrap">
     <canvas id="gc"></canvas>
     <!-- START SCREEN -->
-    <div class="screen" id="start-screen">
+    <div class="screen" id="start-screen" ontouchstart="event.preventDefault()">
       <div style="font-size:52px;margin-bottom:12px;animation:spin 3s linear infinite;">🪙</div>
       <div class="screen-title" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">COIN DASH</div>
       <div class="screen-sub">Jump. Collect. Get rich.<br>Avoid debt — it kills your wealth!</div>
       <div class="level-select" id="level-select"></div>
-      <button class="big-btn btn-play" onclick="startGame()">▶ Play Now</button>
-      <div style="font-size:11px;color:rgba(255,255,255,0.2);margin-top:10px;">HOLD SPACE / TAP to hover in the air! 🚀</div>
+      <button class="big-btn btn-play" onclick="startGame()" ontouchend="startGame();event.preventDefault();" style="cursor:pointer;-webkit-tap-highlight-color:transparent;">▶ Play Now</button>
+      <div style="font-size:11px;color:rgba(255,255,255,0.2);margin-top:10px;">TAP or HOLD to jump & hover! 🚀</div>
     </div>
     <!-- DEAD SCREEN -->
     <div class="screen" id="dead-screen">
@@ -468,8 +468,14 @@ function render() {
   // Background gradient
   const bgGrad = ctx.createLinearGradient(0,0,0,H);
   bgGrad.addColorStop(0,lv.bg1);
-  bgGrad.addColorStop(1,lv.bg2);
+  bgGrad.addColorStop(0.6,lv.bg2);
+  bgGrad.addColorStop(1,'#000');
   ctx.fillStyle=bgGrad;
+  ctx.fillRect(0,0,W,H);
+
+  // Animated background pulse based on speed
+  const pulse = Math.sin(G.frameCount*0.05)*0.03+0.03;
+  ctx.fillStyle=`rgba(${lv.color.slice(1).match(/../g).map(h=>parseInt(h,16)).join(',')},${pulse})`;
   ctx.fillRect(0,0,W,H);
 
   // Stars
@@ -489,11 +495,21 @@ function render() {
   groundGrad.addColorStop(1,'rgba(0,0,0,0.8)');
   ctx.fillStyle=groundGrad;
   ctx.fillRect(0,GROUND,W,H-GROUND);
-  // Ground line
+  // Speed lines for excitement
+  ctx.strokeStyle=lv.color+'40';
+  ctx.lineWidth=1;
+  const lineSpeed = (G.distance*2)%W;
+  for(let i=0;i<5;i++){
+    const lx = (lineSpeed + i*(W/5))%W;
+    const len = 40+Math.random()*60;
+    ctx.beginPath(); ctx.moveTo(lx,GROUND*0.3+Math.random()*GROUND*0.5); ctx.lineTo(lx-len,GROUND*0.3+Math.random()*GROUND*0.5); ctx.stroke();
+  }
+
+  // Ground line with glow
   ctx.strokeStyle=lv.color;
-  ctx.lineWidth=2;
+  ctx.lineWidth=3;
   ctx.shadowColor=lv.color;
-  ctx.shadowBlur=8;
+  ctx.shadowBlur=12;
   ctx.beginPath(); ctx.moveTo(0,GROUND); ctx.lineTo(W,GROUND); ctx.stroke();
   ctx.shadowBlur=0;
 
@@ -537,33 +553,55 @@ function render() {
   // Obstacles
   G.obstacles.forEach(ob=>{
     if(ob.x+ob.w<0||ob.x>W) return;
-    ctx.shadowColor=ob.color; ctx.shadowBlur=8;
+    // Bright glowing obstacles
+    ctx.shadowColor='#ff0000'; ctx.shadowBlur=15;
     ctx.fillStyle=ob.color;
     if(ob.type==='spike') {
-      // Triangle spike
+      // Draw spike triangle
       ctx.beginPath();
-      ctx.moveTo(ob.x+ob.w/2,ob.y);
-      ctx.lineTo(ob.x+ob.w,ob.y+ob.h);
-      ctx.lineTo(ob.x,ob.y+ob.h);
+      ctx.moveTo(ob.x+ob.w/2, ob.y);
+      ctx.lineTo(ob.x+ob.w, ob.y+ob.h);
+      ctx.lineTo(ob.x, ob.y+ob.h);
       ctx.closePath(); ctx.fill();
-      // Highlight
-      ctx.fillStyle='rgba(255,255,255,0.25)';
+      // White highlight
+      ctx.fillStyle='rgba(255,255,255,0.3)';
       ctx.beginPath();
-      ctx.moveTo(ob.x+ob.w/2,ob.y+4);
-      ctx.lineTo(ob.x+ob.w*0.7,ob.y+ob.h*0.5);
-      ctx.lineTo(ob.x+ob.w/2,ob.y+ob.h*0.4);
+      ctx.moveTo(ob.x+ob.w/2, ob.y+2);
+      ctx.lineTo(ob.x+ob.w*0.72, ob.y+ob.h*0.45);
+      ctx.lineTo(ob.x+ob.w/2, ob.y+ob.h*0.35);
       ctx.closePath(); ctx.fill();
+      // DEBT label on spike
+      ctx.fillStyle='#fff';
+      ctx.font=`bold ${Math.max(9,Math.round(ob.w*0.35))}px sans-serif`;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('💸', ob.x+ob.w/2, ob.y+ob.h*0.65);
     } else if(ob.type==='ceiling_spike') {
       ctx.beginPath();
-      ctx.moveTo(ob.x+ob.w/2,ob.y+ob.h);
-      ctx.lineTo(ob.x+ob.w,ob.y);
-      ctx.lineTo(ob.x,ob.y);
+      ctx.moveTo(ob.x+ob.w/2, ob.y+ob.h);
+      ctx.lineTo(ob.x+ob.w, ob.y);
+      ctx.lineTo(ob.x, ob.y);
       ctx.closePath(); ctx.fill();
+      ctx.fillStyle='#fff';
+      ctx.font=`bold ${Math.max(9,Math.round(ob.w*0.35))}px sans-serif`;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('💸', ob.x+ob.w/2, ob.y+ob.h*0.4);
     } else if(ob.type==='wall') {
+      // Gradient wall
+      const wg = ctx.createLinearGradient(ob.x,0,ob.x+ob.w,0);
+      wg.addColorStop(0, ob.color);
+      wg.addColorStop(1, ob.color+'99');
+      ctx.fillStyle=wg;
       ctx.fillRect(ob.x,ob.y,ob.w,ob.h);
-      // Pattern
-      ctx.fillStyle='rgba(0,0,0,0.2)';
-      for(let y=ob.y;y<ob.y+ob.h;y+=20) ctx.fillRect(ob.x,y,ob.w,2);
+      // Danger stripes
+      ctx.fillStyle='rgba(0,0,0,0.25)';
+      for(let y=ob.y;y<ob.y+ob.h;y+=16) ctx.fillRect(ob.x,y,ob.w,8);
+      // DEBT text on wall
+      if(ob.h>40){
+        ctx.fillStyle='rgba(255,255,255,0.7)';
+        ctx.font='bold 11px sans-serif';
+        ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText('DEBT', ob.x+ob.w/2, ob.y+ob.h/2);
+      }
     }
     ctx.shadowBlur=0;
   });
