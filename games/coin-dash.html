@@ -75,7 +75,7 @@ nav{padding:0 16px;height:44px;display:flex;align-items:center;justify-content:s
       <div class="screen-sub">Jump. Collect. Get rich.<br>Avoid debt — it kills your wealth!</div>
       <div class="level-select" id="level-select"></div>
       <button class="big-btn btn-play" onclick="startGame()">▶ Play Now</button>
-      <div style="font-size:11px;color:rgba(255,255,255,0.2);margin-top:10px;">SPACE / TAP to jump · Keep pressing to hover! 🚀</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.2);margin-top:10px;">HOLD SPACE / TAP to hover in the air! 🚀</div>
     </div>
     <!-- DEAD SCREEN -->
     <div class="screen" id="dead-screen">
@@ -231,7 +231,7 @@ function initGame(levelIdx) {
   G.score = 0; G.coinCount = 0; G.distance = 0; G.levelProgress = 0;
   G.obstacles = []; G.coins = []; G.particles = []; G.trailPoints = [];
   G.dead = false; G.running = false; G.frameCount = 0;
-  G.shake = 0; G.doubleJumpAvailable = false; G.doubleJumpFlash = 0; G.lastJumpTime = 0;
+  G.shake = 0; G.doubleJumpAvailable = false; G.doubleJumpFlash = 0; G.lastJumpTime = 0; G.isHolding = false;
   initStars();
   // Pre-generate obstacles
   generateObstacles(levelIdx);
@@ -302,8 +302,17 @@ function update(dt) {
   G.score = Math.floor(G.distance/10) + G.coinCount*10;
   G.frameCount++;
 
-  // Player physics
-  G.playerVY += G.gravity * dt;
+  // Player physics — hold/press space to float up
+  if(G.isHolding && !G.playerOnGround) {
+    // While holding — fight gravity, float upward
+    G.playerVY += (G.gravity * 0.3 - 0.8) * dt;
+  } else {
+    G.playerVY += G.gravity * dt;
+  }
+  // Cap fall speed
+  G.playerVY = Math.min(G.playerVY, 12);
+  // Cap rise speed
+  G.playerVY = Math.max(G.playerVY, -14);
   G.playerY += G.playerVY * dt;
 
   // Ground
@@ -393,28 +402,29 @@ function update(dt) {
   updateHUD();
 }
 
-function jump() {
+function jumpPress() {
+  // Called on keydown/touchstart — start holding
   if(!G.running || G.dead) return;
+  G.isHolding = true;
   const lv = LEVELS[G.currentLevel];
-  const now = Date.now();
-  // Cooldown between presses to prevent too fast spam
-  if(now - G.lastJumpTime < 180) return;
-  G.lastJumpTime = now;
-
   if(G.playerOnGround) {
-    // Jump from ground
     G.playerVY = G.jumpForce * 1.3;
     G.playerOnGround = false;
     G.canJump = false;
-    spawnParticles(G.playerX+14, G.playerY+30, lv.color, 6);
+    spawnParticles(G.playerX+14, G.playerY+30, lv.color, 8);
   } else {
-    // UNLIMITED mid-air hover — each press boosts upward
-    // Cap upward velocity so player doesnt fly off screen
-    G.playerVY = Math.max(G.playerVY - 5, G.jumpForce * 1.1);
+    // Extra boost when pressing in air
+    G.playerVY = Math.max(G.playerVY - 3, -13);
     G.doubleJumpFlash = 4;
     spawnParticles(G.playerX+14, G.playerY+14, '#fbbf24', 5);
   }
 }
+
+function jumpRelease() {
+  G.isHolding = false;
+}
+
+function jump() { jumpPress(); }
 
 function spawnParticles(x,y,color,n) {
   for(let i=0;i<n;i++) {
@@ -728,7 +738,7 @@ function fallbackAI(completed) {
 // ============================================
 // INPUT
 // ============================================
-function handleJump() { jump(); }
+
 document.addEventListener('keydown',e=>{if(e.code==='Space'||e.code==='ArrowUp'){handleJump();e.preventDefault();}});
 document.addEventListener('touchstart',e=>{handleJump();e.preventDefault();},{passive:false});
 canvas.addEventListener('mousedown',()=>handleJump());
