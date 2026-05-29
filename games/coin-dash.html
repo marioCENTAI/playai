@@ -69,7 +69,7 @@ nav{padding:0 16px;height:44px;display:flex;align-items:center;justify-content:s
   <div id="canvas-wrap">
     <canvas id="gc"></canvas>
     <!-- START SCREEN -->
-    <div class="screen" id="start-screen" ontouchstart="event.preventDefault()">
+    <div class="screen" id="start-screen" ontouchstart="event.stopPropagation()">
       <div style="font-size:52px;margin-bottom:12px;animation:spin 3s linear infinite;">🪙</div>
       <div class="screen-title" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">COIN DASH</div>
       <div class="screen-sub">Jump. Collect. Get rich.<br>Avoid debt — it kills your wealth!</div>
@@ -78,7 +78,7 @@ nav{padding:0 16px;height:44px;display:flex;align-items:center;justify-content:s
       <div style="font-size:11px;color:rgba(255,255,255,0.2);margin-top:10px;">TAP or HOLD to jump & hover! 🚀</div>
     </div>
     <!-- DEAD SCREEN -->
-    <div class="screen" id="dead-screen">
+    <div class="screen" id="dead-screen" ontouchstart="event.stopPropagation()">
       <div style="font-size:44px;margin-bottom:8px;" id="dead-emoji">💀</div>
       <div class="screen-title" id="dead-title">CRASHED!</div>
       <div class="stats-row">
@@ -90,8 +90,8 @@ nav{padding:0 16px;height:44px;display:flex;align-items:center;justify-content:s
         <div class="ai-panel-hdr">AI Coach</div>
         <div id="ai-text">Analysing your run...</div>
       </div>
-      <button class="big-btn btn-retry" onclick="restartGame()" style="margin-bottom:8px;">↺ Try Again</button>
-      <button style="background:transparent;color:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.1);padding:8px 20px;border-radius:8px;font-size:13px;cursor:pointer;font-family:DM Sans,sans-serif;" onclick="showStart()">Change Level</button>
+      <button class="big-btn btn-retry" onclick="restartGame()" ontouchend="restartGame();event.preventDefault();" style="margin-bottom:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;">↺ Try Again</button>
+      <button ontouchend="showStart();event.preventDefault();" onclick="showStart()" style="background:transparent;color:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.1);padding:10px 24px;border-radius:8px;font-size:13px;cursor:pointer;font-family:DM Sans,sans-serif;touch-action:manipulation;-webkit-tap-highlight-color:transparent;">Change Level</button>
     </div>
   </div>
 </div>
@@ -121,28 +121,46 @@ window.addEventListener('resize', () => { resize(); });
 // ============================================
 const LEVELS = [
   {
-    id:1, name:'School Life', emoji:'🎓', color:'#7c3aed', bg1:'#0a0014', bg2:'#140028',
-    speed:4.5, gravity:0.55, jumpForce:-13, desc:'Age 18 — Your journey begins!',
-    unlocked:true, bgParallax:['#1e0a3c','#2d1060'],
-    obstacles: 'easy', music:'low',
+    id:1, name:'School Life', emoji:'🎓', color:'#7c3aed',
+    bg1:'#0a0014', bg2:'#14003c', groundColor:'#2d1060', starColor:'#c4b5fd',
+    speed:4.2, gravity:0.52, jumpForce:-13, desc:'Age 18 — Your journey begins!',
+    unlocked:true, obstacles:'easy',
+    theme:'purple', // purple neon city
   },
   {
-    id:2, name:'First Job', emoji:'💼', color:'#059669', bg1:'#001a0a', bg2:'#002814',
-    speed:5.5, gravity:0.6, jumpForce:-13.5, desc:'Age 22 — Work hard, earn more!',
-    unlocked:false, bgParallax:['#001f0d','#003319'],
-    obstacles:'medium', music:'mid',
+    id:2, name:'First Job', emoji:'💼', color:'#0ea5e9',
+    bg1:'#000d1a', bg2:'#001f3d', groundColor:'#0c4a6e', starColor:'#7dd3fc',
+    speed:5.2, gravity:0.56, jumpForce:-13, desc:'Age 22 — Work hard, earn more!',
+    unlocked:false, obstacles:'medium',
+    theme:'blue', // neon blue office
   },
   {
-    id:3, name:'Investor', emoji:'📈', color:'#d97706', bg1:'#1a0e00', bg2:'#2a1800',
-    speed:6.5, gravity:0.65, jumpForce:-14, desc:'Age 28 — Make your money work!',
-    unlocked:false, bgParallax:['#1f1000','#331a00'],
-    obstacles:'hard', music:'high',
+    id:3, name:'Crypto Boom', emoji:'₿', color:'#f59e0b',
+    bg1:'#1a0e00', bg2:'#2d1800', groundColor:'#92400e', starColor:'#fcd34d',
+    speed:6.0, gravity:0.60, jumpForce:-13, desc:'Age 26 — Ride the crypto wave!',
+    unlocked:false, obstacles:'medium-hard',
+    theme:'gold', // golden crypto world
   },
   {
-    id:4, name:'Millionaire', emoji:'🏆', color:'#dc2626', bg1:'#1a0000', bg2:'#2a0000',
-    speed:7.5, gravity:0.7, jumpForce:-14.5, desc:'Age 35 — The ultimate challenge!',
-    unlocked:false, bgParallax:['#1f0000','#330000'],
-    obstacles:'extreme', music:'max',
+    id:4, name:'Investor', emoji:'📈', color:'#10b981',
+    bg1:'#001a0e', bg2:'#002d1a', groundColor:'#065f46', starColor:'#6ee7b7',
+    speed:6.8, gravity:0.64, jumpForce:-13, desc:'Age 30 — Make your money work!',
+    unlocked:false, obstacles:'hard',
+    theme:'green', // green matrix finance
+  },
+  {
+    id:5, name:'Recession', emoji:'📉', color:'#ef4444',
+    bg1:'#1a0000', bg2:'#2d0000', groundColor:'#7f1d1d', starColor:'#fca5a5',
+    speed:7.5, gravity:0.68, jumpForce:-13, desc:'Age 33 — Survive the crash!',
+    unlocked:false, obstacles:'hard',
+    theme:'red', // red danger zone
+  },
+  {
+    id:6, name:'Millionaire', emoji:'🏆', color:'#f97316',
+    bg1:'#1a0800', bg2:'#2d1400', groundColor:'#9a3412', starColor:'#fdba74',
+    speed:8.5, gravity:0.72, jumpForce:-13, desc:'Age 40 — Ultimate wealth!',
+    unlocked:false, obstacles:'extreme',
+    theme:'fire', // fire ultimate level
   },
 ];
 
@@ -187,7 +205,7 @@ function getPatterns(diff) {
     [H3(),{...H3(),offset:100},{...H3(),offset:200}],
     [CEIL_SPIKE(),{...DOUBLE(),offset:180}],
   ];
-  return {easy,medium,hard,extreme}[diff]||easy;
+  return {easy,medium,'medium-hard':hard,hard,extreme}[diff]||easy;
 }
 
 // ============================================
@@ -489,12 +507,23 @@ function render() {
   // Parallax city silhouette
   drawCityscape(lv);
 
-  // Ground
+  // Ground - themed
   const groundGrad=ctx.createLinearGradient(0,GROUND,0,H);
-  groundGrad.addColorStop(0,lv.color+'44');
-  groundGrad.addColorStop(1,'rgba(0,0,0,0.8)');
+  groundGrad.addColorStop(0,(lv.groundColor||lv.color)+'aa');
+  groundGrad.addColorStop(0.3,(lv.groundColor||lv.color)+'55');
+  groundGrad.addColorStop(1,'rgba(0,0,0,0.95)');
   ctx.fillStyle=groundGrad;
   ctx.fillRect(0,GROUND,W,H-GROUND);
+  // Ground texture tiles
+  const tileOff = G.distance % 48;
+  ctx.strokeStyle = lv.color + '30';
+  ctx.lineWidth = 1;
+  for(let x=-tileOff; x<W+48; x+=48) {
+    ctx.beginPath(); ctx.moveTo(x,GROUND); ctx.lineTo(x,H); ctx.stroke();
+  }
+  for(let y=GROUND+24; y<H; y+=24) {
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+  }
   // Speed lines for excitement
   ctx.strokeStyle=lv.color+'40';
   ctx.lineWidth=1;
@@ -674,22 +703,84 @@ function render() {
 }
 
 function drawCityscape(lv) {
-  // Far buildings
-  ctx.fillStyle=lv.color+'15';
-  const seed=42;
-  for(let i=0;i<12;i++){
-    const x=(i*W/10-(G.distance*0.15)%(W/10+60));
-    const bh=H*0.15+Math.sin(i*2.3)*H*0.1;
-    const bw=30+Math.sin(i*1.7)*20;
-    ctx.fillRect(x%W,GROUND-bh,bw,bh);
+  const theme = lv.theme || 'purple';
+
+  // Far layer buildings (slow parallax)
+  const farOff = (G.distance * 0.12) % (W + 100);
+  for(let i=0;i<14;i++){
+    const bx = ((i * 85) - farOff + W*2) % (W+100) - 50;
+    const bh = 30 + Math.abs(Math.sin(i*1.9+1)) * H*0.18;
+    const bw = 25 + Math.abs(Math.sin(i*2.7)) * 20;
+    ctx.fillStyle = lv.color + '18';
+    ctx.fillRect(bx, GROUND-bh, bw, bh);
+    // Windows
+    ctx.fillStyle = lv.color + '40';
+    for(let wy=GROUND-bh+6;wy<GROUND-8;wy+=10){
+      for(let wx=bx+4;wx<bx+bw-4;wx+=8){
+        if(Math.sin(wx*wy)>0.3) ctx.fillRect(wx,wy,4,5);
+      }
+    }
   }
-  // Mid buildings
-  ctx.fillStyle=lv.color+'22';
-  for(let i=0;i<8;i++){
-    const x=(i*W/6-(G.distance*0.3)%(W/6+80))%W;
-    const bh=H*0.1+Math.sin(i*3.1)*H*0.12;
-    const bw=40+Math.sin(i*2.1)*25;
-    if(x>-80&&x<W+80) ctx.fillRect(x,GROUND-bh,bw,bh);
+
+  // Mid layer buildings
+  const midOff = (G.distance * 0.25) % (W + 120);
+  for(let i=0;i<10;i++){
+    const bx = ((i * 110) - midOff + W*2) % (W+120) - 60;
+    const bh = 20 + Math.abs(Math.sin(i*2.3+0.5)) * H*0.14;
+    const bw = 35 + Math.abs(Math.sin(i*1.5)) * 30;
+    ctx.fillStyle = lv.color + '25';
+    ctx.fillRect(bx, GROUND-bh, bw, bh);
+    // Lit windows
+    ctx.fillStyle = lv.starColor + '80';
+    for(let wy=GROUND-bh+5;wy<GROUND-5;wy+=9){
+      for(let wx=bx+5;wx<bx+bw-5;wx+=9){
+        if((wx+wy+G.frameCount)%7 < 3) ctx.fillRect(wx,wy,5,6);
+      }
+    }
+  }
+
+  // Theme-specific foreground elements
+  if(theme==='purple') {
+    // Floating neon rings
+    for(let i=0;i<4;i++){
+      const rx = ((i*180 + W - (G.distance*0.4)%(W+200)))%(W+200)-100;
+      const ry = H*0.2 + Math.sin(i*1.3+G.frameCount*0.02)*H*0.1;
+      ctx.strokeStyle = lv.color+'60'; ctx.lineWidth=2;
+      ctx.shadowColor=lv.color; ctx.shadowBlur=8;
+      ctx.beginPath(); ctx.arc(rx,ry,20,0,Math.PI*2); ctx.stroke();
+      ctx.shadowBlur=0;
+    }
+  } else if(theme==='gold' || theme==='fire') {
+    // Floating coins in background
+    for(let i=0;i<6;i++){
+      const cx = ((i*120 + W - (G.distance*0.5)%(W+300)))%(W+300)-100;
+      const cy = H*0.15 + Math.sin(i*0.8+G.frameCount*0.025)*H*0.15;
+      ctx.fillStyle = lv.starColor+'50';
+      ctx.beginPath(); ctx.arc(cx,cy,8,0,Math.PI*2); ctx.fill();
+    }
+  } else if(theme==='red') {
+    // Warning flashes
+    if(G.frameCount%60<10) {
+      ctx.fillStyle='rgba(239,68,68,0.04)';
+      ctx.fillRect(0,0,W,H);
+    }
+    // Falling debris
+    for(let i=0;i<5;i++){
+      const dx = ((i*150 + (G.distance*0.8))%(W+100));
+      const dy = (G.frameCount*2 + i*80)%(H*0.7);
+      ctx.fillStyle='rgba(239,68,68,0.3)';
+      ctx.fillRect(dx,dy,3,12);
+    }
+  } else if(theme==='green') {
+    // Matrix-style falling numbers
+    for(let i=0;i<8;i++){
+      const mx = (i*(W/7));
+      const my = (G.frameCount*3 + i*50)%(GROUND);
+      ctx.fillStyle=lv.color+'40';
+      ctx.font='10px monospace';
+      ctx.textAlign='center';
+      ctx.fillText(Math.floor(Math.random()*9),mx,my);
+    }
   }
 }
 
