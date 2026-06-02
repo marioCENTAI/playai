@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Haunted Castle Escape — PlayAI</title>
+<link href="https://fonts.googleapis.com/css2?family=Creepster&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;background:#0a0010;}
+body{font-family:'DM Sans',sans-serif;color:#fff;display:flex;flex-direction:column;}
+
+nav{padding:0 16px;height:44px;display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,0.9);border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0;z-index:100;}
+.nav-logo{font-family:'Creepster',cursive;font-size:20px;color:#a78bfa;text-decoration:none;letter-spacing:1px;}
+.nav-logo span{color:#fff;}
+.nav-back{font-size:12px;color:rgba(255,255,255,0.3);text-decoration:none;}
+
+#game{flex:1;display:flex;flex-direction:column;overflow:hidden;max-width:600px;margin:0 auto;width:100%;}
+
+/* TOP BAR */
+#topbar{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:rgba(0,0,0,0.8);flex-shrink:0;}
+.tb-item{text-align:center;}
+.tb-val{font-family:'Creepster',cursive;font-size:18px;color:#a78bfa;letter-spacing:1px;}
+.tb-lbl{font-size:9px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.06em;}
+#timer-val{color:#ef4444;}
+#timer-val.warning{animation:pulse 0.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}}
+
+/* MAIN SCENE */
+#scene{flex:1;position:relative;overflow:hidden;cursor:pointer;}
+#scene-svg{width:100%;height:100%;}
+
+/* NARRATIVE */
+#narrative{padding:10px 14px;background:rgba(0,0,0,0.85);border-top:1px solid rgba(124,58,237,0.3);flex-shrink:0;max-height:100px;overflow-y:auto;}
+#narrative-text{font-size:13px;color:rgba(255,255,255,0.85);line-height:1.6;font-weight:300;}
+#narrative-text .ghost{color:#a78bfa;font-weight:500;}
+
+/* ACTIONS */
+#actions{display:flex;gap:6px;padding:8px 14px;background:rgba(0,0,0,0.9);flex-shrink:0;flex-wrap:wrap;}
+.act-btn{flex:1;min-width:70px;padding:8px 6px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.15);color:#c4b5fd;font-family:'DM Sans',sans-serif;transition:all 0.15s;touch-action:manipulation;-webkit-tap-highlight-color:transparent;text-align:center;}
+.act-btn:hover,.act-btn:active{background:rgba(124,58,237,0.35);border-color:#a78bfa;color:#fff;transform:scale(0.97);}
+.act-btn.disabled{opacity:0.3;cursor:not-allowed;}
+.act-btn.solved{background:rgba(5,150,105,0.2);border-color:#10b981;color:#6ee7b7;}
+
+/* GHOST GUIDE */
+#ghost-bar{display:flex;align-items:center;gap:8px;padding:6px 14px;background:rgba(124,58,237,0.08);border-top:1px solid rgba(124,58,237,0.15);flex-shrink:0;}
+#ghost-face{font-size:22px;animation:float 2s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+#ghost-msg{font-size:12px;color:#c4b5fd;line-height:1.4;flex:1;font-weight:300;}
+
+/* PUZZLE MODAL */
+#puzzle-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:200;align-items:center;justify-content:center;padding:16px;}
+#puzzle-box{background:linear-gradient(135deg,#0a0020,#140030);border:2px solid rgba(124,58,237,0.5);border-radius:20px;padding:20px;max-width:380px;width:100%;box-shadow:0 0 40px rgba(124,58,237,0.3);}
+#puzzle-title{font-family:'Creepster',cursive;font-size:22px;color:#a78bfa;margin-bottom:8px;letter-spacing:1px;}
+#puzzle-desc{font-size:14px;color:rgba(255,255,255,0.7);margin-bottom:14px;line-height:1.6;font-weight:300;}
+#puzzle-visual{background:rgba(0,0,0,0.5);border:1px solid rgba(124,58,237,0.3);border-radius:12px;padding:14px;margin-bottom:14px;text-align:center;}
+#puzzle-input{width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid rgba(124,58,237,0.4);background:rgba(255,255,255,0.06);color:#fff;font-size:16px;font-family:'DM Sans',sans-serif;outline:none;text-align:center;margin-bottom:10px;}
+#puzzle-input:focus{border-color:#a78bfa;}
+.puz-btn{width:100%;padding:11px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;border:none;margin-bottom:6px;touch-action:manipulation;}
+.puz-submit{background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;}
+.puz-hint{background:rgba(245,158,11,0.15);color:#fcd34d;border:1px solid rgba(245,158,11,0.3);}
+.puz-close{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.1);}
+#puzzle-feedback{font-size:13px;padding:8px 12px;border-radius:8px;margin-bottom:8px;display:none;}
+#puzzle-feedback.wrong{background:rgba(220,38,38,0.15);color:#fca5a5;border:1px solid rgba(220,38,38,0.3);}
+#puzzle-feedback.right{background:rgba(5,150,105,0.15);color:#6ee7b7;border:1px solid rgba(5,150,105,0.3);}
+#hints-left{font-size:11px;color:rgba(245,158,11,0.6);text-align:center;margin-bottom:4px;}
+
+/* WIN SCREEN */
+#win-screen{display:none;position:fixed;inset:0;background:linear-gradient(180deg,#0a0020,#000);z-index:300;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:20px;}
+#win-screen h1{font-family:'Creepster',cursive;font-size:clamp(28px,7vw,48px);color:#fbbf24;letter-spacing:2px;margin-bottom:6px;text-shadow:0 0 20px #fbbf24;}
+.win-stats{display:flex;gap:12px;margin:16px 0;}
+.ws{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 16px;text-align:center;}
+.wsv{font-family:'Creepster',cursive;font-size:22px;color:#a78bfa;}
+.wsl{font-size:10px;color:rgba(255,255,255,0.3);text-transform:uppercase;}
+#final-ai{background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.25);border-radius:12px;padding:12px 16px;max-width:340px;text-align:left;margin:12px 0;}
+.faih{font-size:10px;font-weight:600;color:#93c5fd;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;}
+#final-ai-text{font-size:13px;color:rgba(255,255,255,0.75);line-height:1.6;}
+.win-btn{padding:12px 28px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;border:none;margin:4px;touch-action:manipulation;}
+.win-play{background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;}
+.win-share{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.15);}
+
+/* PAYWALL */
+#paywall{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:300;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:20px;}
+
+/* SPARKLE effects */
+.sparkle{position:absolute;pointer-events:none;animation:sparkle-anim 1s forwards;font-size:20px;}
+@keyframes sparkle-anim{0%{opacity:1;transform:scale(1) translateY(0);}100%{opacity:0;transform:scale(0.5) translateY(-40px);}}
+
+/* FLOATING OBJECTS in scene */
+.clickable{cursor:pointer;transition:filter 0.2s;}
+.clickable:hover{filter:brightness(1.4) drop-shadow(0 0 8px #a78bfa);}
+.solved-item{filter:brightness(0.5) saturate(0);}
+</style>
+</head>
+<body>
+<nav>
+  <a href="https://playai.live" class="nav-logo">👻 Haunted<span>Castle</span></a>
+  <a href="https://playai.live" class="nav-back">← PlayAI</a>
+</nav>
+
+<div id="game">
+  <div id="topbar">
+    <div class="tb-item"><div class="tb-val" id="room-val">1/4</div><div class="tb-lbl">Room</div></div>
+    <div class="tb-item"><div class="tb-val" id="timer-val">10:00</div><div class="tb-lbl">⏱ Time Left</div></div>
+    <div class="tb-item"><div class="tb-val" id="score-val">0</div><div class="tb-lbl">⭐ Score</div></div>
+    <div class="tb-item"><div class="tb-val" id="hints-val">3</div><div class="tb-lbl">💡 Hints</div></div>
+  </div>
+
+  <div id="scene">
+    <svg id="scene-svg" viewBox="0 0 400 280" xmlns="http://www.w3.org/2000/svg"></svg>
+  </div>
+
+  <div id="narrative"><div id="narrative-text">Loading your adventure...</div></div>
+
+  <div id="ghost-bar">
+    <div id="ghost-face">👻</div>
+    <div id="ghost-msg">Hi! I'm Boo! I'll help you escape the castle. Click on glowing objects to solve puzzles! 👀</div>
+  </div>
+
+  <div id="actions"></div>
+</div>
+
+<!-- PUZZLE MODAL -->
+<div id="puzzle-modal">
+  <div id="puzzle-box">
+    <div id="puzzle-title">🔮 Puzzle</div>
+    <div id="puzzle-desc"></div>
+    <div id="puzzle-visual"></div>
+    <div id="puzzle-feedback"></div>
+    <div id="hints-left"></div>
+    <input id="puzzle-input" type="text" placeholder="Your answer..." autocomplete="off"/>
+    <button class="puz-btn puz-submit" onclick="submitAnswer()">✓ Submit Answer</button>
+    <button class="puz-btn puz-hint" onclick="getHint()">💡 Ask Boo for a hint</button>
+    <button class="puz-btn puz-close" onclick="closePuzzle()">✕ Close</button>
+  </div>
+</div>
+
+<!-- WIN SCREEN -->
+<div id="win-screen">
+  <div style="font-size:56px;margin-bottom:8px;animation:float 1.5s ease-in-out infinite;">🏆</div>
+  <h1>YOU ESCAPED!</h1>
+  <div style="font-size:14px;color:rgba(255,255,255,0.4);margin-bottom:12px;">The castle's curse is broken!</div>
+  <div class="win-stats">
+    <div class="ws"><div class="wsv" id="win-time">—</div><div class="wsl">Time</div></div>
+    <div class="ws"><div class="wsv" id="win-score">—</div><div class="wsl">Score</div></div>
+    <div class="ws"><div class="wsv" id="win-hints">—</div><div class="wsl">Hints used</div></div>
+  </div>
+  <div id="final-ai"><div class="faih">🤖 AI Analysis</div><div id="final-ai-text">Analysing your escape...</div></div>
+  <div>
+    <button class="win-btn win-play" onclick="playAgain()">↺ Play Again</button>
+    <button class="win-btn win-share" onclick="shareResult()">📤 Share</button>
+  </div>
+  <div id="next-room-wrap" style="margin-top:8px;"></div>
+</div>
+
+<!-- PAYWALL -->
+<div id="paywall">
+  <div style="font-size:48px;margin-bottom:10px;">🔒</div>
+  <div style="font-family:Creepster,cursive;font-size:24px;color:#a78bfa;margin-bottom:6px;letter-spacing:1px;">MORE ROOMS AWAIT!</div>
+  <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:18px;max-width:280px;line-height:1.6;">Unlock the Dungeon, Tower, Crypt and Throne Room for the full escape experience!</div>
+  <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;margin-bottom:18px;text-align:left;max-width:280px;">
+    <div style="font-size:13px;color:rgba(255,255,255,0.6);line-height:2;">
+      🏰 Room 2: The Dungeon<br>🗼 Room 3: The Dark Tower<br>⚰️ Room 4: The Crypt<br>👑 Room 5: The Throne Room
+    </div>
+  </div>
+  <button onclick="window.open('https://playai.live/#pricing','_blank')" style="background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;border:none;padding:13px 32px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;width:100%;max-width:280px;margin-bottom:8px;touch-action:manipulation;">Unlock All Rooms — €2.99</button>
+  <button onclick="document.getElementById('paywall').style.display='none'" style="background:transparent;color:rgba(255,255,255,0.3);border:1px solid rgba(255,255,255,0.1);padding:10px 24px;border-radius:8px;font-size:13px;cursor:pointer;font-family:DM Sans,sans-serif;touch-action:manipulation;">Maybe Later</button>
+</div>
+
+<script>
+// ============================================
+// ROOMS — 4 rooms, each with unique scene + puzzles
+// ============================================
+const ROOMS = [
+  {
+    id: 0,
+    name: "The Entrance Hall",
+    emoji: "🚪",
+    premium: false,
+    bg: { sky: "#0a0015", floor: "#1a0030", wall: "#120025" },
+    intro: "You wake up inside a dark, creaky castle. The door slammed shut behind you. The only way out is FORWARD. Cobwebs hang from the ceiling. Something moves in the shadows...",
+    puzzles: [
+      {
+        id: "candles",
+        name: "🕯️ The Magic Candles",
+        object: "candles",
+        desc: "Three candles flicker on the wall. Each has a Roman numeral carved beneath it: III, VII, and IV. A riddle on the wall reads: 'Add my flames to find the secret code.'",
+        visual: `<div style="font-size:28px;letter-spacing:8px;margin-bottom:8px;">🕯️🕯️🕯️</div>
+                 <div style="font-size:18px;color:#fbbf24;font-family:Creepster,cursive;letter-spacing:2px;">III + VII + IV = ?</div>
+                 <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:6px;">Enter the number</div>`,
+        answer: "14",
+        hints: ["Roman numerals: III=3, VII=7, IV=4", "3 + 7 + 4 = ?", "The answer is 14"],
+        points: 200
+      },
+      {
+        id: "bookshelf",
+        name: "📚 The Haunted Bookshelf",
+        object: "bookshelf",
+        desc: "An old bookshelf. Books are flying off the shelves! You notice 4 books with coloured spines: RED, BLUE, GREEN, YELLOW. A note says 'The rainbow holds the order. Name the 2nd colour.'",
+        visual: `<div style="display:flex;gap:6px;justify-content:center;margin-bottom:10px;">
+                   <div style="width:20px;height:50px;background:#ef4444;border-radius:2px;"></div>
+                   <div style="width:20px;height:50px;background:#f97316;border-radius:2px;"></div>
+                   <div style="width:20px;height:50px;background:#fbbf24;border-radius:2px;"></div>
+                   <div style="width:20px;height:50px;background:#10b981;border-radius:2px;"></div>
+                   <div style="width:20px;height:50px;background:#3b82f6;border-radius:2px;"></div>
+                   <div style="width:20px;height:50px;background:#8b5cf6;border-radius:2px;"></div>
+                 </div>
+                 <div style="font-size:12px;color:rgba(255,255,255,0.5);">Rainbow order: what's the 3rd colour?</div>`,
+        answer: "yellow",
+        hints: ["Think of a rainbow: Red, Orange, Yellow...", "ROY G BIV — the 3rd letter is Y", "Yellow is the 3rd colour of the rainbow"],
+        points: 150
+      },
+      {
+        id: "portrait",
+        name: "🖼️ The Creepy Portrait",
+        object: "portrait",
+        desc: "A portrait of Count Dracula stares at you. His eyes follow you! Below the portrait: 'I have cities but no houses. I have mountains but no trees. I have water but no fish. What am I?'",
+        visual: `<div style="font-size:48px;margin:8px 0;">🧛</div>
+                 <div style="font-size:12px;color:#c4b5fd;font-style:italic;line-height:1.6;">"I have cities but no houses.<br>Mountains but no trees.<br>Water but no fish.<br>What am I?"</div>`,
+        answer: "map",
+        hints: ["It's something you use for navigation", "You find it in an atlas", "A MAP has all of these things drawn on it"],
+        points: 250
+      }
+    ],
+    exitItem: "door",
+    exitMsg: "The ancient door creaks open with a groan. You step through into the dark corridor..."
+  },
+  {
+    id: 1,
+    name: "The Dungeon",
+    emoji: "⛓️",
+    premium: true,
+    bg: { sky: "#050010", floor: "#0d001a", wall: "#080015" },
+    intro: "Dripping water. Iron chains. You're in the dungeon. Skeletons line the walls. A rusty locked gate blocks your path...",
+    puzzles: [],
+    exitItem: "gate"
+  },
+  {
+    id: 2,
+    name: "The Dark Tower",
+    emoji: "🗼",
+    premium: true,
+    bg: { sky: "#000810", floor: "#001020", wall: "#000d18" },
+    intro: "A spiral staircase. Lightning flashes. You've reached the tower...",
+    puzzles: [],
+    exitItem: "window"
+  }
+];
+
+// ============================================
+// SCENE DRAWINGS — SVG per room
+// ============================================
+const SCENES = {
+  0: `
+    <!-- Sky/bg -->
+    <rect width="400" height="280" fill="#0a0015"/>
+    <!-- Moon -->
+    <circle cx="340" cy="40" r="28" fill="#fef9c3" opacity="0.9"/>
+    <circle cx="350" cy="35" r="22" fill="#0a0015"/>
+    <!-- Stars -->
+    <circle cx="50" cy="20" r="1.5" fill="#fff" opacity="0.8"/>
+    <circle cx="120" cy="15" r="1" fill="#fff" opacity="0.6"/>
+    <circle cx="200" cy="25" r="1.5" fill="#fff" opacity="0.7"/>
+    <circle cx="280" cy="10" r="1" fill="#fff" opacity="0.5"/>
+    <!-- Castle wall background -->
+    <rect x="0" y="140" width="400" height="140" fill="#120025"/>
+    <!-- Floor stones -->
+    <rect x="0" y="230" width="400" height="50" fill="#1a0030"/>
+    <line x1="0" y1="255" x2="400" y2="255" stroke="#2d0050" stroke-width="1"/>
+    <line x1="80" y1="230" x2="80" y2="280" stroke="#2d0050" stroke-width="1"/>
+    <line x1="160" y1="230" x2="160" y2="280" stroke="#2d0050" stroke-width="1"/>
+    <line x1="240" y1="230" x2="240" y2="280" stroke="#2d0050" stroke-width="1"/>
+    <line x1="320" y1="230" x2="320" y2="280" stroke="#2d0050" stroke-width="1"/>
+    <!-- Wall torches -->
+    <rect x="58" y="148" width="4" height="14" fill="#78350f"/>
+    <ellipse cx="60" cy="145" rx="5" ry="8" fill="#f97316" opacity="0.9"/>
+    <ellipse cx="60" cy="141" rx="3" ry="5" fill="#fbbf24"/>
+    <rect x="338" y="148" width="4" height="14" fill="#78350f"/>
+    <ellipse cx="340" cy="145" rx="5" ry="8" fill="#f97316" opacity="0.9"/>
+    <ellipse cx="340" cy="141" rx="3" ry="5" fill="#fbbf24"/>
+    <!-- Cobwebs -->
+    <path d="M 0 0 Q 30 20 0 40" stroke="rgba(255,255,255,0.2)" stroke-width="0.5" fill="none"/>
+    <path d="M 0 0 L 30 20 M 0 20 L 30 20 M 0 40 L 30 20" stroke="rgba(255,255,255,0.15)" stroke-width="0.5" fill="none"/>
+    <path d="M 400 0 Q 370 20 400 40" stroke="rgba(255,255,255,0.2)" stroke-width="0.5" fill="none"/>
+    <path d="M 400 0 L 370 20 M 400 20 L 370 20 M 400 40 L 370 20" stroke="rgba(255,255,255,0.15)" stroke-width="0.5" fill="none"/>
+    <!-- Bookshelf - clickable -->
+    <g id="obj-bookshelf" class="clickable" onclick="clickObject('bookshelf')">
+      <rect x="20" y="155" width="70" height="70" fill="#3d2004" rx="2"/>
+      <rect x="23" y="158" width="8" height="30" fill="#ef4444"/>
+      <rect x="33" y="158" width="8" height="30" fill="#3b82f6"/>
+      <rect x="43" y="158" width="8" height="30" fill="#10b981"/>
+      <rect x="53" y="158" width="8" height="30" fill="#fbbf24"/>
+      <rect x="63" y="158" width="8" height="30" fill="#8b5cf6"/>
+      <rect x="73" y="158" width="8" height="30" fill="#f97316"/>
+      <rect x="20" y="190" width="70" height="3" fill="#5c3310"/>
+      <rect x="23" y="195" width="12" height="25" fill="#7c3aed"/>
+      <rect x="37" y="195" width="10" height="25" fill="#dc2626"/>
+      <rect x="49" y="195" width="14" height="25" fill="#0369a1"/>
+      <rect x="65" y="195" width="10" height="25" fill="#166534"/>
+      <text x="55" y="240" font-size="10" fill="#c4b5fd" text-anchor="middle" font-family="DM Sans">📚 Books</text>
+    </g>
+    <!-- Portrait - clickable -->
+    <g id="obj-portrait" class="clickable" onclick="clickObject('portrait')">
+      <rect x="160" y="148" width="80" height="90" fill="#1e0a3c" rx="3" stroke="#7c3aed" stroke-width="2"/>
+      <rect x="165" y="153" width="70" height="80" fill="#2d1060" rx="2"/>
+      <circle cx="200" cy="178" r="18" fill="#1a0840"/>
+      <ellipse cx="200" cy="172" rx="10" ry="12" fill="#6b21a8" opacity="0.8"/>
+      <!-- Dracula face -->
+      <circle cx="200" cy="175" r="13" fill="#4c1d95"/>
+      <circle cx="195" cy="172" r="2.5" fill="#fff"/>
+      <circle cx="205" cy="172" r="2.5" fill="#fff"/>
+      <circle cx="195" cy="172" r="1.5" fill="#ef4444"/>
+      <circle cx="205" cy="172" r="1.5" fill="#ef4444"/>
+      <path d="M 195 180 Q 200 184 205 180" stroke="#fff" stroke-width="1" fill="none"/>
+      <path d="M 197 183 L 197 187 M 203 183 L 203 187" stroke="#fff" stroke-width="1.5"/>
+      <!-- Cape -->
+      <path d="M 187 188 Q 200 210 213 188" fill="#3b0764" opacity="0.9"/>
+      <text x="200" y="245" font-size="10" fill="#c4b5fd" text-anchor="middle" font-family="DM Sans">🖼️ Portrait</text>
+    </g>
+    <!-- Candles - clickable -->
+    <g id="obj-candles" class="clickable" onclick="clickObject('candles')">
+      <rect x="295" y="190" width="8" height="28" fill="#e5e7eb"/>
+      <ellipse cx="299" cy="188" rx="4" ry="6" fill="#f97316"/>
+      <ellipse cx="299" cy="185" rx="2.5" ry="4" fill="#fef3c7"/>
+      <text x="299" y="227" font-size="8" fill="#fbbf24" text-anchor="middle" font-family="Creepster,cursive">III</text>
+      <rect x="315" y="183" width="8" height="33" fill="#f3f4f6"/>
+      <ellipse cx="319" cy="181" rx="4" ry="6" fill="#f97316"/>
+      <ellipse cx="319" cy="178" rx="2.5" ry="4" fill="#fef3c7"/>
+      <text x="319" y="225" font-size="8" fill="#fbbf24" text-anchor="middle" font-family="Creepster,cursive">VII</text>
+      <rect x="335" y="196" width="8" height="22" fill="#e5e7eb"/>
+      <ellipse cx="339" cy="194" rx="4" ry="6" fill="#f97316"/>
+      <ellipse cx="339" cy="191" rx="2.5" ry="4" fill="#fef3c7"/>
+      <text x="339" y="227" font-size="8" fill="#fbbf24" text-anchor="middle" font-family="Creepster,cursive">IV</text>
+      <text x="319" y="243" font-size="10" fill="#c4b5fd" text-anchor="middle" font-family="DM Sans">🕯️ Candles</text>
+    </g>
+    <!-- Exit door - locked initially -->
+    <g id="obj-door">
+      <rect x="170" y="210" width="60" height="68" fill="#3d1a00" rx="4" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="4,2"/>
+      <circle cx="222" cy="246" r="4" fill="#fbbf24"/>
+      <text x="200" y="200" font-size="10" fill="#7c3aed" text-anchor="middle" font-family="DM Sans">🔒 Locked</text>
+    </g>
+    <!-- Bat animation -->
+    <g id="bat" opacity="0.7">
+      <path d="M 100 60 Q 95 50 85 55 Q 95 58 100 60 Q 105 58 115 55 Q 105 50 100 60 Z" fill="#4b21a8"/>
+    </g>
+    <!-- Spider -->
+    <circle cx="200" cy="145" r="4" fill="#1a0840"/>
+    <line x1="200" y1="135" x2="200" y2="145" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+  `
+};
+
+// ============================================
+// GAME STATE
+// ============================================
+let G = {
+  room: 0,
+  solved: [],
+  hintsUsed: 0,
+  hintsLeft: 3,
+  score: 0,
+  startTime: null,
+  timerInterval: null,
+  timeLeft: 600, // 10 minutes
+  currentPuzzle: null,
+  playerName: '',
+};
+
+// ============================================
+// INIT
+// ============================================
+function init() {
+  G.startTime = Date.now();
+  G.timeLeft = 600;
+  G.solved = [];
+  G.hintsUsed = 0;
+  G.hintsLeft = 3;
+  G.score = 0;
+  G.room = 0;
+  clearInterval(G.timerInterval);
+  G.timerInterval = setInterval(tickTimer, 1000);
+  loadRoom(0);
+}
+
+function loadRoom(idx) {
+  const room = ROOMS[idx];
+  if(!room) return;
+  if(room.premium) { showPaywall(); return; }
+  G.room = idx;
+  G.solved = [];
+  document.getElementById('room-val').textContent = (idx+1)+'/'+ROOMS.length;
+  // Draw scene
+  document.getElementById('scene-svg').innerHTML = SCENES[idx] || SCENES[0];
+  // Narrative
+  setNarrative(room.intro);
+  // Ghost msg
+  setGhost("Click on the glowing objects to solve puzzles! You need to solve ALL puzzles to unlock the exit door! 🔮");
+  // Actions
+  buildActions(room);
+  updateHUD();
+}
+
+function buildActions(room) {
+  const wrap = document.getElementById('actions');
+  wrap.innerHTML = '';
+  room.puzzles.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'act-btn' + (G.solved.includes(p.id) ? ' solved' : '');
+    btn.id = 'act-' + p.id;
+    btn.innerHTML = (G.solved.includes(p.id) ? '✓ ' : '') + p.name;
+    btn.onclick = () => openPuzzle(p.id);
+    wrap.appendChild(btn);
+  });
+  // Exit button
+  const exitBtn = document.createElement('button');
+  exitBtn.className = 'act-btn' + (allSolved() ? '' : ' disabled');
+  exitBtn.id = 'act-exit';
+  exitBtn.innerHTML = allSolved() ? '🚪 Exit Room!' : '🔒 Exit (solve all first)';
+  exitBtn.onclick = () => { if(allSolved()) exitRoom(); };
+  wrap.appendChild(exitBtn);
+}
+
+function allSolved() {
+  return ROOMS[G.room].puzzles.every(p => G.solved.includes(p.id));
+}
+
+function clickObject(id) {
+  const room = ROOMS[G.room];
+  const puzzle = room.puzzles.find(p => p.object === id);
+  if(puzzle) {
+    if(G.solved.includes(puzzle.id)) {
+      setGhost("You already solved this one! ✓ Find the other puzzles! 👀");
+      return;
+    }
+    openPuzzle(puzzle.id);
+  } else if(id === 'door' || id === room.exitItem) {
+    if(allSolved()) exitRoom();
+    else setGhost("The door is locked! 🔒 Solve all the puzzles first to unlock it!");
+  }
+}
+
+// ============================================
+// PUZZLE
+// ============================================
+function openPuzzle(id) {
+  const puzzle = ROOMS[G.room].puzzles.find(p => p.id === id);
+  if(!puzzle) return;
+  if(G.solved.includes(id)) {
+    setGhost("Already solved! ✓ Great job! 👻");
+    return;
+  }
+  G.currentPuzzle = puzzle;
+  document.getElementById('puzzle-title').textContent = puzzle.name;
+  document.getElementById('puzzle-desc').textContent = puzzle.desc;
+  document.getElementById('puzzle-visual').innerHTML = puzzle.visual;
+  document.getElementById('puzzle-input').value = '';
+  document.getElementById('puzzle-feedback').style.display = 'none';
+  document.getElementById('hints-left').textContent = `💡 Hints remaining: ${G.hintsLeft}`;
+  document.getElementById('puzzle-modal').style.display = 'flex';
+  setTimeout(() => document.getElementById('puzzle-input').focus(), 300);
+}
+
+function closePuzzle() {
+  document.getElementById('puzzle-modal').style.display = 'none';
+  G.currentPuzzle = null;
+}
+
+function submitAnswer() {
+  if(!G.currentPuzzle) return;
+  const input = document.getElementById('puzzle-input').value.trim().toLowerCase();
+  const answer = G.currentPuzzle.answer.toLowerCase();
+  const fb = document.getElementById('puzzle-feedback');
+
+  if(input === answer || input === answer.replace(/\s/g,'')) {
+    // CORRECT!
+    fb.className = 'puzzle-feedback right';
+    fb.style.display = 'block';
+    fb.textContent = '🎉 CORRECT! Amazing work!';
+    G.solved.push(G.currentPuzzle.id);
+    G.score += G.currentPuzzle.points;
+    // Mark object as solved in scene
+    const obj = document.getElementById('obj-' + G.currentPuzzle.object);
+    if(obj) obj.classList.add('solved-item');
+    spawnSparkle();
+    setGhost(getRandomPraise());
+    setTimeout(() => {
+      closePuzzle();
+      buildActions(ROOMS[G.room]);
+      updateHUD();
+      if(allSolved()) {
+        setNarrative("🎉 All puzzles solved! The ancient door shudders... the lock clicks open! Can you escape?");
+        setGhost("You did it! 🎉 All puzzles solved! Click EXIT to escape the room! 🚪");
+        // Unlock door in SVG
+        const door = document.getElementById('obj-door');
+        if(door) door.setAttribute('onclick', "clickObject('door')");
+        const lockText = door ? door.querySelector('text') : null;
+        if(lockText) lockText.textContent = '✓ UNLOCKED!';
+      }
+    }, 1500);
+  } else {
+    // WRONG
+    fb.className = 'puzzle-feedback wrong';
+    fb.style.display = 'block';
+    fb.textContent = '❌ Not quite... try again! Think carefully 🤔';
+    document.getElementById('puzzle-input').value = '';
+    document.getElementById('puzzle-input').focus();
+    // Shake effect
+    document.getElementById('puzzle-box').style.animation = 'none';
+    setTimeout(() => document.getElementById('puzzle-box').style.animation = '', 10);
+  }
+}
+
+async function getHint() {
+  if(!G.currentPuzzle) return;
+  if(G.hintsLeft <= 0) {
+    setGhost("No more hints! Boo has gone quiet... 👻 You'll have to figure this one out yourself!");
+    document.getElementById('hints-left').textContent = '💡 No hints left!';
+    return;
+  }
+  G.hintsLeft--;
+  G.hintsUsed++;
+  G.score = Math.max(0, G.score - 30); // penalty
+  document.getElementById('hints-left').textContent = `💡 Hints remaining: ${G.hintsLeft}`;
+  document.getElementById('hints-val').textContent = G.hintsLeft;
+
+  const fb = document.getElementById('puzzle-feedback');
+  fb.className = 'puzzle-feedback';
+  fb.style.display = 'block';
+  fb.style.background = 'rgba(245,158,11,0.15)';
+  fb.style.color = '#fcd34d';
+  fb.style.border = '1px solid rgba(245,158,11,0.3)';
+  fb.textContent = '💡 Getting hint from Boo...';
+
+  try {
+    const prompt = `You are Boo, a friendly ghost in a kids escape room game called "Haunted Castle" on PlayAI.live.
+The puzzle is: "${G.currentPuzzle.name}"
+The riddle/question is: "${G.currentPuzzle.desc}"
+The correct answer is: "${G.currentPuzzle.answer}"
+
+Give a helpful hint (NOT the answer) that guides a child aged 8-14 toward the solution.
+Be friendly, fun, use ghost/spooky emojis. Max 2 sentences. Don't reveal the answer directly!`;
+
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:1000, messages:[{role:'user',content:prompt}]})
+    });
+    const d = await r.json();
+    const hint = d.content?.[0]?.text || G.currentPuzzle.hints[G.hintsUsed-1] || "Think carefully about the clues in the puzzle! 👻";
+    fb.textContent = '👻 Boo says: ' + hint;
+    setGhost(hint);
+  } catch(e) {
+    const hint = G.currentPuzzle.hints[Math.min(G.hintsUsed-1, G.currentPuzzle.hints.length-1)];
+    fb.textContent = '👻 Boo says: ' + hint;
+  }
+  updateHUD();
+}
+
+// Allow Enter key to submit
+document.getElementById('puzzle-input').addEventListener('keydown', e => {
+  if(e.key === 'Enter') submitAnswer();
+});
+
+// ============================================
+// EXIT ROOM
+// ============================================
+function exitRoom() {
+  clearInterval(G.timerInterval);
+  const elapsed = Math.floor((Date.now() - G.startTime) / 1000);
+  const mins = Math.floor(elapsed / 60);
+  const secs = elapsed % 60;
+  const timeBonus = Math.max(0, (600 - elapsed) * 2);
+  G.score += timeBonus;
+
+  document.getElementById('win-screen').style.display = 'flex';
+  document.getElementById('win-time').textContent = `${mins}:${secs.toString().padStart(2,'0')}`;
+  document.getElementById('win-score').textContent = G.score;
+  document.getElementById('win-hints').textContent = G.hintsUsed;
+
+  // Next room button
+  const nextRoom = ROOMS[G.room + 1];
+  const wrap = document.getElementById('next-room-wrap');
+  if(nextRoom) {
+    if(nextRoom.premium) {
+      wrap.innerHTML = `<button onclick="showPaywall()" style="background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;border:none;padding:11px 24px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;touch-action:manipulation;">🔒 Unlock ${nextRoom.emoji} ${nextRoom.name}</button>`;
+    } else {
+      wrap.innerHTML = `<button onclick="nextRoom_()" style="background:linear-gradient(135deg,#059669,#065f46);color:#fff;border:none;padding:11px 24px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;touch-action:manipulation;">▶ Next: ${nextRoom.emoji} ${nextRoom.name}</button>`;
+    }
+  }
+
+  // AI final analysis
+  getWinAI(elapsed, G.hintsUsed, G.score);
+}
+
+async function getWinAI(elapsed, hintsUsed, score) {
+  try {
+    const prompt = `You are Boo the friendly ghost in "Haunted Castle" escape room on PlayAI.live.
+Player just escaped Room 1: "The Entrance Hall"!
+Time taken: ${Math.floor(elapsed/60)} minutes ${elapsed%60} seconds
+Hints used: ${hintsUsed}
+Final score: ${score}
+
+Write a fun 2-sentence congratulation as Boo the Ghost:
+1. Celebrate their escape with spooky excitement (emojis!)
+2. Comment on their performance (fast = praise speed, many hints = encourage trying harder next time)
+Keep it fun for kids aged 8-14! Sign off as "— Boo 👻"`;
+
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:1000, messages:[{role:'user',content:prompt}]})
+    });
+    const d = await r.json();
+    document.getElementById('final-ai-text').textContent = d.content?.[0]?.text ||
+      `👻 BOO-tiful escape! You solved all my puzzles and broke the castle's curse! ${hintsUsed === 0 ? "No hints needed — you're a true ghost hunter! 🏆" : "Next time try using fewer hints for a higher score! 💪"} — Boo 👻`;
+  } catch(e) {
+    document.getElementById('final-ai-text').textContent = `👻 Amazing escape! You defeated all my puzzles! ${hintsUsed === 0 ? "Not a single hint — you're brilliant! 🏆" : "Try using fewer hints next time for a higher score!"} — Boo 👻`;
+  }
+}
+
+// ============================================
+// TIMER
+// ============================================
+function tickTimer() {
+  G.timeLeft--;
+  const mins = Math.floor(G.timeLeft / 60);
+  const secs = G.timeLeft % 60;
+  const el = document.getElementById('timer-val');
+  el.textContent = `${mins}:${secs.toString().padStart(2,'0')}`;
+  if(G.timeLeft <= 60) el.classList.add('warning');
+  if(G.timeLeft <= 0) {
+    clearInterval(G.timerInterval);
+    setNarrative("⏰ TIME'S UP! The castle doors slam shut forever... You're trapped! Play again to try to escape in time!");
+    setGhost("Oh no! Time ran out! 😱 Try again — you know the puzzles now, you'll be faster! 👻");
+    // Show retry
+    setTimeout(() => {
+      if(confirm("Time's up! Play again?")) init();
+    }, 2000);
+  }
+}
+
+// ============================================
+// UI HELPERS
+// ============================================
+function setNarrative(text) {
+  document.getElementById('narrative-text').innerHTML = text;
+}
+
+function setGhost(msg) {
+  document.getElementById('ghost-msg').textContent = msg;
+}
+
+function updateHUD() {
+  document.getElementById('score-val').textContent = G.score;
+  document.getElementById('hints-val').textContent = G.hintsLeft;
+}
+
+function getRandomPraise() {
+  const praises = [
+    "WOOOOO! 🎉 You solved it! The castle trembles!",
+    "BOO-rilliant! 👻 That was impressive!",
+    "Spook-tacular! 🕷️ You're too smart for this castle!",
+    "Ghost-busting skills! 🔮 One step closer to freedom!",
+    "Fang-tastic! 🧛 The shadows fear you!",
+    "Creepy clever! 🦇 Keep going — the exit awaits!"
+  ];
+  return praises[Math.floor(Math.random() * praises.length)];
+}
+
+function spawnSparkle() {
+  const emojis = ['⭐','✨','💫','🌟','👻','🎉'];
+  for(let i = 0; i < 5; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'sparkle';
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.left = (Math.random() * window.innerWidth * 0.8 + window.innerWidth * 0.1) + 'px';
+      el.style.top = (Math.random() * 200 + 100) + 'px';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1000);
+    }, i * 150);
+  }
+}
+
+function showPaywall() {
+  document.getElementById('win-screen').style.display = 'none';
+  document.getElementById('paywall').style.display = 'flex';
+}
+
+function playAgain() {
+  document.getElementById('win-screen').style.display = 'none';
+  init();
+}
+
+function nextRoom_() {
+  document.getElementById('win-screen').style.display = 'none';
+  loadRoom(G.room + 1);
+}
+
+function shareResult() {
+  const elapsed = Math.floor((Date.now() - G.startTime) / 1000);
+  const mins = Math.floor(elapsed / 60);
+  const secs = elapsed % 60;
+  const text = `👻 I escaped the Haunted Castle in ${mins}m ${secs}s with a score of ${G.score}! Can you beat me? 🏰 playai.live/games/haunted-castle.html`;
+  if(navigator.share) navigator.share({title:'Haunted Castle Escape', text, url:'https://playai.live/games/haunted-castle.html'});
+  else navigator.clipboard.writeText(text).then(() => alert('Copied to clipboard!'));
+}
+
+// ============================================
+// START
+// ============================================
+window.onload = () => init();
+window.clickObject = clickObject;
+window.openPuzzle = openPuzzle;
+window.closePuzzle = closePuzzle;
+window.submitAnswer = submitAnswer;
+window.getHint = getHint;
+window.playAgain = playAgain;
+window.nextRoom_ = nextRoom_;
+window.showPaywall = showPaywall;
+window.shareResult = shareResult;
+</script>
+</body>
+</html>
