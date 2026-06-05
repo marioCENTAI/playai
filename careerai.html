@@ -64,8 +64,8 @@ nav{padding:0 5vw;height:64px;display:flex;align-items:center;justify-content:sp
 
 /* CHAT INTERFACE */
 #chat-section{padding:80px 5vw;background:var(--ink);position:relative;overflow:hidden;}
-#chat-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(13,148,136,0.2) 0%,transparent 70%);}
-.chat-container{position:relative;max-width:760px;margin:0 auto;}
+#chat-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(13,148,136,0.2) 0%,transparent 70%);pointer-events:none;z-index:0;}
+.chat-container{position:relative;max-width:760px;margin:0 auto;z-index:2;}
 .chat-header{text-align:center;margin-bottom:40px;}
 .chat-header .section-label{color:var(--teal-light);}
 .chat-header .section-title{color:var(--white);margin:0 auto 12px;}
