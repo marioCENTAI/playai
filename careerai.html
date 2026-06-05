@@ -70,7 +70,7 @@ nav{padding:0 5vw;height:64px;display:flex;align-items:center;justify-content:sp
 .chat-header .section-label{color:var(--teal-light);}
 .chat-header .section-title{color:var(--white);margin:0 auto 12px;}
 .chat-header p{color:rgba(255,255,255,0.5);font-size:15px;font-weight:300;}
-.chat-box{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-lg);overflow:hidden;}
+.chat-box{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-lg);overflow:visible;position:relative;z-index:5;}
 .chat-messages{height:380px;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth;}
 .chat-messages::-webkit-scrollbar{width:4px;}
 .chat-messages::-webkit-scrollbar-track{background:transparent;}
@@ -88,10 +88,10 @@ nav{padding:0 5vw;height:64px;display:flex;align-items:center;justify-content:sp
 .typing span:nth-child(2){animation-delay:0.2s;}
 .typing span:nth-child(3){animation-delay:0.4s;}
 @keyframes typing{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-6px);}}
-.chat-input-wrap{padding:16px;border-top:1px solid rgba(255,255,255,0.08);display:flex;gap:10px;align-items:flex-end;}
-#chat-input{flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);padding:12px 16px;color:#fff;font-size:14px;font-family:'DM Sans',sans-serif;resize:none;min-height:44px;max-height:120px;outline:none;transition:border-color 0.2s;line-height:1.5;}
-#chat-input:focus{border-color:rgba(45,212,191,0.5);}
-#chat-input::placeholder{color:rgba(255,255,255,0.25);}
+.chat-input-wrap{padding:16px;border-top:1px solid rgba(255,255,255,0.08);display:flex;gap:10px;align-items:flex-end;position:relative;z-index:10;}
+#chat-input{flex:1;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.2);border-radius:var(--radius);padding:12px 16px;color:#fff;font-size:14px;font-family:'DM Sans',sans-serif;resize:none;min-height:48px;max-height:120px;outline:none;transition:border-color 0.2s;line-height:1.5;cursor:text;-webkit-user-select:text;user-select:text;pointer-events:all;z-index:10;position:relative;}
+#chat-input:focus{border-color:rgba(45,212,191,0.6);background:rgba(255,255,255,0.1);}
+#chat-input::placeholder{color:rgba(255,255,255,0.35);}
 #send-btn{background:linear-gradient(135deg,var(--teal),var(--teal-dark));color:#fff;border:none;padding:12px 20px;border-radius:var(--radius);font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap;transition:transform 0.15s;font-family:'DM Sans',sans-serif;}
 #send-btn:hover{transform:scale(1.03);}
 #send-btn:disabled{opacity:0.5;cursor:not-allowed;}
@@ -363,7 +363,8 @@ footer{padding:40px 5vw;background:var(--ink);display:flex;justify-content:space
 <section class="pricing" id="pricing">
   <div style="text-align:center;margin-bottom:48px;position:relative;">
     <div class="section-label" style="text-align:center;">Pricing</div>
-    <div class="section-title" style="text-align:center;max-width:100%;color:#fff;margin-bottom:0;">Simple, honest pricing</div>
+    <div class="section-title" style="text-align:center;max-width:100%;color:#fff;margin-bottom:0;">One subscription. CentAI + CareerAI unlocked.</div>
+    
   </div>
   <div class="pricing-grid">
     <div class="price-card">
@@ -385,14 +386,15 @@ footer{padding:40px 5vw;background:var(--ink);display:flex;justify-content:space
       <div class="price-amount">€14.99</div>
       <div class="price-period">per month</div>
       <ul class="price-features">
-        <li>Unlimited questions</li>
+        <li>Unlimited CentAI + CareerAI questions</li>
         <li>Full career coaching</li>
+        <li>Unlimited CentAI finance advice</li>
         <li>Detailed CV review</li>
         <li>Interview practice</li>
         <li>50+ languages</li>
         <li>Priority support</li>
       </ul>
-      <a href="https://buy.stripe.com/3cI9AU4qp6NZh1YbNM7EQ04" target="_blank" class="price-btn pro">Start Pro →</a>
+      <a href="https://buy.stripe.com/fZu9AU3ml2xJdPM6ts7EQ02" target="_blank" class="price-btn pro">Start Pro →</a>
     </div>
     <div class="price-card">
       <div class="price-name">Elite</div>
@@ -400,12 +402,12 @@ footer{padding:40px 5vw;background:var(--ink);display:flex;justify-content:space
       <div class="price-period">per month</div>
       <ul class="price-features">
         <li>Everything in Pro</li>
-        <li>Access to all PlayAI tools</li>
-        <li>CentAI Finance included</li>
+        <li>CentAI + CareerAI unlimited</li>
+        <li>All future AI tools included</li>
         <li>Priority support</li>
         <li>API access</li>
       </ul>
-      <a href="https://buy.stripe.com/00wfZibSR0pB9zw9FE7EQ06" target="_blank" class="price-btn elite">Start Elite →</a>
+      <a href="https://buy.stripe.com/3cIdRabSRgozdPM9FE7EQ03" target="_blank" class="price-btn elite">Start Elite →</a>
     </div>
   </div>
 </section>
@@ -518,7 +520,7 @@ Guidelines:
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let state = {
   user: null,
-  guestCount: parseInt(localStorage.getItem('careerai_guest') || '0'),
+  guestCount: parseInt(localStorage.getItem('careerai_guest_count') || '0'),
   messages: [],
   isLoading: false,
 };
@@ -570,7 +572,7 @@ async function sendMessage(prefill) {
 
   if(!state.user) {
     state.guestCount++;
-    localStorage.setItem('careerai_guest', state.guestCount);
+    localStorage.setItem('careerai_guest_count', state.guestCount);
     updateQCount();
   }
 
