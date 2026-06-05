@@ -63,9 +63,8 @@ nav{padding:0 5vw;height:64px;display:flex;align-items:center;justify-content:sp
 .feature-desc{font-size:14px;color:var(--ink-muted);line-height:1.7;font-weight:300;}
 
 /* CHAT INTERFACE */
-#chat-section{padding:80px 5vw;background:var(--ink);position:relative;overflow:hidden;}
-#chat-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(13,148,136,0.2) 0%,transparent 70%);pointer-events:none;z-index:0;}
-.chat-container{position:relative;max-width:760px;margin:0 auto;z-index:2;}
+#chat-section{padding:80px 5vw;background:var(--ink);}
+.chat-container{max-width:760px;margin:0 auto;}
 .chat-header{text-align:center;margin-bottom:40px;}
 .chat-header .section-label{color:var(--teal-light);}
 .chat-header .section-title{color:var(--white);margin:0 auto 12px;}
@@ -303,7 +302,7 @@ footer{padding:40px 5vw;background:var(--ink);display:flex;justify-content:space
 </section>
 
 <!-- CHAT -->
-<section id="chat-section">
+<section id="chat-section" style="padding:80px 5vw;background:var(--ink);">
   <div class="chat-container">
     <div class="chat-header">
       <div class="section-label">Try CareerAI now</div>
@@ -324,9 +323,9 @@ footer{padding:40px 5vw;background:var(--ink);display:flex;justify-content:space
         <button class="quick-btn" onclick="quickAsk('Interview tips')">🎤 Interview tips</button>
         <button class="quick-btn" onclick="quickAsk('Salary negotiation')">💰 Salary tips</button>
       </div>
-      <div class="chat-input-wrap">
-        <textarea id="chat-input" placeholder="Ask about your career..." rows="1"></textarea>
-        <button id="send-btn" onclick="sendMessage()">Send →</button>
+      <div style="padding:16px;border-top:1px solid rgba(255,255,255,0.08);display:flex;gap:10px;align-items:flex-end;">
+        <textarea id="chat-input" placeholder="Ask about your career..." rows="2" style="flex:1;background:rgba(255,255,255,0.1);border:2px solid rgba(45,212,191,0.5);border-radius:10px;padding:12px 16px;color:#fff;font-size:14px;font-family:DM Sans,sans-serif;resize:none;min-height:52px;outline:none;"></textarea>
+        <button id="send-btn" onclick="sendMessage()" style="background:linear-gradient(135deg,#0d9488,#0f766e);color:#fff;border:none;padding:14px 20px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap;font-family:DM Sans,sans-serif;">Send →</button>
       </div>
       <div class="chat-footer">
         <div class="questions-left" id="questions-left">Questions remaining: <span id="q-count">2</span></div>
@@ -416,23 +415,23 @@ footer{padding:40px 5vw;background:var(--ink);display:flex;justify-content:space
   <div class="section-label" style="text-align:center;">FAQ</div>
   <div class="section-title" style="text-align:center;max-width:100%;">Common questions</div>
   <div class="faq-list">
-    <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-item" onclick="this.classList.toggle('open');this.querySelector('.faq-a').style.display=this.classList.contains('open')?'block':'none';">
       <div class="faq-q">Is CareerAI better than a human career coach?</div>
       <div class="faq-a">CareerAI gives you instant, 24/7 access to expert-level career advice at a fraction of the cost. While a human coach brings personal experience, CareerAI has been trained on thousands of career resources and gives consistent, unbiased advice anytime you need it.</div>
     </div>
-    <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-item" onclick="this.classList.toggle('open');this.querySelector('.faq-a').style.display=this.classList.contains('open')?'block':'none';">
       <div class="faq-q">What languages does CareerAI support?</div>
       <div class="faq-a">CareerAI supports 50+ languages including English, Spanish, French, Greek, Arabic, Chinese, German, Portuguese, Italian, and many more. Just write your question in your language and CareerAI will respond in the same language.</div>
     </div>
-    <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-item" onclick="this.classList.toggle('open');this.querySelector('.faq-a').style.display=this.classList.contains('open')?'block':'none';">
       <div class="faq-q">Can CareerAI actually review my CV?</div>
       <div class="faq-a">Yes! Paste your CV text into the chat and CareerAI will give you detailed, actionable feedback on structure, content, keywords, and presentation — tailored to the industry and role you're targeting.</div>
     </div>
-    <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-item" onclick="this.classList.toggle('open');this.querySelector('.faq-a').style.display=this.classList.contains('open')?'block':'none';">
       <div class="faq-q">How is CareerAI different from ChatGPT?</div>
       <div class="faq-a">CareerAI is specifically trained and prompted for career coaching — it understands job markets, CV standards, interview techniques, and salary benchmarks. It gives focused career advice rather than general AI responses.</div>
     </div>
-    <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-item" onclick="this.classList.toggle('open');this.querySelector('.faq-a').style.display=this.classList.contains('open')?'block':'none';">
       <div class="faq-q">Can I cancel my subscription anytime?</div>
       <div class="faq-a">Yes — cancel anytime with no questions asked. Your access continues until the end of your billing period.</div>
     </div>
