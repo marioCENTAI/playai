@@ -719,8 +719,15 @@ Rules: Use 'you', be specific, no generic advice, no line breaks inside strings.
 }
 
 function showFallback(path) {
-  const personality = `You have a natural ${path.name.replace('The ','')} mindset — ${path.tagline.toLowerCase()}. This shapes every decision you make.`;
-  typeText('personality-text', personality);
+  const personalities = {
+    entrepreneur: "You are wired differently — where others see problems, you see opportunities. You have high energy, low patience for bureaucracy, and an instinct to build rather than join. Your biggest strength is vision; your biggest challenge is finishing what you start.",
+    creative: "You experience the world more vividly than most people. You notice details others miss, feel things deeply, and express yourself in ways that move people. Your superpower is originality — no one sees things quite the way you do.",
+    expert: "You have a naturally deep mind. While others skim the surface, you dive in. You are happiest when you fully understand something, and you have a gift for explaining complexity simply. Precision and mastery define you.",
+    leader: "People naturally look to you — even when you are not trying to lead. You read rooms well, bring people together, and have a rare ability to make others feel capable. Your greatest strength is that people trust you.",
+    nomad: "You were born with wanderlust in your soul. Routine feels like a cage. You thrive on novelty, adapt faster than most, and have a remarkable ability to connect with people from any background. Freedom is not a luxury for you — it is a necessity.",
+    helper: "You feel other people's experiences deeply — their joy, their pain, their struggles. This emotional intelligence is your greatest gift. You create safety for others to open up, and people leave conversations with you feeling genuinely seen."
+  };
+  typeText('personality-text', personalities[state.result] || path.tagline);
   setTimeout(() => typeText('career-text', path.career), 600);
   setTimeout(() => typeText('money-text', path.money), 1200);
   setTimeout(() => typeText('action-text', path.action), 1800);
