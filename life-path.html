@@ -175,6 +175,29 @@ nav{padding:0 5vw;height:52px;display:flex;align-items:center;justify-content:sp
 
   <div class="action-cards" id="tool-suggestions"></div>
 
+  <!-- NEXT STEPS -->
+  <div id="next-steps" style="display:none;">
+    <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">⚡ Your Next Steps</div>
+    <div id="next-steps-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;"></div>
+  </div>
+
+  <!-- DEEPER QUESTIONS -->
+  <div id="deeper-section" style="display:none;background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2);border-radius:20px;padding:20px;margin-bottom:14px;">
+    <div style="font-size:11px;font-weight:600;color:var(--purple-light);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">🔮 Go Deeper</div>
+    <div style="font-size:16px;font-weight:700;color:#fff;font-family:Syne,sans-serif;margin-bottom:4px;" id="deeper-title">Discover more about your path</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:16px;font-weight:300;">Answer 3 more questions for a deeper analysis</div>
+    <div id="deeper-choices" style="display:flex;flex-direction:column;gap:8px;"></div>
+  </div>
+
+  <!-- CHAT CTA -->
+  <div id="chat-cta" style="display:none;background:linear-gradient(135deg,rgba(13,148,136,0.15),rgba(15,118,110,0.1));border:1px solid rgba(13,148,136,0.3);border-radius:20px;padding:20px;margin-bottom:14px;text-align:center;">
+    <div style="font-size:32px;margin-bottom:8px;">💬</div>
+    <div style="font-family:Syne,sans-serif;font-size:18px;font-weight:700;color:#fff;margin-bottom:6px;" id="chat-cta-title">Talk to your AI mentor</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:16px;font-weight:300;" id="chat-cta-desc">CareerAI already knows your Life Path. Ask it anything about your next steps.</div>
+    <a id="chat-cta-btn" href="https://playai.live/careerai.html" style="display:block;background:linear-gradient(135deg,#0d9488,#0f766e);color:#fff;padding:13px;border-radius:12px;font-size:15px;font-weight:500;text-decoration:none;margin-bottom:8px;">Chat with CareerAI about my path →</a>
+    <a href="https://centai.org" style="display:block;background:linear-gradient(135deg,rgba(124,58,237,0.3),rgba(76,29,149,0.3));color:#a78bfa;padding:11px;border-radius:12px;font-size:14px;font-weight:500;text-decoration:none;border:1px solid rgba(124,58,237,0.3);">Get financial advice from CentAI →</a>
+  </div>
+
   <div class="share-section">
     <div class="share-title">Share your result 👇</div>
     <div class="share-btns">
@@ -388,7 +411,10 @@ const LIFE_PATHS = {
     career:'Design, writing, music, film, content — your career lives where art meets impact. The most successful creatives today monetise their unique perspective. Yours is valuable.',
     money:'You sometimes undervalue your creative work. Start treating your creativity as a business. Charge what you\'re worth. Build multiple income streams from your craft.',
     action:'Create and publish one piece of work this week. Not perfect — just real. Post it. The world needs to see what you can do.',
-    tools:[
+    nextSteps:[{icon:'🎨',title:'Create and publish one piece this week',desc:'Post it publicly. Instagram, Behance, YouTube, anywhere. The world needs to see your work.',done:false},{icon:'💰',title:'Learn to price your creative work',desc:'Most creatives underprice. Learn your market rate.',link:'https://centai.org',linkText:'Ask CentAI →'},{icon:'🚀',title:'Build your creative portfolio',desc:'A simple website showing your 5 best pieces. This is your business card.',done:false},{icon:'💼',title:'Turn creativity into a career',desc:'CareerAI can map out exactly how to make money from your creative skills.',link:'https://playai.live/careerai.html',linkText:'Ask CareerAI →'}],
+    deeperQ:{question:"What creative field fits you best?",choices:[{icon:'🎬',text:'Film/video/content creation',sub:'option'},{icon:'🎨',text:'Design/illustration/art',sub:'option'},{icon:'✍',text:' Writing/copywriting/storytelling',sub:'option'},{icon:'🎵',text:'Music/audio/performance',sub:'option'}]},
+    chatContext:"I just discovered I am The Creative on the Life Path quiz. I want to turn my creativity into a career.",
+        tools:[
       {emoji:'💼',title:'CareerAI Coach',desc:'Turn your creativity into a career',url:'https://playai.live/careerai.html',color:'rgba(236,72,153,0.2)'},
       {emoji:'💰',title:'CentAI Finance',desc:'Learn to monetise your creative skills',url:'https://centai.org',color:'rgba(124,58,237,0.2)'},
     ]
@@ -400,7 +426,10 @@ const LIFE_PATHS = {
     career:'You thrive when you go deep, not wide. Medicine, law, engineering, research, consulting — fields where expertise commands respect and premium salaries. Become the best at one thing.',
     money:'Your earning potential is enormous — but only if you invest in your skills. Every €1 spent on education or expertise returns €10 in career earnings over time.',
     action:'Identify the ONE skill that will make you irreplaceable in your field. Commit to 30 minutes of deliberate practice every single day this week.',
-    tools:[
+    nextSteps:[{icon:'📚',title:'Identify your ONE mastery focus',desc:'The expert who specialises in everything masters nothing. Pick one field. Go deep.',done:false},{icon:'💰',title:'Understand how expertise is monetised',desc:'Consultants, speakers, authors — all built on expertise. Learn the business model.',link:'https://centai.org',linkText:'Ask CentAI →'},{icon:'🎓',title:'Find the top qualification in your field',desc:'Research the credential that commands the highest respect and salary in your industry.',done:false},{icon:'💼',title:'Map your expert career path',desc:'CareerAI can show you exactly how to become the go-to person in your field.',link:'https://playai.live/careerai.html',linkText:'Ask CareerAI →'}],
+    deeperQ:{question:"Which field should you master?",choices:[{icon:'💻',text:'Technology/engineering/AI',sub:'option'},{icon:'⚕',text:' Medicine/health/science',sub:'option'},{icon:'⚖',text:' Law/finance/business',sub:'option'},{icon:'🎓',text:'Education/research/academia',sub:'option'}]},
+    chatContext:"I just discovered I am The Expert on the Life Path quiz. I want to master my field and build a high-value career.",
+        tools:[
       {emoji:'💼',title:'CareerAI Coach',desc:'Map your path to expert status',url:'https://playai.live/careerai.html',color:'rgba(245,158,11,0.2)'},
       {emoji:'💰',title:'CentAI Finance',desc:'Build wealth while building expertise',url:'https://centai.org',color:'rgba(124,58,237,0.2)'},
     ]
@@ -412,7 +441,10 @@ const LIFE_PATHS = {
     career:'Management, politics, education, coaching, NGOs — your path leads to roles where you elevate others. The best leaders aren\'t born, they\'re built. You\'re already building.',
     money:'You need financial stability to lead effectively. Build an emergency fund first, then invest consistently. Leaders who are financially stressed make poor decisions.',
     action:'Take on one leadership responsibility this week — even small. Volunteer to organise something, mentor someone, or lead a meeting. Leadership is a muscle.',
-    tools:[
+    nextSteps:[{icon:'👥',title:'Take on one leadership role this week',desc:'Organise something, mentor someone, lead a meeting. Leadership is a muscle — start flexing it.',done:false},{icon:'💰',title:'Build financial stability to lead freely',desc:'Leaders under financial stress make poor decisions. Build your safety net first.',link:'https://centai.org',linkText:'Ask CentAI →'},{icon:'📚',title:'Read one leadership book this month',desc:'Recommended: Start With Why, Extreme Ownership, or The 5 Dysfunctions of a Team.',done:false},{icon:'💼',title:'Map your leadership career path',desc:'CareerAI can show you the fastest route to leadership roles in your industry.',link:'https://playai.live/careerai.html',linkText:'Ask CareerAI →'}],
+    deeperQ:{question:"What kind of leader are you?",choices:[{icon:'🏢',text:'Corporate leader — climb the management ladder',sub:'Manager'},{icon:'🚀',text:'Startup leader — build and scale a team',sub:'Founder'},{icon:'🌍',text:'Community leader — create social change',sub:'Activist'},{icon:'🎓',text:'Thought leader — influence through ideas',sub:'Expert'}]},
+    chatContext:"I just discovered I am The Leader on the Life Path quiz. I want to develop my leadership skills and build a career where I can lead and inspire others.",
+        tools:[
       {emoji:'💼',title:'CareerAI Coach',desc:'Develop your leadership career path',url:'https://playai.live/careerai.html',color:'rgba(139,92,246,0.2)'},
       {emoji:'💰',title:'CentAI Finance',desc:'Build financial stability to lead freely',url:'https://centai.org',color:'rgba(124,58,237,0.2)'},
     ]
@@ -424,7 +456,10 @@ const LIFE_PATHS = {
     career:'Remote work, freelancing, travel blogging, digital nomad — your career must have flexibility built in. The good news: the world is moving your way. Remote-first careers are booming.',
     money:'Freedom is expensive if you\'re not careful. Build a financial cushion of 6 months expenses before going fully nomadic. Diversify your income sources.',
     action:'Research one remote-friendly career path that matches your skills. Apply for one remote job or freelance gig this week. Start building the life you actually want.',
-    tools:[
+    nextSteps:[{icon:'💻',title:'Research 3 remote-friendly careers',desc:'Software, design, marketing, writing, consulting — all viable remotely. Pick one and go deep.',done:false},{icon:'💰',title:'Build a 6-month emergency fund first',desc:'Freedom is expensive without a safety net. CentAI can help you build one.',link:'https://centai.org',linkText:'Ask CentAI →'},{icon:'🌍',title:'Join one digital nomad community',desc:'Reddit r/digitalnomad, Nomad List, Remote Year — find your tribe and learn from them.',done:false},{icon:'💼',title:'Build your location-independent career plan',desc:'CareerAI can create a roadmap to your first remote income.',link:'https://playai.live/careerai.html',linkText:'Ask CareerAI →'}],
+    deeperQ:{question:"What does your ideal freedom look like?",choices:[{icon:'✈️',text:'Full nomad — new city every month',sub:'Explorer'},{icon:'🏝️',text:'Slow travel — settle for months at a time',sub:'Explorer'},{icon:'🏠',text:'Remote from home — freedom without moving',sub:'Remote'},{icon:'⚡',text:'Flexible — work from anywhere when I want',sub:'Hybrid'}]},
+    chatContext:"I just discovered I am The Free Spirit on the Life Path quiz. I want to build a location-independent career and live life on my own terms.",
+        tools:[
       {emoji:'💼',title:'CareerAI Coach',desc:'Build a location-independent career',url:'https://playai.live/careerai.html',color:'rgba(16,185,129,0.2)'},
       {emoji:'💰',title:'CentAI Finance',desc:'Financial planning for the nomad life',url:'https://centai.org',color:'rgba(124,58,237,0.2)'},
     ]
@@ -436,7 +471,10 @@ const LIFE_PATHS = {
     career:'Teaching, healthcare, psychology, social work, coaching, HR — your calling is service. The world desperately needs people like you. But learn to charge what you\'re worth.',
     money:'Helpers often underprice themselves. Your empathy and skills have real market value. Learn about salary negotiation — it\'s not greedy, it\'s necessary.',
     action:'Write down the three ways you most naturally help people. Then research careers or roles that pay well for exactly those skills. Value yourself.',
-    tools:[
+    nextSteps:[{icon:'❤️',title:'List the 3 ways you naturally help people',desc:'Write them down. These are your career superpowers — and they have real market value.',done:false},{icon:'💰',title:'Research salary ranges for helping careers',desc:'Teaching, coaching, therapy, HR — find out what you should be earning.',link:'https://centai.org',linkText:'Ask CentAI →'},{icon:'🎓',title:'Find the qualification that unlocks higher pay',desc:'A coaching certificate, therapy license or HR qualification could double your income.',done:false},{icon:'💼',title:'Find a career where helping pays well',desc:'CareerAI can match your natural helper skills to high-paying roles.',link:'https://playai.live/careerai.html',linkText:'Ask CareerAI →'}],
+    deeperQ:{question:"How do you most naturally help others?",choices:[{icon:'🎓',text:'Teaching and educating others',sub:'Teacher'},{icon:'🧠',text:'Listening and supporting emotional wellbeing',sub:'Counsellor'},{icon:'🏥',text:'Physical health and wellness',sub:'Healer'},{icon:'🤝',text:'Connecting people and building community',sub:'Connector'}]},
+    chatContext:"I just discovered I am The Helper on the Life Path quiz. I want to build a career where I can help others while being financially rewarded for it.",
+        tools:[
       {emoji:'💼',title:'CareerAI Coach',desc:'Find a career where helping pays well',url:'https://playai.live/careerai.html',color:'rgba(239,68,68,0.2)'},
       {emoji:'💰',title:'CentAI Finance',desc:'Learn to negotiate your worth',url:'https://centai.org',color:'rgba(124,58,237,0.2)'},
     ]
@@ -578,6 +616,40 @@ async function generateResult() {
     </a>`
   ).join('');
 
+  // Show next steps
+  if(path.nextSteps) {
+    const nsList = document.getElementById('next-steps-list');
+    nsList.innerHTML = path.nextSteps.map((s,i) => `
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;">
+        <span style="font-size:24px;flex-shrink:0;">${s.icon}</span>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:500;color:#fff;margin-bottom:3px;">${s.title}</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.4);font-weight:300;line-height:1.5;">${s.desc}</div>
+          ${s.link ? `<a href="${s.link}" style="display:inline-block;margin-top:6px;font-size:12px;color:var(--purple-light);font-weight:500;text-decoration:none;">${s.linkText}</a>` : ''}
+        </div>
+        <div style="width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,0.15);flex-shrink:0;margin-top:2px;cursor:pointer;" onclick="this.style.background='#0d9488';this.style.borderColor='#0d9488';this.innerHTML='✓';this.style.color='#fff';this.style.fontSize='12px';this.style.display='flex';this.style.alignItems='center';this.style.justifyContent='center'"></div>
+      </div>`).join('');
+    document.getElementById('next-steps').style.display = 'block';
+  }
+
+  // Show deeper question
+  if(path.deeperQ) {
+    document.getElementById('deeper-title').textContent = path.deeperQ.question;
+    const dc = document.getElementById('deeper-choices');
+    dc.innerHTML = path.deeperQ.choices.map(c => `
+      <button onclick="selectDeeperAnswer('${c.text}')" style="padding:12px 16px;border:1.5px solid rgba(255,255,255,0.1);border-radius:12px;cursor:pointer;font-size:13px;color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.04);text-align:left;font-family:DM Sans,sans-serif;display:flex;align-items:center;gap:10px;transition:all 0.15s;touch-action:manipulation;">
+        <span style="font-size:20px;">${c.icon}</span><span>${c.text}</span>
+      </button>`).join('');
+    document.getElementById('deeper-section').style.display = 'block';
+  }
+
+  // Show chat CTA
+  if(path.chatContext) {
+    const encodedCtx = encodeURIComponent(path.chatContext);
+    document.getElementById('chat-cta-btn').href = `https://playai.live/careerai.html?context=${encodedCtx}`;
+    document.getElementById('chat-cta').style.display = 'block';
+  }
+
   // Get AI analysis
   const topTraits = Object.entries(state.traits)
     .sort((a,b) => b[1]-a[1])
@@ -601,15 +673,10 @@ Write 4 SHORT, punchy, personalised analyses (2-3 sentences each):
 3. MONEY STYLE: Their specific relationship with money and one key financial advice
 4. #1 ACTION: One specific, concrete action they should take THIS WEEK
 
-Format as JSON:
-{
-  "personality": "...",
-  "career": "...", 
-  "money": "...",
-  "action": "..."
-}
+Respond ONLY with valid JSON in exactly this format, nothing else:
+{"personality":"2-3 sentences about their unique personality","career":"2-3 sentences about career path with specific job titles","money":"2-3 sentences about money style and one key advice","action":"One specific action to take THIS WEEK"}
 
-Be direct, specific and inspiring. Use 'you' not 'they'. No generic advice.`;
+Rules: Use 'you', be specific, no generic advice, no line breaks inside strings.`;
 
     const r = await fetch('/api/chat', {
       method: 'POST',
@@ -624,14 +691,26 @@ Be direct, specific and inspiring. Use 'you' not 'they'. No generic advice.`;
     const text = d.content?.[0]?.text || '';
 
     // Parse JSON response
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      const parsed = JSON.parse(jsonMatch[0]);
-      typeText('personality-text', parsed.personality || path.career);
-      setTimeout(() => typeText('career-text', parsed.career || path.career), 800);
-      setTimeout(() => typeText('money-text', parsed.money || path.money), 1600);
-      setTimeout(() => typeText('action-text', parsed.action || path.action), 2400);
-    } else {
+    try {
+      const jsonMatch = text.match(/\{[\s\S]*?\}/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]);
+        typeText('personality-text', parsed.personality || path.career);
+        setTimeout(() => typeText('career-text', parsed.career || path.career), 800);
+        setTimeout(() => typeText('money-text', parsed.money || path.money), 1600);
+        setTimeout(() => typeText('action-text', parsed.action || path.action), 2400);
+      } else {
+        // Try extracting sections manually
+        const pMatch = text.match(/"personality":\s*"([^"]+)"/);
+        const cMatch = text.match(/"career":\s*"([^"]+)"/);
+        const mMatch = text.match(/"money":\s*"([^"]+)"/);
+        const aMatch = text.match(/"action":\s*"([^"]+)"/);
+        typeText('personality-text', pMatch?.[1] || path.career);
+        setTimeout(() => typeText('career-text', cMatch?.[1] || path.career), 800);
+        setTimeout(() => typeText('money-text', mMatch?.[1] || path.money), 1600);
+        setTimeout(() => typeText('action-text', aMatch?.[1] || path.action), 2400);
+      }
+    } catch(parseErr) {
       showFallback(path);
     }
   } catch(e) {
@@ -640,7 +719,8 @@ Be direct, specific and inspiring. Use 'you' not 'they'. No generic advice.`;
 }
 
 function showFallback(path) {
-  typeText('personality-text', path.career);
+  const personality = `You have a natural ${path.name.replace('The ','')} mindset — ${path.tagline.toLowerCase()}. This shapes every decision you make.`;
+  typeText('personality-text', personality);
   setTimeout(() => typeText('career-text', path.career), 600);
   setTimeout(() => typeText('money-text', path.money), 1200);
   setTimeout(() => typeText('action-text', path.action), 1800);
@@ -668,6 +748,17 @@ function typeText(elementId, text) {
 // ============================================
 // SHARE
 // ============================================
+function selectDeeperAnswer(choice) {
+  const path = LIFE_PATHS[state.result];
+  document.getElementById('deeper-section').innerHTML = `
+    <div style="text-align:center;padding:10px 0;">
+      <div style="font-size:32px;margin-bottom:8px;">✨</div>
+      <div style="font-family:Syne,sans-serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:6px;">Perfect! You chose: ${choice}</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.4);font-weight:300;">CareerAI can give you a personalised plan for exactly this path.</div>
+      <a href="https://playai.live/careerai.html" style="display:inline-block;margin-top:12px;background:linear-gradient(135deg,#0d9488,#0f766e);color:#fff;padding:11px 24px;border-radius:10px;font-size:14px;font-weight:500;text-decoration:none;">Get my personalised plan →</a>
+    </div>`;
+}
+
 function shareResult() {
   if (!state.result) return;
   const path = LIFE_PATHS[state.result];
