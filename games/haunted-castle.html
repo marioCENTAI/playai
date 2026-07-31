@@ -179,15 +179,13 @@ const ROOMS = [
     premium: false,
     bg: { sky: "#0a0015", floor: "#1a0030", wall: "#120025" },
     intro: "You wake up inside a dark, creaky castle. The door slammed shut behind you. The only way out is FORWARD. Cobwebs hang from the ceiling. Something moves in the shadows...",
-    puzzles: [
+    puzzlePool: [
       {
         id: "candles",
         name: "🕯️ The Magic Candles",
         object: "candles",
         desc: "Three candles flicker on the wall. Each has a Roman numeral carved beneath it: III, VII, and IV. A riddle on the wall reads: 'Add my flames to find the secret code.'",
-        visual: `<div style="font-size:28px;letter-spacing:8px;margin-bottom:8px;">🕯️🕯️🕯️</div>
-                 <div style="font-size:18px;color:#fbbf24;font-family:Creepster,cursive;letter-spacing:2px;">III + VII + IV = ?</div>
-                 <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:6px;">Enter the number</div>`,
+        visual: `<div style="font-size:28px;letter-spacing:8px;margin-bottom:8px;">🕯️🕯️🕯️</div><div style="font-size:18px;color:#fbbf24;font-family:Creepster,cursive;letter-spacing:2px;">III + VII + IV = ?</div><div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:6px;">Enter the number</div>`,
         answer: "14",
         hints: ["Roman numerals: III=3, VII=7, IV=4", "3 + 7 + 4 = ?", "The answer is 14"],
         points: 200
@@ -196,32 +194,93 @@ const ROOMS = [
         id: "bookshelf",
         name: "📚 The Haunted Bookshelf",
         object: "bookshelf",
-        desc: "An old bookshelf. Books are flying off the shelves! You notice 4 books with coloured spines: RED, BLUE, GREEN, YELLOW. A note says 'The rainbow holds the order. Name the 2nd colour.'",
-        visual: `<div style="display:flex;gap:6px;justify-content:center;margin-bottom:10px;">
-                   <div style="width:20px;height:50px;background:#ef4444;border-radius:2px;"></div>
-                   <div style="width:20px;height:50px;background:#f97316;border-radius:2px;"></div>
-                   <div style="width:20px;height:50px;background:#fbbf24;border-radius:2px;"></div>
-                   <div style="width:20px;height:50px;background:#10b981;border-radius:2px;"></div>
-                   <div style="width:20px;height:50px;background:#3b82f6;border-radius:2px;"></div>
-                   <div style="width:20px;height:50px;background:#8b5cf6;border-radius:2px;"></div>
-                 </div>
-                 <div style="font-size:12px;color:rgba(255,255,255,0.5);">Rainbow order: what's the 3rd colour?</div>`,
+        desc: "Books fly off the shelves! A note reads: 'The rainbow holds the order. What is the 3rd colour of the rainbow?'",
+        visual: `<div style="display:flex;gap:6px;justify-content:center;margin-bottom:10px;"><div style="width:20px;height:50px;background:#ef4444;border-radius:2px;"></div><div style="width:20px;height:50px;background:#f97316;border-radius:2px;"></div><div style="width:20px;height:50px;background:#fbbf24;border-radius:2px;"></div><div style="width:20px;height:50px;background:#10b981;border-radius:2px;"></div><div style="width:20px;height:50px;background:#3b82f6;border-radius:2px;"></div><div style="width:20px;height:50px;background:#8b5cf6;border-radius:2px;"></div></div><div style="font-size:12px;color:rgba(255,255,255,0.5);">Rainbow: Red, Orange, ?, Green, Blue, Violet</div>`,
         answer: "yellow",
-        hints: ["Think of a rainbow: Red, Orange, Yellow...", "ROY G BIV — the 3rd letter is Y", "Yellow is the 3rd colour of the rainbow"],
+        hints: ["Think of a rainbow: Red, Orange, Yellow...", "ROY G BIV — the 3rd letter is Y", "Yellow is the 3rd colour"],
         points: 150
       },
       {
         id: "portrait",
         name: "🖼️ The Creepy Portrait",
         object: "portrait",
-        desc: "A portrait of Count Dracula stares at you. His eyes follow you! Below the portrait: 'I have cities but no houses. I have mountains but no trees. I have water but no fish. What am I?'",
-        visual: `<div style="font-size:48px;margin:8px 0;">🧛</div>
-                 <div style="font-size:12px;color:#c4b5fd;font-style:italic;line-height:1.6;">"I have cities but no houses.<br>Mountains but no trees.<br>Water but no fish.<br>What am I?"</div>`,
+        desc: "Count Dracula's portrait stares at you. Below it: 'I have cities but no houses. Mountains but no trees. Water but no fish. What am I?'",
+        visual: `<div style="font-size:48px;margin:8px 0;">🧛</div><div style="font-size:12px;color:#c4b5fd;font-style:italic;line-height:1.6;">"I have cities but no houses.<br>Mountains but no trees.<br>Water but no fish.<br>What am I?"</div>`,
         answer: "map",
         hints: ["It's something you use for navigation", "You find it in an atlas", "A MAP has all of these things drawn on it"],
         points: 250
+      },
+      {
+        id: "spider",
+        name: "🕷️ The Spider's Web",
+        object: "candles",
+        desc: "A giant spider web covers the wall. Numbers are trapped in it: 2, 4, 8, 16, ?. The spider whispers: 'Complete my sequence to pass!'",
+        visual: `<div style="font-size:40px;margin:8px 0;">🕸️</div><div style="font-size:20px;color:#a78bfa;font-family:Creepster,cursive;letter-spacing:3px;">2 → 4 → 8 → 16 → ?</div><div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:6px;">What comes next?</div>`,
+        answer: "32",
+        hints: ["Each number is double the previous", "16 × 2 = ?", "The answer is 32"],
+        points: 200
+      },
+      {
+        id: "ghost_riddle",
+        name: "👻 The Ghost's Riddle",
+        object: "portrait",
+        desc: "A ghost floats before you and speaks: 'The more you take, the more you leave behind. What am I?'",
+        visual: `<div style="font-size:48px;margin:8px 0;">👻</div><div style="font-size:12px;color:#c4b5fd;font-style:italic;line-height:1.6;">"The more you take,<br>the more you leave behind.<br>What am I?"</div>`,
+        answer: "footsteps",
+        hints: ["Think about walking", "When you walk, what do you leave behind?", "FOOTSTEPS — every step you take leaves one behind"],
+        points: 250
+      },
+      {
+        id: "clock",
+        name: "🕐 The Haunted Clock",
+        object: "candles",
+        desc: "A broken clock on the wall shows 3:00. The ghost says: 'If it was 10:00 two hours ago, what time is it now?'",
+        visual: `<div style="font-size:48px;margin:8px 0;">🕰️</div><div style="font-size:14px;color:#fbbf24;font-family:Creepster,cursive;">If it was 10:00 two hours ago...<br><br>What time is it NOW?</div>`,
+        answer: "12",
+        hints: ["10 + 2 = ?", "Two hours after 10 o'clock is...", "The answer is 12 (noon/midnight)"],
+        points: 200
+      },
+      {
+        id: "mirror",
+        name: "🪞 The Magic Mirror",
+        object: "bookshelf",
+        desc: "A cracked mirror shows a backwards message. It reads: 'TACS' in the mirror. What animal do you see?",
+        visual: `<div style="font-size:48px;margin:8px 0;">🪞</div><div style="font-size:28px;color:#a78bfa;font-family:Creepster,cursive;transform:scaleX(-1);display:inline-block;">TACS</div><div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:8px;">Read the mirror reflection</div>`,
+        answer: "cats",
+        hints: ["Mirrors show things backwards", "Read TACS backwards", "TACS backwards spells CATS"],
+        points: 150
+      },
+      {
+        id: "bones",
+        name: "💀 The Skeleton's Puzzle",
+        object: "portrait",
+        desc: "A skeleton rattles its bones and asks: 'I speak without a mouth and hear without ears. I have no body but come alive with the wind. What am I?'",
+        visual: `<div style="font-size:48px;margin:8px 0;">💀</div><div style="font-size:12px;color:#c4b5fd;font-style:italic;line-height:1.6;">"I speak without a mouth.<br>I hear without ears.<br>No body — but alive with wind.<br>What am I?"</div>`,
+        answer: "echo",
+        hints: ["It's something you hear outdoors", "Shout in a mountain and it comes back", "An ECHO speaks your words back without a mouth"],
+        points: 250
+      },
+      {
+        id: "cauldron",
+        name: "🧪 The Witch's Cauldron",
+        object: "bookshelf",
+        desc: "Bubbling cauldron! The witch cackles: 'What has hands but cannot clap?'",
+        visual: `<div style="font-size:48px;margin:8px 0;">🧪</div><div style="font-size:14px;color:#86efac;font-family:Creepster,cursive;font-style:italic;">"What has hands<br>but cannot clap?"</div>`,
+        answer: "clock",
+        hints: ["It's found on a wall or wrist", "It tells you something important every day", "A CLOCK has hands but can't clap"],
+        points: 200
       }
     ],
+    get puzzles() {
+      // Pick 3 random puzzles from pool each game
+      const pool = [...this.puzzlePool];
+      const picked = [];
+      while(picked.length < 3 && pool.length > 0) {
+        const idx = Math.floor(Math.random() * pool.length);
+        picked.push(pool.splice(idx, 1)[0]);
+      }
+      return picked;
+    },
     exitItem: "door",
     exitMsg: "The ancient door creaks open with a groan. You step through into the dark corridor..."
   },
