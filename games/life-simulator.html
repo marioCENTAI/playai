@@ -410,6 +410,117 @@ const SCENARIOS=[
 ];
 
 // ============================================
+// ALTERNATIVE SCENARIO SETS
+// ============================================
+const SCENARIOS_B=[
+  {age:18,badge:'🎓 Life Choice',badgeType:'milestone',
+   setting:'August. Kitchen table. Morning.',
+   narrative:"Your cousin just got back from working abroad and tells you about the money he made. Your €300 savings feel tiny. Three paths call you.",
+   choices:[
+     {text:"Work abroad for a year, save hard, come back with €8,000.",good:true,feedback:"You return with €8,000 and a new perspective. You understand the value of money in a way your friends don't yet.",wealthChange:8000,incomeChange:0},
+     {text:"Start working locally right away. Steady income from day one.",good:true,feedback:"Slow and steady. By 19 you have €4,000 saved and real work experience.",wealthChange:4000,incomeChange:800},
+     {text:"Spend your €300 on a course that promises to make you rich online.",good:false,feedback:"The course was mostly hype. €300 gone, nothing gained. A hard lesson about too-good-to-be-true promises.",wealthChange:-300,incomeChange:0},
+   ]},
+  {age:20,badge:'💳 Money Moment',badgeType:'financial',
+   setting:'Friday night. Your phone buzzes.',
+   narrative:"Your friend is selling his old car for €2,000. You have €2,500 saved. Having a car would make your life much easier — but it would wipe most of your savings.",
+   choices:[
+     {text:"Buy the car. Your time and convenience are worth it.",good:true,feedback:"Smart thinking. The car helps you get a better-paying job further away. Worth every cent.",wealthChange:-2000,incomeChange:400},
+     {text:"Keep saving. Use public transport for now.",good:true,feedback:"Disciplined choice. Your savings grow to €5,000 by 21, giving you real options.",wealthChange:0,incomeChange:0},
+     {text:"Buy the car AND put new rims on it using your credit card.",good:false,feedback:"The car depreciates. The credit card charges 20% interest. You're paying for something losing value.",wealthChange:-2500,incomeChange:-200},
+   ]},
+  {age:22,badge:'🚀 Career Jump',badgeType:'career',
+   setting:'Monday. Job offer in your inbox.',
+   narrative:"Two job offers arrived the same day. One pays more now. The other pays less but is in a growing field with real potential.",
+   choices:[
+     {text:"Take the higher salary now — €32,000 vs €26,000.",good:false,feedback:"The higher salary felt great — until the industry shrank. The other company is now worth billions.",wealthChange:15000,incomeChange:500},
+     {text:"Take the lower salary in the growing company.",good:true,feedback:"Three years later your salary doubled and you have stock options worth €40,000. Best career decision you ever made.",wealthChange:5000,incomeChange:800},
+     {text:"Negotiate — ask the lower-paying company to match the salary.",good:true,feedback:"They said yes! You got the best of both worlds — growing industry AND better starting salary.",wealthChange:8000,incomeChange:1000},
+   ]},
+  {age:25,badge:'💰 Investment Time',badgeType:'financial',
+   setting:'Sunday morning. Coffee. Laptop open.',
+   narrative:"You have €10,000 saved. Your colleague made €5,000 last month trading crypto. Your parents say put it in the bank. A financial advisor says invest in index funds.",
+   choices:[
+     {text:"Put it all in crypto like your colleague.",good:false,feedback:"Crypto dropped 70% that year. Your €10,000 became €3,000. Your colleague had already taken his profits.",wealthChange:-7000,incomeChange:0},
+     {text:"Invest in a low-cost index fund and forget about it.",good:true,feedback:"Ten years later, your €10,000 is worth €22,000. Boring but brilliant. Compound interest is magic.",wealthChange:12000,incomeChange:200},
+     {text:"Keep it in the bank 'for safety'.",good:false,feedback:"Inflation at 4% per year quietly ate your savings. After 5 years your €10,000 has the buying power of €8,000.",wealthChange:-2000,incomeChange:0},
+   ]},
+  {age:28,badge:'❤️ Life Decision',badgeType:'lifestyle',
+   setting:'Saturday. Walking in the park together.',
+   narrative:"Your partner wants to move to a bigger city for their dream job. It means you leave your job, your friends, everything you've built. But love is love.",
+   choices:[
+     {text:"Go. Love and new adventures are worth the risk.",good:true,feedback:"You find an even better job in the new city within 3 months. The leap of faith paid off.",wealthChange:5000,incomeChange:600},
+     {text:"Stay. Ask them to consider staying too.",good:true,feedback:"A hard conversation — but they stayed. You both committed to building your future where you are.",wealthChange:10000,incomeChange:400},
+     {text:"Go, but resent giving up your career for theirs.",good:false,feedback:"Resentment builds slowly. By 30 you're unhappy in the new city and the relationship is strained.",wealthChange:-5000,incomeChange:-300},
+   ]},
+  {age:30,badge:'🏠 Property Decision',badgeType:'financial',
+   setting:'Estate agent office. Papers on the table.',
+   narrative:"You can finally afford a deposit. A small apartment in a good location, or a bigger house further out — both the same price.",
+   choices:[
+     {text:"Small apartment, great location. Pay the premium.",good:true,feedback:"Location won. Five years later your apartment is worth 40% more. Great location always holds value.",wealthChange:40000,incomeChange:0},
+     {text:"Bigger house, further out. More space for your money.",good:true,feedback:"More space, good schools nearby. A solid family decision even if the commute adds stress.",wealthChange:25000,incomeChange:0},
+     {text:"Wait another year — prices will drop.",good:false,feedback:"Prices rose 15% that year. Waiting cost you €30,000 in additional purchase price.",wealthChange:-10000,incomeChange:0},
+   ]},
+];
+
+const SCENARIOS_C=[
+  {age:18,badge:'🎓 First Step',badgeType:'milestone',
+   setting:'Late summer. Your room. Options everywhere.',
+   narrative:"School is over. Your older brother says 'learn to code' and offers to teach you. Your best friend is starting a business and wants you involved. Or you could just find any job and start earning.",
+   choices:[
+     {text:"Learn to code with your brother for 6 months.",good:true,feedback:"Six months of learning opened doors you never imagined. Tech pays well and you can work from anywhere.",wealthChange:3000,incomeChange:1200},
+     {text:"Join your friend's business idea.",good:false,feedback:"The business idea never quite got off the ground. 18 months later you're back to square one — but with valuable experience.",wealthChange:-1000,incomeChange:0},
+     {text:"Get any job. Start earning immediately.",good:true,feedback:"Immediate income gave you confidence and savings. Sometimes the simple path is the right one.",wealthChange:5000,incomeChange:700},
+   ]},
+  {age:21,badge:'📱 Side Hustle',badgeType:'career',
+   setting:'Thursday evening. Laptop. Energy drink.',
+   narrative:"You've been freelancing evenings and weekends. Last month you earned €800 on top of your salary. Your boss offers you a promotion — but it means more hours and no time for freelancing.",
+   choices:[
+     {text:"Take the promotion. Stable career progression matters.",good:true,feedback:"Smart move. The promotion opened senior doors faster than freelancing would have.",wealthChange:10000,incomeChange:800},
+     {text:"Decline and grow the freelancing instead.",good:true,feedback:"Bold choice. Within two years your freelance income exceeded your old salary and you work for yourself.",wealthChange:5000,incomeChange:1500},
+     {text:"Accept promotion AND try to keep freelancing. Do both.",good:false,feedback:"Burnout hit at 23. You had to drop both for 3 months to recover. Health before hustle.",wealthChange:8000,incomeChange:200},
+   ]},
+  {age:23,badge:'💳 Debt Decision',badgeType:'financial',
+   setting:'Bank. Meeting room. Loan offer.',
+   narrative:"The bank offers you a €15,000 personal loan at 8% interest. You could use it to invest in further education, buy a car, or invest in the stock market.",
+   choices:[
+     {text:"Use the loan for a professional certification.",good:true,feedback:"The certification doubled your salary within 18 months. ROI of over 400%. Best investment ever.",wealthChange:5000,incomeChange:1500},
+     {text:"Decline the loan. Never borrow unless necessary.",good:true,feedback:"Disciplined thinking. You saved instead and avoided 8% interest eating into your wealth.",wealthChange:0,incomeChange:0},
+     {text:"Borrow and invest in stocks. Leverage your returns.",good:false,feedback:"Stocks dropped 30% that year. You owed €15,000 plus interest on investments worth €10,500.",wealthChange:-8000,incomeChange:-300},
+   ]},
+  {age:26,badge:'🌍 Big Move',badgeType:'lifestyle',
+   setting:'Airport. One-way ticket in hand.',
+   narrative:"A company in another country offered you a job paying twice your current salary. Tax is lower there too. But you'd leave your family, friends and comfort zone.",
+   choices:[
+     {text:"Go. The money and experience are worth it.",good:true,feedback:"Two years abroad changed your life. You saved €40,000, gained global experience and came back with confidence.",wealthChange:40000,incomeChange:1000},
+     {text:"Negotiate remote work instead.",good:true,feedback:"They agreed! You got the salary increase without leaving. Best of both worlds.",wealthChange:20000,incomeChange:1200},
+     {text:"Stay. Family and roots matter more than money.",good:true,feedback:"You stayed and built deep roots. Wealth isn't only financial — stability and belonging have real value.",wealthChange:10000,incomeChange:300},
+   ]},
+  {age:29,badge:'💼 Entrepreneurship',badgeType:'career',
+   setting:'Coffee shop. Business plan open.',
+   narrative:"You have a real business idea, €20,000 saved, and a potential first customer. But you have a stable job with good benefits. This is the moment.",
+   choices:[
+     {text:"Quit the job. Go all in on the business.",good:true,feedback:"Year one was brutal. Year two you turned profitable. Year three you hired your first employee. You built something real.",wealthChange:30000,incomeChange:2000},
+     {text:"Start the business on the side first. Quit when it works.",good:true,feedback:"Smart risk management. 18 months of evenings and weekends — then you quit with a proven business.",wealthChange:15000,incomeChange:800},
+     {text:"Keep the job. Too risky with your mortgage.",good:false,feedback:"The safe choice — but five years later you still wonder what if. The idea was acquired by someone else for €2M.",wealthChange:10000,incomeChange:300},
+   ]},
+  {age:32,badge:'🏠 Property Play',badgeType:'financial',
+   setting:'Evening. Kitchen table. Spreadsheets.',
+   narrative:"You can afford a buy-to-let property. Rental income would cover the mortgage plus €300 profit per month. But it ties up your savings and adds complexity.",
+   choices:[
+     {text:"Buy the rental property.",good:true,feedback:"Ten years later the property doubled in value and you earned €36,000 in rental profit. Property built your wealth.",wealthChange:50000,incomeChange:300},
+     {text:"Invest the same money in index funds instead.",good:true,feedback:"Index funds returned 9% annually. Less hassle than tenants, similar long-term returns.",wealthChange:35000,incomeChange:200},
+     {text:"Buy the property but let a bad tenant stay too long.",good:false,feedback:"The tenant stopped paying and caused €8,000 of damage. Property investment requires tough decisions.",wealthChange:20000,incomeChange:-100},
+   ]},
+];
+
+// Pick random scenario set each game
+function getScenarios() {
+  const sets = [SCENARIOS, SCENARIOS_B, SCENARIOS_C];
+  return sets[Math.floor(Math.random() * sets.length)];
+}
+
+// ============================================
 // RANDOM EVENTS — dramatic life curveballs
 // ============================================
 const RANDOM_EVENTS=[
@@ -432,6 +543,9 @@ const LEADERBOARD=[
   {name:'Fatima A.',wealth:89000},
 ];
 
+// ============================================
+// ACTIVE SCENARIO SET (randomised each game)
+let activeScenarios = getScenarios();
 // ============================================
 // STATE
 // ============================================
@@ -479,7 +593,7 @@ function drawChart(){
   ctx.fillStyle='rgba(124,58,237,0.08)';ctx.fill();
 }
 function updateStats(){
-  const s=SCENARIOS[Math.min(state.currentChapter,SCENARIOS.length-1)];
+  const s=activeScenarios[Math.min(state.currentChapter,activeScenarios.length-1)];
   document.getElementById('wealth-display').textContent=fmt(state.wealth);
   document.getElementById('stat-age').textContent=s.age;
   document.getElementById('stat-income').textContent=fmt(state.income);
@@ -604,7 +718,7 @@ function startGame(){
 }
 
 function renderScenario(){
-  const s=SCENARIOS[state.currentChapter];
+  const s=activeScenarios[state.currentChapter];
   const st=STAGES[state.currentChapter];
   document.getElementById('stage-avatar').textContent=st.avatar;
   document.getElementById('stage-name').textContent=st.name;
@@ -637,7 +751,7 @@ function renderScenario(){
 
 async function selectChoice(i){
   stopTimer();
-  const s=SCENARIOS[state.currentChapter];
+  const s=activeScenarios[state.currentChapter];
   const c=s.choices[i];
   state.wealth+=c.wealthChange;state.income+=c.incomeChange;
   state.totalDecisions++;if(c.good) state.smartMoves++;
@@ -708,6 +822,7 @@ function copyResult(){
 }
 function unlockGame(){window.open(CONFIG.PAYWALL_URL,'_blank');}
 function restartGame(){
+  activeScenarios=getScenarios();
   clearInterval(state.timer);
   state={playerName:state.playerName,wealth:0,income:0,smartMoves:0,totalDecisions:0,currentChapter:0,decisions:[],allDecisions:[],wealthHistory:[0],timer:null,timeLeft:0};
   document.getElementById('end-screen').style.display='none';
